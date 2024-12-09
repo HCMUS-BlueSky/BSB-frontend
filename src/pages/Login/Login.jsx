@@ -1,5 +1,13 @@
 import React from "react";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  Row,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 const Login = () => {
@@ -12,29 +20,40 @@ const Login = () => {
         <Col xs={8} md={4} className="mx-auto">
           <Card className="p-4">
             <Card.Title>
-              <h3 className="text-center mt-3">Login</h3>
+              <h3 className="w-100 text-center mt-3">Đăng nhập</h3>
             </Card.Title>
             <Card.Body>
               <Form>
-                <Form.Group className="mb-3" controlId="email">
-                  <Form.Label>Email address</Form.Label>
+                <FloatingLabel className="mb-3" controlId="email" label="Email">
                   <Form.Control type="email" placeholder="Enter email" />
-                </Form.Group>
+                </FloatingLabel>
 
-                <Form.Group className="mb-3" controlId="password">
-                  <Form.Label>Password</Form.Label>
+                <FloatingLabel
+                  className="mb-3"
+                  controlId="password"
+                  label="Mật khẩu"
+                >
                   <Form.Control type="password" placeholder="Password" />
-                </Form.Group>
+                </FloatingLabel>
 
-                <Button className="w-100" variant="primary" type="submit">
-                  Submit
+                <Button
+                  className="w-100 text-light p-2"
+                  variant="primary"
+                  type="submit"
+                >
+                  ĐĂNG NHẬP
                 </Button>
-              </Form>
 
-              <div className="mt-2 d-flex justify-content-center gap-2">
-                <p className="mb-2">Don't have an account?</p>
-                <Link to={"/signup"}>Sign Up</Link>
-              </div>
+                <div className="d-flex justify-content-between mt-3">
+                  <Link>
+                    <span>Đổi mật khẩu</span>
+                  </Link>
+
+                  <Link>
+                    <span>Quên mật khẩu</span>
+                  </Link>
+                </div>
+              </Form>
             </Card.Body>
           </Card>
         </Col>
