@@ -9,9 +9,9 @@ const PopUpNewDebtReminder = ({ show, handleClose }) => {
 
   useEffect(() => {
     const data = [
-      { id: 1, name: "KHOI" },
-      { id: 2, name: "UYEN" },
-      { id: 3, name: "NHAN" },
+      { id: 1, name: "KHOI", icon:"", descripton: "LEADER" },
+      { id: 2, name: "UYEN", icon:"", descripton: "KHUNG" },
+      { id: 3, name: "NHAN", icon:"", descripton: "TRAM" },
     ];
     setBank(data);
   }, []);
@@ -69,7 +69,7 @@ const PopUpNewDebtReminder = ({ show, handleClose }) => {
             <FloatingLabel 
               className="shadow-sm" 
               controlId="txtAccountNumber" 
-              label="THÔNG TIN TÀI KHOẢN"
+              label="SỐ TIỀN"
             >
               <Form.Control placeholder="123456789" className="w-100" />
             </FloatingLabel>

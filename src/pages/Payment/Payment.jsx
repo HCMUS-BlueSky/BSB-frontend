@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Navbar from "../../components/Navbar";
 import { Button, Col, Container, Row } from "react-bootstrap";
-// import PopUpFindAccount from "../../components/PopUp//PopUpFindAccount";
+import PopUpFindAccount from "../../components/PopUp//PopUpFindAccount";
 import PopUpNewDebtReminder from "../../components/PopUp/PopUpNewDebtReminder";
 
 
@@ -72,12 +72,26 @@ const Payment = () => {
               </Button>
             </Col>
           </Row>
-          <Button variant="primary" onClick={handleShow}>
-            <div className="text-light fw-bold">TẠO NHẮC NỢ MỚI</div>
-          </Button>
+          <Row className="d-flex justify-content-center mb-3">
+            <Col xs={10} md={6}>
+              <Button variant="primary" onClick={handleShow}>
+                <div className="text-light fw-bold">TẠO NHẮC NỢ MỚI</div>
+              </Button>
 
-          {/* Sử dụng PopUpFindAccount */}
-          <PopUpNewDebtReminder show={show} handleClose={handleClose} />
+              {/* Sử dụng PopUpFindAccount */}
+              <PopUpFindAccount show={show} handleClose={handleClose} />
+            </Col>
+          </Row>
+          <Row className="d-flex justify-content-center mb-3">
+            <Col xs={10} md={6}>
+              <Button variant="primary" onClick={handleShow}>
+                <div className="text-light fw-bold">TẠO NHẮC NỢ MỚI</div>
+              </Button>
+
+              {/* Sử dụng PopUpFindAccount */}
+              <PopUpNewDebtReminder show={show} handleClose={handleClose} />
+            </Col>
+          </Row>
         </Container>
       </main>
     </>
