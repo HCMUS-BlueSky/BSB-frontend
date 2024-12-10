@@ -1,17 +1,21 @@
-// src/pages/Payment.js
 import { useState } from "react";
 import Navbar from "../../components/Navbar";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import PopUpFindAccount from "../../components/PopUp//PopUpFindAccount";
+import PopUpFindAccount from "../../components/PopUp/PopUpFindAccount";
 import PopUpNewDebtReminder from "../../components/PopUp/PopUpNewDebtReminder";
 
-
 const Payment = () => {
+  // State để điều khiển PopUp nào sẽ được hiển thị
+  const [showFindAccount, setShowFindAccount] = useState(false);
+  const [showNewDebtReminder, setShowNewDebtReminder] = useState(false);
 
-  const [show, setShow] = useState(false);
+  // Hàm đóng PopUp
+  const handleCloseFindAccount = () => setShowFindAccount(false);
+  const handleCloseNewDebtReminder = () => setShowNewDebtReminder(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // Hàm mở PopUp tương ứng
+  const handleShowFindAccount = () => setShowFindAccount(true);
+  const handleShowNewDebtReminder = () => setShowNewDebtReminder(true);
 
   return (
     <>
@@ -72,24 +76,28 @@ const Payment = () => {
               </Button>
             </Col>
           </Row>
+
+          {/* Nút tạo nhắc nợ mới 1 */}
           <Row className="d-flex justify-content-center mb-3">
             <Col xs={10} md={6}>
-              <Button variant="primary" onClick={handleShow}>
-                <div className="text-light fw-bold">TẠO NHẮC NỢ MỚI</div>
+              <Button variant="primary" onClick={handleShowFindAccount}>
+                <div className="text-light fw-bold">TÌM TÀI KHOẢN</div>
               </Button>
 
               {/* Sử dụng PopUpFindAccount */}
-              <PopUpFindAccount show={show} handleClose={handleClose} />
+              <PopUpFindAccount show={showFindAccount} handleClose={handleCloseFindAccount} />
             </Col>
           </Row>
+
+          {/* Nút tạo nhắc nợ mới 2 */}
           <Row className="d-flex justify-content-center mb-3">
             <Col xs={10} md={6}>
-              <Button variant="primary" onClick={handleShow}>
+              <Button variant="primary" onClick={handleShowNewDebtReminder}>
                 <div className="text-light fw-bold">TẠO NHẮC NỢ MỚI</div>
               </Button>
 
-              {/* Sử dụng PopUpFindAccount */}
-              <PopUpNewDebtReminder show={show} handleClose={handleClose} />
+              {/* Sử dụng PopUpNewDebtReminder */}
+              <PopUpNewDebtReminder show={showNewDebtReminder} handleClose={handleCloseNewDebtReminder} />
             </Col>
           </Row>
         </Container>
