@@ -54,7 +54,7 @@ const PopUpNewDebtReminder = ({ show, handleClose }) => {
             xs={12} md={10} 
             className="text-center"
           >
-            <div className="text-primary fw-bold">TẠO NHẮC NỢ MỚI</div>
+            <div className="text-primary fw-bold fs-5">TẠO NHẮC NỢ MỚI</div>
           </Col>
         </Row>
 
