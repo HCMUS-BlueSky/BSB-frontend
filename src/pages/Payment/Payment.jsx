@@ -73,7 +73,7 @@ const Payment = () => {
             </Col>
           </Row>
           <Button variant="primary" onClick={handleShow}>
-            Launch demo modal
+            <div className="text-light fw-bold">TẠO NHẮC NỢ MỚI</div>
           </Button>
 
           {/* Sử dụng PopUpFindAccount */}
