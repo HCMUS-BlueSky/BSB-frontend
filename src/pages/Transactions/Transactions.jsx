@@ -1,71 +1,86 @@
-import React from 'react'
-import Navbar from '../../components/Navbar'
-import { Container, Row, Col, Button } from 'react-bootstrap'
+import React, { useState } from 'react';
+import Navbar from '../../components/Navbar';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import { formatCurrency } from '../../utils/formatCurrency';
+import { groupByDate } from '../../utils/groupByDate';
+import TransactionList from '../../components/TransactionList/TransactionList';
+import './Transactions.css';
 
 const Transactions = () => {
+  const [isMoneyVisible, setIsMoneyVisible] = useState(false);
+  const visibleMoney = "******";
+
+  const requestList = [
+    {
+      title: "Timo",
+      amount: 100000,
+      type: "Gửi",
+      note: "Mua đồ ăn",
+      date: "2021-09-01",
+    },
+    {
+      title: "Timo",
+      amount: 100000,
+      type: "Nhận",
+      note: "Mua đồ ăn",
+      date: "2021-09-11",
+    },
+    {
+      title: "Timo",
+      amount: 100000,
+      type: "Nhận",
+      note: "Mua đồ ăn",
+      date: "2021-09-01",
+    },
+    {
+      title: "Timo",
+      amount: 100000,
+      type: "Gửi",
+      note: "Mua đồ ăn",
+      date: "2021-09-11",
+    },
+  ];
+
+  // Lọc và nhóm theo ngày
+  const groupedByDate = groupByDate(requestList);
+
   return (
     <>
       <Navbar />
       <main>
         <Container>
-        <Row className="d-flex justify-content-center my-3" >
+          <Row className="d-flex justify-content-center my-3">
             <Col xs={10} md={6}>
-              <Button className='w-100' variant="light">
-                <div className='d-flex flex-column my-3'>
-                  <span className='fw-light'>Current balance</span>
-                  <span className='fw-bold fs-2'>0</span>
-                  <span className='fw-light'>Available to spend: 0</span>
-                </div>
-              </Button>
-            </Col>
-          </Row>
-
-          <Row className="d-flex justify-content-center mb-3">
-            <Col xs={10} md={6}>
-              <Row>
-                <Col>
-                  <Button className="w-100" variant="light">
-                    <div className="d-flex justify-content-center p-2">
-                      <div className="d-flex gap-2 text-primary text-uppercase">
-                        <i className="bi bi-arrow-left-right"></i>
-                        <p>Chuyển tiền</p>
-                      </div>
-                    </div>
+              <Card className="w-100 position-relative">
+                <div className="d-flex flex-column justify-content-center align-items-center my-3">
+                  <Button 
+                    variant="light"
+                    onClick={() => setIsMoneyVisible(!isMoneyVisible)}
+                    className="position-absolute top-0 end-0 m-3"
+                  >
+                    {!isMoneyVisible ? <i className="bi bi-eye-slash"></i> : <i className="bi bi-eye"></i>}
                   </Button>
-                </Col>
-                <Col>
-                  <Button className="w-100" variant="light">
-                    <div className="d-flex justify-content-center p-2">
-                      <div className="d-flex gap-2 text-primary text-uppercase">
-                        <i className="bi bi-cash-coin"></i>
-                        <p className="text-primary text-uppercase">Nhắc nợ</p>
-                      </div>
-                    </div>
-                  </Button>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Row className="d-flex justify-content-center mb-3">
-            <Col xs={10} md={6}>
-              <Button className="w-100" variant="light">
-                <div className="d-flex justify-content-between align-items-center p-2">
-                  <div className="d-flex flex-column gap-2">
-                    <p className="text-start">Tài khoản chính</p>
-                    <div>
-                      <i className="bi bi-bank"></i>
-                      <span className="m-2">Số tài khoản: 902127855814</span>
-                    </div>
-                  </div>
-                  <p className="text-primary fs-4">0 vnd</p>
+                  <span className="tags-small fw-light">Current balance</span>
+                  <span className="tags fw-bold fs-2">
+                    {isMoneyVisible ? formatCurrency(1000000) : visibleMoney}
+                  </span>
+                  <span className="tags-small fw-light">Available to spend: {
+                    isMoneyVisible ? formatCurrency(1000000) : visibleMoney
+                  }
+                  </span>
                 </div>
-              </Button>
+              </Card>
             </Col>
           </Row>
+          <TransactionList
+            groupedByDate={groupedByDate} 
+            isMoneyVisible={isMoneyVisible} 
+            visibleMoney={visibleMoney}
+          />
         </Container>
       </main>
     </>
-  )
-}
+  );
+};
 
-export default Transactions
+export default Transactions;

@@ -1,0 +1,15 @@
+.tags-small {
+  font-size: 0.8em;
+}
+
+.tags-largr {
+  font-size: 1em;
+}
+
+.btn-list-tran {
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.btn-list-tran:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
