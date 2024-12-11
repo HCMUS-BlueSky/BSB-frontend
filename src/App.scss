@@ -1,4 +1,5 @@
 @import "scss/custom.scss";
+@import "scss/pages/transfer-money.scss";
 
 body,
 html {
@@ -18,4 +19,8 @@ h6,
 p {
   margin: 0;
   padding: 0;
+}
+
+a {
+  text-decoration: none;
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
 import { Button, Col, Container, Row } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -24,24 +25,28 @@ const Home = () => {
             <Col xs={10} md={6}>
               <Row>
                 <Col>
-                  <Button className="w-100" variant="light">
-                    <div className="d-flex justify-content-center p-2">
-                      <div className="d-flex gap-2 text-primary text-uppercase">
-                        <i className="bi bi-arrow-left-right"></i>
-                        <p>Chuyển tiền</p>
+                  <Link to={"/transfer-money"}>
+                    <Button className="w-100" variant="light">
+                      <div className="d-flex justify-content-center p-2">
+                        <div className="d-flex gap-2 text-primary text-uppercase">
+                          <i className="bi bi-arrow-left-right"></i>
+                          <p>Chuyển tiền</p>
+                        </div>
                       </div>
-                    </div>
-                  </Button>
+                    </Button>
+                  </Link>
                 </Col>
                 <Col>
-                  <Button className="w-100" variant="light">
-                    <div className="d-flex justify-content-center p-2">
-                      <div className="d-flex gap-2 text-primary text-uppercase">
-                        <i className="bi bi-cash-coin"></i>
-                        <p className="text-primary text-uppercase">Nhắc nợ</p>
+                  <Link to="/payment-request/list">
+                    <Button className="w-100" variant="light">
+                      <div className="d-flex justify-content-center p-2">
+                        <div className="d-flex gap-2 text-primary text-uppercase">
+                          <i className="bi bi-cash-coin"></i>
+                          <p className="text-primary text-uppercase">Nhắc nợ</p>
+                        </div>
                       </div>
-                    </div>
-                  </Button>
+                    </Button>
+                  </Link>
                 </Col>
               </Row>
             </Col>
