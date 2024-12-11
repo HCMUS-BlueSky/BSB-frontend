@@ -22,7 +22,7 @@ const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminde
       reason: reason,
       date: new Date().toLocaleDateString(),
     }
-    setDebtReminders([...debtReminders, newDebtReminder]);
+    setDebtReminders([newDebtReminder, ...debtReminders]);
   };
 
   useEffect(() => {
