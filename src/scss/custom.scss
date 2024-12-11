@@ -2,6 +2,34 @@ $theme-colors: (
   "primary": #007bff,
   "light": #ffffff,
   "orange": #ff9425,
+  "gray": #dee2e6,
+  "light-gray": #bebebe,
+  "background-light-gray": #ebe8e8,
 );
 
+$icon-size: 24px;
+$icon-size-father: 50px;
+
+
 @import "bootstrap/scss/bootstrap";
+
+.bi-father{
+  font-size: $icon-size-father;
+  height: $icon-size-father;
+  width: $icon-size-father;
+}
+
+.dItem:hover{
+  background-color: map-get($theme-colors, "background-light-gray");
+}
+
+
+.dItem:hover .bi-father{
+  background-color: map-get($theme-colors, "light");
+}
+
+.icon-bank {
+  font-size: $icon-size;
+  height: $icon-size;
+  width: $icon-size;
+}
