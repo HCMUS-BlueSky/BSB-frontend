@@ -7,7 +7,11 @@ const Navbar = () => {
       <Container>
         <Row className="d-flex justify-content-between">
           <Col>
-            <img className="w-25" src="/img/logo/logo.png" alt="BSB Logo" />
+            <img
+              style={{ width: "50px", height: "50px" }}
+              src="/img/logo/logo.png"
+              alt="BSB Logo"
+            />
           </Col>
 
           <Col>
