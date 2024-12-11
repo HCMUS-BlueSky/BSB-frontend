@@ -5,6 +5,8 @@ import Login from "./pages/Login/Login";
 import TransferMoney from "./pages/TransferMoney/TransferMoney";
 import InternalTransfer from "./pages/TransferMoney/InternalTransfer";
 import ExternalTransfer from "./pages/TransferMoney/ExternalTransfer";
+import Signup from "./pages/Signup/Signup";
+import PaymentRequest from "./pages/PaymentRequest/PaymentRequest";
 
 const App = () => {
   return (
@@ -12,6 +14,8 @@ const App = () => {
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/payment-request/list" element={<PaymentRequest />} />
         <Route path="/transfer-money" element={<TransferMoney />} />
         <Route path="/transfer-money/internal" element={<InternalTransfer />} />
         <Route path="/transfer-money/external" element={<ExternalTransfer />} />
