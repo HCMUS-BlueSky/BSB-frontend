@@ -37,14 +37,16 @@ const Home = () => {
                   </Link>
                 </Col>
                 <Col>
-                  <Button className="w-100" variant="light">
-                    <div className="d-flex justify-content-center p-2">
-                      <div className="d-flex gap-2 text-primary text-uppercase">
-                        <i className="bi bi-cash-coin"></i>
-                        <p className="text-primary text-uppercase">Nhắc nợ</p>
+                  <Link to="/payment-request/list">
+                    <Button className="w-100" variant="light">
+                      <div className="d-flex justify-content-center p-2">
+                        <div className="d-flex gap-2 text-primary text-uppercase">
+                          <i className="bi bi-cash-coin"></i>
+                          <p className="text-primary text-uppercase">Nhắc nợ</p>
+                        </div>
                       </div>
-                    </div>
-                  </Button>
+                    </Button>
+                  </Link>
                 </Col>
               </Row>
             </Col>
