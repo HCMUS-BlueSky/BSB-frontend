@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import { Button, Col, Container, Row, Card } from "react-bootstrap";
 import RequestList from "../../components/PaymentRequest/RequestList";
 import Completed from "../../components/PaymentRequest/CompletedList";
 import { formatCurrency } from "../../utils/formatCurrency";
+import PopUpNewDebtReminder from "../../components/PopUp/PopUpNewDebtReminder.jsx";
 import "./PaymentRequest.css";
 
 const PaymentRequest = () => {
@@ -14,7 +15,8 @@ const PaymentRequest = () => {
   const [sortOptionCompletedList, setSortOptionCompletedList] =
     useState("Gần đây nhất");
 
-  const requestList = [
+  // State để thêm nhắc nợ vào danh sách
+  const [debtReminders, setDebtReminders] = useState([
     {
       name: "Nguyen Minh Khoi",
       profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
@@ -36,7 +38,14 @@ const PaymentRequest = () => {
       direction: "từ",
       date: "9/12/2024",
     },
-  ];
+  ]);
+
+  // State để điều khiển PopUp nào sẽ được hiển thị
+  const [showNewDebtReminder, setShowNewDebtReminder] = useState(false);
+  // Hàm đóng PopUp
+  const handleCloseNewDebtReminder = () => setShowNewDebtReminder(false);
+  // Hàm mở PopUp tương ứng
+  const handleShowNewDebtReminder = () => setShowNewDebtReminder(true);
 
   const completedList = [
     {
@@ -95,7 +104,7 @@ const PaymentRequest = () => {
             <Col xs={12} md={8} className="d-flex justify-content-center gap-4">
               <a
                 href="#"
-                className="d-flex align-items-center gap-1 text-decoration-none text-primary"
+                className="d-flex align-items-center gap-1 text-decoration-none text-primary "
               >
                 <i className="bi bi-currency-dollar"></i> Nhắc Nợ
               </a>
@@ -112,7 +121,7 @@ const PaymentRequest = () => {
             <Col xs={12} md={8}>
               <Card className="shadow-sm p-3">
                 <Row className="text-center">
-                  <Col>
+                  <Col >
                     <p className="mb-0 text-muted">Số dư khả dụng</p>
                     <h5>{formatCurrency(30000000)}</h5>
                   </Col>
@@ -135,15 +144,22 @@ const PaymentRequest = () => {
                 <Button
                   variant="light"
                   className="w-auto shadow-sm py-2 text-primary"
+                  onClick={handleShowNewDebtReminder}
                 >
                   TẠO NHẮC NỢ MỚI
                 </Button>
+                <PopUpNewDebtReminder 
+                  show={showNewDebtReminder} 
+                  handleClose={handleCloseNewDebtReminder} 
+                  debtReminders={debtReminders}
+                  setDebtReminders={setDebtReminders}
+                />
               </div>
             </Col>
           </Row>
 
           <RequestList
-            requestList={requestList}
+            requestList={debtReminders}
             sortOptionRequestList={sortOptionRequestList}
             toggleRequestList={toggleRequestList}
             isRequestListVisible={isRequestListVisible}
