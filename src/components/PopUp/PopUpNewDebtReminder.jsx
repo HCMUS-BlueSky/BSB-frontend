@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Modal, Row, Col, Form, FloatingLabel } from "react-bootstrap";
 import DropdownBank from "../Dropdown/DropdownBank";
 
-const PopUpNewDebtReminder = ({ show, handleClose }) => {
+const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminders }) => {
 
   const [bank, setBank] = useState([]);
   const [selectAccount, setSelectAccount] = useState("BẠN MUỐN NHẮC NỢ TỚI AI?");
@@ -14,6 +14,15 @@ const PopUpNewDebtReminder = ({ show, handleClose }) => {
     console.log("Bank: ", selectAccount);
     console.log("Amount: ", amount);
     console.log("Reason: ", reason);
+    const newDebtReminder = {
+      name: selectAccount,
+      profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
+      amount: amount,
+      direction: "tới",
+      reason: reason,
+      date: new Date().toLocaleDateString(),
+    }
+    setDebtReminders([newDebtReminder, ...debtReminders]);
   };
 
   useEffect(() => {
@@ -58,10 +67,10 @@ const PopUpNewDebtReminder = ({ show, handleClose }) => {
           </Col>
         </Row>
 
-        <Row className="d-flex justify-content-center align-items-center mb-3">
+        <Row className="d-flex justify-content-center align-items-center mb-3 w-100">
           <Col 
             xs={12} md={10} 
-            className="text-center"
+            className="text-center w-100"
           >
             <div className="text-primary fw-bold fs-5">TẠO NHẮC NỢ MỚI</div>
           </Col>

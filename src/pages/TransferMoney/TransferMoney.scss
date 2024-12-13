@@ -1,0 +1,6 @@
+@import "../../App.scss";
+
+.icon-placeholder {
+  font-size: 2rem;
+  color: map-get($theme-colors, "primary");
+}
