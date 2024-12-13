@@ -12,21 +12,19 @@ $theme-colors: (
 $icon-size: 24px;
 $icon-size-father: 50px;
 
-
 @import "bootstrap/scss/bootstrap";
 
-.bi-father{
+.bi-father {
   font-size: $icon-size-father;
   height: $icon-size-father;
   width: $icon-size-father;
 }
 
-.dItem:hover{
+.dItem:hover {
   background-color: map-get($theme-colors, "background-light-gray");
 }
 
-
-.dItem:hover .bi-father{
+.dItem:hover .bi-father {
   background-color: map-get($theme-colors, "light");
 }
 
