@@ -4,12 +4,9 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import Payment from "./pages/Payment/Payment";
 import Transactions from "./pages/Transactions/Transactions";
-<<<<<<< HEAD
-=======
 import TransferMoney from "./pages/TransferMoney/TransferMoney";
 import InternalTransfer from "./pages/TransferMoney/InternalTransfer";
 import ExternalTransfer from "./pages/TransferMoney/ExternalTransfer";
->>>>>>> 4c5f844e9d87a0ff9db7f5a841a16ad78353ecba
 import PaymentRequest from "./pages/PaymentRequest/PaymentRequest";
 
 const App = () => {

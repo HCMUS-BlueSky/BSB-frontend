@@ -22,7 +22,7 @@ const TransactionList = ({ groupedByDate, isMoneyVisible, visibleMoney }) => {
                     <Row
                       key={index}
                       className="p-3 d-flex justify-content-between align-items-center list-item-hover"
-                      style={{ borderTop: "1px solid #f4f5f6", color: item.type === 'Nhận' ? null : 'green', }}
+                      style={{ borderTop: "1px solid #f4f5f6", color: item.type === 'Nhận' ? 'green' : null, }}
                     >
                       <Col className="d-flex align-items-center">
                         <img

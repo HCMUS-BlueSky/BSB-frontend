@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from '../../components/Navbar';
-import { Container, Row, Col, Card, Button, Dropdown, FloatingLabel, Form } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, FloatingLabel, Form } from 'react-bootstrap';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { groupByDate } from '../../utils/groupByDate';
 import TransactionList from '../../components/TransactionList/TransactionList';
@@ -9,8 +9,9 @@ import './Transactions.css';
 const Transactions = () => {
   const [isMoneyVisible, setIsMoneyVisible] = useState(false);
   const [isFilterVisible, setIsFilterVisible] = useState(false);
-  const [isCustomAmount, setIsCustomAmount] = useState(false);
+  const [isCustomRange, setIsCustomRange] = useState(false);
   const [isCustomTime, setIsCustomTime] = useState(false);
+  const [isCustomType, setIsCustomType] = useState("All");
 
 
   const [fromDate, setFromDate] = useState("");
@@ -40,7 +41,7 @@ const Transactions = () => {
       amount: 200000,
       type: "Gửi",
       note: "Bạn chuyển tiền cho Trần Thị Lan từ Vietcombank",
-      date: "2021-09-15",
+      date: "2024-11-15",
       bankPic: "https://th.bing.com/th?id=OIP.6rGzO2j2Dy_7dotwoZCvPgHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
     },
     {
@@ -91,27 +92,67 @@ const Transactions = () => {
   }
 
   const filterByAmount = (transactions, min, max) => {
-    if (!min || !max) {
+    // Kiểm tra nếu người dùng nhập các giá trị hợp lệ (là số)
+    const minAmount = parseFloat(min);
+    const maxAmount = parseFloat(max);
+
+    // Nếu các giá trị không hợp lệ, trả lại danh sách ban đầu
+    if (isNaN(minAmount) || isNaN(maxAmount)) {
       return transactions;
     }
+
+    // Lọc giao dịch theo min và max
     return transactions.filter(transaction => {
-      return transaction.amount >= min && transaction.amount <= max;
+      return transaction.amount >= minAmount && transaction.amount <= maxAmount;
     });
   }
 
   const handleMoneyRange = (value) => {
-    setIsCustomAmount(value);
+    setIsCustomRange(value);
     if(value == "1") {
       setMinimumAmount("");
       setMaximumAmount("");
     }
   }
 
+  const handleMoneyType = (value) => {
+    setIsCustomType(value);
+  }
+
+  const filterByType = (transactions, type) =>{
+    
+    return transactions.filter(transaction => {
+      console.log("transaction.type: ", transaction.type)
+      console.log("type: ", type)
+      return transaction.type == type;
+    })
+  }
+
   const handleApplyFilter = () => {
-    console.log("min", minuminAmount);
-    console.log("max", maxuminAmount);
-    setRequestList(filterByDate(data, fromDate, toDate));;
-    setRequestList(filterByAmount(requestList, minuminAmount, maxuminAmount));
+    let filteredTransactions = data;
+
+    if(isCustomTime === "4"){
+      filteredTransactions = filterByDate(filteredTransactions, fromDate, toDate);
+    }
+
+    // Nếu có bộ lọc theo khoảng tiền, áp dụng bộ lọc theo số tiền
+    if (isCustomRange === "2") {
+      filteredTransactions = filterByAmount(filteredTransactions, minuminAmount, maxuminAmount);
+    }
+
+    if(isCustomType != "All"){
+      filteredTransactions = filterByType(filteredTransactions, isCustomType);
+    }
+
+    // Cập nhật lại danh sách giao dịch sau khi lọc
+    setRequestList(filteredTransactions);
+  }
+
+  const handleCloseFilter = () => {
+    setIsCustomRange("1")
+    setIsCustomTime("1")
+    setIsCustomType("All")
+    setIsFilterVisible(!isFilterVisible)
   }
 
   return (
@@ -156,7 +197,9 @@ const Transactions = () => {
                   </Button>
                 </Col>
                 <Col>
-                <Button 
+                {
+                  !isFilterVisible ? (
+                    <Button 
                     className="w-100 border border-1 border-gray shadow-sm" 
                     variant="light"
                     onClick={() => setIsFilterVisible(!isFilterVisible)} // Chuyển đổi trạng thái của filter
@@ -168,6 +211,19 @@ const Transactions = () => {
                       </div>
                     </div>
                   </Button>
+                  ) : (<Button 
+                    className="w-100 border border-1 border-gray shadow-sm" 
+                    variant="primary"
+                    onClick={() => setIsFilterVisible(!isFilterVisible)} // Chuyển đổi trạng thái của filter
+                  >
+                    <div className="d-flex justify-content-center p-2">
+                      <div className="d-flex gap-2 text-light text-uppercase">
+                        <i className="bi bi-filter"></i>
+                        <p className="text-uppercase">FILTER</p>
+                      </div>
+                    </div>
+                  </Button>)
+                }
                 </Col>
               </Row>
             </Col>
@@ -187,7 +243,7 @@ const Transactions = () => {
                     </FloatingLabel>
                   </Col>
                 </Row>
-                  {isCustomAmount == "2" && (
+                  {isCustomRange == "2" && (
                     <Row className='w-100'>
                     <Col>
                       <FloatingLabel controlId="floatingInput" label="Minimum" className="mb-2">
@@ -214,7 +270,7 @@ const Transactions = () => {
                     <FloatingLabel controlId="floatingSelect" label="BY TYPE" className='mb-2'>
                       <Form.Select 
                         aria-label="Floating label select example"
-                        // onChange={(e) => handleMoneyRange(e.target.value)}
+                        onChange={(e) => handleMoneyType(e.target.value)}
                       >
                         <option value="All">All</option>
                         <option value="Nhận">Money in</option>
@@ -271,7 +327,11 @@ const Transactions = () => {
                         </div>
                       </div>
                     </Button>
-                    <Button className="border border-1 border-gray shadow-sm" variant="light">
+                    <Button 
+                      className="border border-1 border-gray shadow-sm" 
+                      variant="light"
+                      onClick={handleCloseFilter}
+                    >
                         <div className="d-flex justify-content-center p-2">
                           <div className="d-flex gap-2 ">
                             <p>CLOSE</p>
