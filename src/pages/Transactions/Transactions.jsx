@@ -15,31 +15,36 @@ const Transactions = () => {
       title: "Timo",
       amount: 100000,
       type: "Gửi",
-      note: "Mua đồ ăn",
+      note: "Bạn chuyển tiền cho Nguyễn Gia Kiệt từ Timo",
       date: "2021-09-01",
+      bankPic: "https://timo.vn/wp-content/uploads/thumbnail-Timo.png"
     },
     {
-      title: "Timo",
+      title: "Agribank",
       amount: 100000,
       type: "Nhận",
-      note: "Mua đồ ăn",
-      date: "2021-09-11",
-    },
-    {
-      title: "Timo",
-      amount: 100000,
-      type: "Nhận",
-      note: "Mua đồ ăn",
+      note: "Nguyễn Gia Kiệt gửi tiền đến bạn",
       date: "2021-09-01",
+      bankPic: "https://th.bing.com/th/id/R.e003a1c9053975a8dd083614e139fac9?rik=fC0sapmrPQ5nLQ&pid=ImgRaw&r=0"
     },
     {
-      title: "Timo",
-      amount: 100000,
+      title: "Vietcombank",
+      amount: 200000,
       type: "Gửi",
-      note: "Mua đồ ăn",
-      date: "2021-09-11",
+      note: "Bạn chuyển tiền cho Trần Thị Lan từ Vietcombank",
+      date: "2021-09-15",
+      bankPic: "https://th.bing.com/th?id=OIP.6rGzO2j2Dy_7dotwoZCvPgHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
     },
+    {
+      title: "Techcombank",
+      amount: 150000,
+      type: "Nhận",
+      note: "Nguyễn Thị Hảo Trinh gửi tiền đến bạn",
+      date: "2021-09-20",
+      bankPic: "https://th.bing.com/th/id/R.0cf4fc6e9151a17a5cdf30d758365059?rik=3wDnITFDsDYWQA&pid=ImgRaw&r=0"
+    }
   ];
+
 
   // Lọc và nhóm theo ngày
   const groupedByDate = groupByDate(requestList);
@@ -50,7 +55,7 @@ const Transactions = () => {
       <main>
         <Container>
           <Row className="d-flex justify-content-center my-3">
-            <Col xs={10} md={6}>
+            <Col xs={12} md={8}>
               <Card className="w-100 position-relative">
                 <div className="d-flex flex-column justify-content-center align-items-center my-3">
                   <Button 
@@ -70,6 +75,32 @@ const Transactions = () => {
                   </span>
                 </div>
               </Card>
+            </Col>
+          </Row>
+          <Row className="d-flex justify-content-center mb-3">
+            <Col xs={12} md={8}>
+              <Row>
+                <Col>
+                  <Button className="w-100" variant="light">
+                    <div className="d-flex justify-content-center p-2">
+                      <div className="d-flex gap-2 text-primary text-uppercase">
+                        <i className="bi bi-filetype-pdf"></i>
+                        <p>EXPORT</p>
+                      </div>
+                    </div>
+                  </Button>
+                </Col>
+                <Col>
+                  <Button className="w-100" variant="light">
+                    <div className="d-flex justify-content-center p-2">
+                      <div className="d-flex gap-2 text-primary text-uppercase">
+                        <i className="bi bi-filter"></i>
+                        <p className="text-primary text-uppercase">FILTER</p>
+                      </div>
+                    </div>
+                  </Button>
+                </Col>
+              </Row>
             </Col>
           </Row>
           <TransactionList

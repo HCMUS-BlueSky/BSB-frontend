@@ -1,12 +1,12 @@
 // src/components/TransactionList.js
 import React from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 const TransactionList = ({ groupedByDate, isMoneyVisible, visibleMoney }) => {
   return (
     <Row className="justify-content-center mb-4">
-      <Col xs={10} md={6}>
+      <Col xs={12} md={8}>
         <div className="shadow-sm">
           {groupedByDate.map((group, index) => (
             <div key={index}>
@@ -17,18 +17,21 @@ const TransactionList = ({ groupedByDate, isMoneyVisible, visibleMoney }) => {
               </Row>
 
               {group.data.length > 0 ? (
-                <Row className="justify-content-center">
+                <Row className="justify-content-center ">
                   {group.data.map((item, index) => (
-                    <Button
+                    <Row
                       key={index}
-                      variant="background-gray"
-                      className="w-100 p-3 d-flex justify-content-between align-items-center list-item-hover mb-3 btn-list-tran"
-                      style={{
-                        borderTop: '1px solid #f4f5f6',
-                        color: item.type === 'Nhận' ? null : 'green',
-                      }}
+                      className="p-3 d-flex justify-content-between align-items-center list-item-hover"
+                      style={{ borderTop: "1px solid #f4f5f6", color: item.type === 'Nhận' ? null : 'green', }}
                     >
                       <Col className="d-flex align-items-center">
+                        <img
+                          src={item.bankPic}
+                          alt="profile"
+                          className="rounded-circle"
+                          width="40"
+                          height="40"
+                        />
                         <div className="ms-3">
                           <p className="mb-0">
                             <strong>{item.title}</strong>
@@ -37,13 +40,24 @@ const TransactionList = ({ groupedByDate, isMoneyVisible, visibleMoney }) => {
                         </div>
                       </Col>
                       <Col xs="auto">
-                        <h6 className="mb-0 fw-bold">
-                          {isMoneyVisible ? formatCurrency(item.amount) : visibleMoney}
+                        <h6
+                          className={
+                            item.direction === "từ"
+                              ? "text-danger mb-0"
+                              : "mb-0"
+                          }
+                        >
+                          {
+                            isMoneyVisible ? 
+                              (item.type === "Nhận" ? "-" + formatCurrency(item.amount) : "+" + formatCurrency(item.amount))
+                            : visibleMoney
+                          }
                         </h6>
                       </Col>
-                    </Button>
+                    </Row>
                   ))}
                 </Row>
+                
               ) : (
                 <div className="pb-4 text-center">
                   Bạn không có giao dịch vào nào
