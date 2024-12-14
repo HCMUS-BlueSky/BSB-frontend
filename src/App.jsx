@@ -6,6 +6,7 @@ import TransferMoney from "./pages/TransferMoney/TransferMoney";
 import InternalTransfer from "./pages/TransferMoney/InternalTransfer";
 import ExternalTransfer from "./pages/TransferMoney/ExternalTransfer";
 import PaymentRequest from "./pages/PaymentRequest/PaymentRequest";
+import Profile from "./pages/Profile/Profile";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/transfer-money" element={<TransferMoney />} />
         <Route path="/transfer-money/internal" element={<InternalTransfer />} />
         <Route path="/transfer-money/external" element={<ExternalTransfer />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );
