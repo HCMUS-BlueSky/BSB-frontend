@@ -1,14 +1,24 @@
 import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
-import { Button, Col, Container, FloatingLabel, Form, Row } from "react-bootstrap";
+import {
+  Button,
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  Modal,
+  Row,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./TransferMoney.scss";
 
 const TransferMoney = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [showBSBAccountInfoScreen, setShowBSBAccountInfoScreen] = useState(true); // Renamed
   const [accountInfo, setAccountInfo] = useState("");
-  const [searchResults, setSearchResults] = useState([]); // State to store search results
+  const [showError, setShowError] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
 
-  // Mock data for receiver list
   const accountList = [
     { id: 1, accountNumber: "123456", name: "Thanh Thien Nhan", status: "Chưa có thanh toán cho nơi nhận này", avatar: "https://via.placeholder.com/40" },
     { id: 2, accountNumber: "654321", name: "Vo Thi Tam", status: "Chưa có thanh toán cho nơi nhận này", avatar: "https://via.placeholder.com/40" },
@@ -19,7 +29,6 @@ const TransferMoney = () => {
     { id: 7, accountNumber: "334455", name: "Dang Minh Tuan", status: "Chưa có thanh toán cho nơi nhận này", avatar: "https://via.placeholder.com/40" },
   ];
 
-  // Handle search input and filter results
   const handleSearchChange = (e) => {
     const query = e.target.value;
     setAccountInfo(query);
@@ -35,8 +44,26 @@ const TransferMoney = () => {
     }
   };
 
-  // Decide which list to render: full list or search results
   const displayedList = searchResults.length > 0 ? searchResults : accountList;
+  
+  const handleClose = () => {
+    setShowModal(false);
+    setShowBSBAccountInfoScreen(true); // Renamed
+    setShowError(false);
+    setAccountInfo("");
+  };
+
+  const handleShow = () => setShowModal(true);
+
+  const handleSave = () => {
+    if (!accountInfo.trim()) {
+      setShowError(true);
+      setShowBSBAccountInfoScreen(true); // Renamed
+    } else {
+      setShowError(false);
+      setShowModal(false);
+    }
+  };
 
   return (
     <>
@@ -75,26 +102,22 @@ const TransferMoney = () => {
             </div>
 
             <div className="d-flex justify-content-end mb-3">
-              <Button variant="primary" className="w-4 text-white">
-                THÊM NGƯỜI NHẬN MỚI
+              <Button
+                variant="primary"
+                className="text-white"
+                onClick={handleShow}
+              >
+                <i className="bi bi-person-plus me-2"></i> THÊM NGƯỜI NHẬN MỚI
               </Button>
             </div>
 
-            {/* Search Bar */}
             <FloatingLabel
               controlId="floatingInput"
               label="Tìm kiếm"
               className="mb-3"
             >
-              <Form.Control
-                type="text"
-                placeholder="Số tài khoản"
-                value={accountInfo}
-                onChange={handleSearchChange}
-              />
+              <Form.Control type="text" placeholder="Số tài khoản" />
             </FloatingLabel>
-
-            {/* Display Receiver List */}
             <div className="receiver-list">
               {displayedList.map((account) => (
                 <div
@@ -134,7 +157,99 @@ const TransferMoney = () => {
             </div>
           </Col>
         </Row>
+        <Row>
+          
+        </Row>
       </Container>
+
+      {/* Modal Logic */}
+      <Modal show={showModal} onHide={handleClose} centered>
+        {showBSBAccountInfoScreen ? ( // Renamed
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title></Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="w-100">
+                <p className="w-100 text-center mb-4 fw-bold text-primary fs-4">
+                  Nhập thông tin tài khoản BSB
+                </p>
+              </div>
+
+              <FloatingLabel
+                controlId="floatingInput"
+                label="THÔNG TIN TÀI KHOẢN BSB"
+                className={`mb-4 ${
+                  showError ? "text-danger" : "Thông tin này không thể để trống"
+                }`}
+              >
+                <Form.Control
+                  type="text"
+                  placeholder="Nhập số tài khoản hoặc địa chỉ email"
+                  value={accountInfo}
+                  onChange={(e) => setAccountInfo(e.target.value)}
+                  isInvalid={showError}
+                />
+              </FloatingLabel>
+              {showError && (
+                <small className="text-danger">
+                  Thông tin này không thể để trống
+                </small>
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="primary"
+                className="text-light"
+                onClick={() => setShowBSBAccountInfoScreen(false)} // Renamed
+              >
+                TÌM NGƯỜI NHẬN
+              </Button>
+            </Modal.Footer>
+          </>
+        ) : (
+          <>
+            <Modal.Header closeButton></Modal.Header>
+            <Modal.Body>
+              <p className="w-100 text-center mb-4 fw-bold text-primary fs-4">
+                Nhập thông tin tài khoản Timo
+              </p>
+              <FloatingLabel
+                controlId="floatingInput"
+                label="THÔNG TIN TÀI KHOẢN BSB"
+                className={`mb-4 ${
+                  showError ? "text-danger" : "Thông tin này không thể để trống"
+                }`}
+              >
+                <Form.Control
+                  type="text"
+                  placeholder="Nhập số tài khoản hoặc địa chỉ email"
+                  value={accountInfo}
+                  onChange={(e) => setAccountInfo(e.target.value)}
+                  isInvalid={showError}
+                />
+              </FloatingLabel>
+              <small className="text-muted">Vo Thi Tam | BSB</small>
+              <FloatingLabel
+                controlId="floatingInput"
+                label="Tên gợi nhớ"
+                className="mb-4 mt-4"
+              >
+                <Form.Control type="text" placeholder="Nhập tên gợi nhớ" />
+              </FloatingLabel>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                className="text-light"
+                variant="primary"
+                onClick={handleSave}
+              >
+                LƯU NGƯỜI NHẬN
+              </Button>
+            </Modal.Footer>
+          </>
+        )}
+      </Modal>
     </>
   );
 };
