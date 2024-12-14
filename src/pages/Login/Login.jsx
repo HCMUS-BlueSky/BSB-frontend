@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Card,
@@ -9,15 +9,20 @@ import {
   Row,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useAuth();
+
   return (
     <Container
       fluid
       className="min-vh-100 d-flex justify-content-center align-items-center"
     >
       <Row className="w-100">
-        <Col xs={8} md={4} className="mx-auto">
+        <Col xs={8} md={6} lg={4} className="mx-auto">
           <Card className="p-4">
             <Card.Title>
               <h3 className="w-100 text-center mt-3">Đăng nhập</h3>
@@ -25,7 +30,12 @@ const Login = () => {
             <Card.Body>
               <Form>
                 <FloatingLabel className="mb-3" controlId="email" label="Email">
-                  <Form.Control type="email" placeholder="Enter email" />
+                  <Form.Control
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                    placeholder="Enter email"
+                  />
                 </FloatingLabel>
 
                 <FloatingLabel
@@ -33,13 +43,19 @@ const Login = () => {
                   controlId="password"
                   label="Mật khẩu"
                 >
-                  <Form.Control type="password" placeholder="Password" />
+                  <Form.Control
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
+                    placeholder="Password"
+                  />
                 </FloatingLabel>
 
                 <Button
+                  onClick={() => login(email, password)}
                   className="w-100 text-light p-2"
                   variant="primary"
-                  type="submit"
+                  type="button"
                 >
                   ĐĂNG NHẬP
                 </Button>
