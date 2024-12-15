@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import {
   Button,
@@ -11,41 +11,87 @@ import {
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./TransferMoney.scss";
+import { getUserByAccountNumber } from "../../apis/services/Account";
+import { addReceiver, getReceiver } from "../../apis/services/Receiver";
 
 const TransferMoney = () => {
   const [showModal, setShowModal] = useState(false);
-  const [showBSBAccountInfoScreen, setShowBSBAccountInfoScreen] = useState(true); // Renamed
+  const [showBSBAccountInfoScreen, setShowBSBAccountInfoScreen] =
+    useState(true);
   const [accountInfo, setAccountInfo] = useState("");
+  const [nickname, setNickname] = useState("");
   const [showError, setShowError] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [searchAccountInfo, setSearchAccountInfo] = useState({});
+  const [accountList, setAccountList] = useState([]);
 
-  const accountList = [
-    { id: 1, accountNumber: "123456", name: "Thanh Thien Nhan", status: "Chưa có thanh toán cho nơi nhận này", avatar: "https://via.placeholder.com/40" },
-    { id: 2, accountNumber: "654321", name: "Vo Thi Tam", status: "Chưa có thanh toán cho nơi nhận này", avatar: "https://via.placeholder.com/40" },
-    { id: 3, accountNumber: "112233", name: "Tran Quang", status: "Đã thanh toán một lần trước đó", avatar: "https://via.placeholder.com/40" },
-    { id: 4, accountNumber: "445566", name: "Pham Minh", status: "Chưa có thanh toán cho nơi nhận này", avatar: "https://via.placeholder.com/40" },
-    { id: 5, accountNumber: "778899", name: "Le Hoang Anh", status: "Đã thanh toán nhiều lần trước đó", avatar: "https://via.placeholder.com/40" },
-    { id: 6, accountNumber: "998877", name: "Nguyen Thi Mai", status: "Chưa có thanh toán cho nơi nhận này", avatar: "https://via.placeholder.com/40" },
-    { id: 7, accountNumber: "334455", name: "Dang Minh Tuan", status: "Chưa có thanh toán cho nơi nhận này", avatar: "https://via.placeholder.com/40" },
-  ];
-
-  const handleSearchChange = (e) => {
-    const query = e.target.value;
-    setAccountInfo(query);
-
-    if (query.trim()) {
-      // Filter account list based on the query
-      const filteredResults = accountList.filter((account) =>
-        account.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setSearchResults(filteredResults);
-    } else {
-      setSearchResults([]);
+  useEffect(() => {
+    async function getAccountList() {
+      const res = await getReceiver();
+      if (res.statusCode !== 200) {
+        return;
+      }
+      setAccountList(res.data.receiverList);
     }
-  };
+    getAccountList();
+  }, []);
 
-  const displayedList = searchResults.length > 0 ? searchResults : accountList;
-  
+  useEffect(() => {
+    console.log(accountList);
+  }, [accountList]);
+
+  // const accountList = [
+  //   {
+  //     id: 1,
+  //     accountNumber: "123456",
+  //     name: "Thanh Thien Nhan",
+  //     status: "Chưa có thanh toán cho nơi nhận này",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  //   {
+  //     id: 2,
+  //     accountNumber: "654321",
+  //     name: "Vo Thi Tam",
+  //     status: "Chưa có thanh toán cho nơi nhận này",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  //   {
+  //     id: 3,
+  //     accountNumber: "112233",
+  //     name: "Tran Quang",
+  //     status: "Đã thanh toán một lần trước đó",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  //   {
+  //     id: 4,
+  //     accountNumber: "445566",
+  //     name: "Pham Minh",
+  //     status: "Chưa có thanh toán cho nơi nhận này",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  //   {
+  //     id: 5,
+  //     accountNumber: "778899",
+  //     name: "Le Hoang Anh",
+  //     status: "Đã thanh toán nhiều lần trước đó",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  //   {
+  //     id: 6,
+  //     accountNumber: "998877",
+  //     name: "Nguyen Thi Mai",
+  //     status: "Chưa có thanh toán cho nơi nhận này",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  //   {
+  //     id: 7,
+  //     accountNumber: "334455",
+  //     name: "Dang Minh Tuan",
+  //     status: "Chưa có thanh toán cho nơi nhận này",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  // ];
+
   const handleClose = () => {
     setShowModal(false);
     setShowBSBAccountInfoScreen(true); // Renamed
@@ -55,14 +101,27 @@ const TransferMoney = () => {
 
   const handleShow = () => setShowModal(true);
 
-  const handleSave = () => {
-    if (!accountInfo.trim()) {
-      setShowError(true);
-      setShowBSBAccountInfoScreen(true); // Renamed
-    } else {
-      setShowError(false);
-      setShowModal(false);
+  const handleSave = async () => {
+    const res = await addReceiver({
+      accountNumber: accountInfo,
+      nickname,
+      type: "INTERNAL",
+    });
+
+    if (res.statusCode !== 200) {
+      return;
     }
+
+    handleClose();
+  };
+
+  const handleSearchAccount = async () => {
+    const res = await getUserByAccountNumber(accountInfo);
+    if (res.statusCode !== 200) {
+      return;
+    }
+    setSearchAccountInfo(res.data);
+    setShowBSBAccountInfoScreen(false);
   };
 
   return (
@@ -119,31 +178,29 @@ const TransferMoney = () => {
               <Form.Control type="text" placeholder="Số tài khoản" />
             </FloatingLabel>
             <div className="receiver-list">
-              {displayedList.map((account) => (
+              {accountList?.map((account) => (
                 <div
                   key={account.id}
                   className="d-flex align-items-center justify-content-between p-3 mb-2 bg-white rounded border"
                 >
                   <div className="d-flex align-items-center">
-                    {/* Avatar */}
                     <div
                       className="rounded-circle bg-light d-flex justify-content-center align-items-center me-3"
                       style={{ width: "40px", height: "40px" }}
                     >
                       <img
-                        src={account.avatar}
+                        src="https://via.placeholder.com/40"
                         alt={account.name}
                         className="rounded-circle"
                         style={{ width: "100%", height: "100%" }}
                       />
                     </div>
-                    {/* Name and Status */}
                     <div>
-                      <p className="mb-0 fw-bold">{account.name}</p>
-                      <p className="mb-0 text-muted">{account.status}</p>
+                      <p className="mb-0 fw-bold">{account.nickname}</p>
+                      {/* <p className="mb-0 text-muted">{account.status}</p> */}
                     </div>
                   </div>
-                  
+
                   <div>
                     <Button variant="light" className="me-2">
                       <i className="bi bi-plus-circle text-primary"></i>
@@ -157,9 +214,7 @@ const TransferMoney = () => {
             </div>
           </Col>
         </Row>
-        <Row>
-          
-        </Row>
+        <Row></Row>
       </Container>
 
       {/* Modal Logic */}
@@ -201,7 +256,7 @@ const TransferMoney = () => {
               <Button
                 variant="primary"
                 className="text-light"
-                onClick={() => setShowBSBAccountInfoScreen(false)} // Renamed
+                onClick={handleSearchAccount}
               >
                 TÌM NGƯỜI NHẬN
               </Button>
@@ -212,7 +267,7 @@ const TransferMoney = () => {
             <Modal.Header closeButton></Modal.Header>
             <Modal.Body>
               <p className="w-100 text-center mb-4 fw-bold text-primary fs-4">
-                Nhập thông tin tài khoản Timo
+                Nhập thông tin tài khoản BSB
               </p>
               <FloatingLabel
                 controlId="floatingInput"
@@ -229,10 +284,12 @@ const TransferMoney = () => {
                   isInvalid={showError}
                 />
               </FloatingLabel>
-              <small className="text-muted">Vo Thi Tam | BSB</small>
+              <small className="text-muted">{searchAccountInfo.fullName}</small>
               <FloatingLabel
                 controlId="floatingInput"
                 label="Tên gợi nhớ"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
                 className="mb-4 mt-4"
               >
                 <Form.Control type="text" placeholder="Nhập tên gợi nhớ" />
