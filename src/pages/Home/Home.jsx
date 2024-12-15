@@ -1,16 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { getAccount } from "../../apis/services/Account";
 
 const Home = () => {
+  const [account, setAccount] = useState(null);
+
+  useEffect(() => {
+    async function fetchAccountData() {
+      const response = await getAccount();
+      setAccount(response.data);
+    }
+    fetchAccountData();
+  }, []);
+
   return (
     <>
       <Navbar />
       <main>
         <Container>
           <Row className="d-flex justify-content-center my-3">
-            <Col xs={10} md={6}>
+            <Col xs={10} md={8} lg={6}>
               <Button className="w-100" variant="orange">
                 <div className="d-flex justify-content-between p-2">
                   <div className="text-light">
@@ -22,7 +33,7 @@ const Home = () => {
             </Col>
           </Row>
           <Row className="d-flex justify-content-center mb-3">
-            <Col xs={10} md={6}>
+            <Col xs={10} md={8} lg={6}>
               <Row>
                 <Col>
                   <Link to={"/transfer-money"}>
@@ -52,17 +63,19 @@ const Home = () => {
             </Col>
           </Row>
           <Row className="d-flex justify-content-center mb-3">
-            <Col xs={10} md={6}>
+            <Col xs={10} md={8} lg={6}>
               <Button className="w-100" variant="light">
                 <div className="d-flex justify-content-between align-items-center p-2">
                   <div className="d-flex flex-column gap-2">
                     <p className="text-start">Tài khoản chính</p>
                     <div>
                       <i className="bi bi-bank"></i>
-                      <span className="m-2">Số tài khoản: 902127855814</span>
+                      <span className="m-2">
+                        Số tài khoản: {account?.accountNumber}
+                      </span>
                     </div>
                   </div>
-                  <p className="text-primary fs-4">0 vnd</p>
+                  <p className="text-primary fs-4">{account?.balance} vnd</p>
                 </div>
               </Button>
             </Col>

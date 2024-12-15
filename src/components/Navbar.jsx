@@ -1,7 +1,10 @@
 import React from "react";
 import { Col, Container, Image, Row } from "react-bootstrap";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
+  const { user } = useAuth();
+
   return (
     <div className="bg-white sticky p-4">
       <Container>
@@ -17,7 +20,7 @@ const Navbar = () => {
           <Col>
             <div className="d-flex justify-content-end">
               <div className="d-flex gap-2 align-items-center">
-                <h6>NGUYEN MINH KHOI</h6>
+                <h6>{user?.fullName}</h6>
                 <Image src="/img/profile/default.svg" roundedCircle />
               </div>
             </div>
