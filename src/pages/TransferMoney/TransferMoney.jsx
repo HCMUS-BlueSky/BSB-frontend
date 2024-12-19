@@ -8,11 +8,14 @@ import {
   Form,
   Modal,
   Row,
+  Toast,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./TransferMoney.scss";
 import { getUserByAccountNumber } from "../../apis/services/Account";
 import { addReceiver, getReceiver } from "../../apis/services/Receiver";
+import { ToastContainer } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const TransferMoney = () => {
   const [showModal, setShowModal] = useState(false);
@@ -24,6 +27,8 @@ const TransferMoney = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchAccountInfo, setSearchAccountInfo] = useState({});
   const [accountList, setAccountList] = useState([]);
+  const [showToastCreateReceiver, setShowToastCreateReceiver] =
+    useState(false);
 
   useEffect(() => {
     async function getAccountList() {
@@ -203,10 +208,10 @@ const TransferMoney = () => {
 
                   <div>
                     <Button variant="light" className="me-2">
-                      <i className="bi bi-plus-circle text-primary"></i>
+                      <i className="bi bi-pencil text-primary"></i>
                     </Button>
                     <Button variant="light">
-                      <i className="bi bi-pencil text-secondary"></i>
+                      <i className="bi bi-trash text-secondary"></i>
                     </Button>
                   </div>
                 </div>
@@ -299,7 +304,11 @@ const TransferMoney = () => {
               <Button
                 className="text-light"
                 variant="primary"
-                onClick={handleSave}
+                onClick={() => {
+                  handleSave();
+                  setShowModal(false);
+                  setShowToastCreateReceiver(true);
+                }}
               >
                 LƯU NGƯỜI NHẬN
               </Button>
@@ -307,6 +316,18 @@ const TransferMoney = () => {
           </>
         )}
       </Modal>
+      <ToastContainer className="p-3" position="bottom-end">
+        <Toast
+          className="bg-success text-white"
+          onClose={() => setShowToastCreateReceiver(false)}
+          show={showToastCreateReceiver}
+          delay={3000}
+          autohide
+        >
+          <Toast.Header></Toast.Header>
+          <Toast.Body>Thêm người nhận thành công</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </>
   );
 };
