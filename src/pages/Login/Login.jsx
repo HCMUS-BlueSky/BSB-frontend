@@ -67,7 +67,7 @@ const Login = () => {
 
                 {/* Thêm reCAPTCHA widget */}
                 <ReCAPTCHA
-                  sitekey="6Le7SqEqAAAAAPj3N2kxV5yVxa7LSVPE5wHuVML-" // Site Key từ Google Admin Console
+                  sitekey="6LeHbaEqAAAAAPrW2icmbu9Kz2RNuufAAhexE9wi" // Site Key từ Google Admin Console
                   onChange={(token) => setRecaptchaToken(token)}
                   onExpired={() => setRecaptchaToken(null)} // Reset token khi hết hạn
                 />
