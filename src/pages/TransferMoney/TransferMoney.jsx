@@ -30,6 +30,13 @@ const TransferMoney = () => {
   const [showToastCreateReceiver, setShowToastCreateReceiver] = useState(false);
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [selectedDeleteAccount, setSelectedDeleteAccount] = useState(null);
+  const [expandedAccountId, setExpandedAccountId] = useState(null);
+
+  const handleAccountClick = (accountId) => {
+    // Toggle expanded state
+    setExpandedAccountId((prevId) => (prevId === accountId ? null : accountId));
+  };
+
   const handleDeleteClick = (account) => {
     setSelectedDeleteAccount(account);
     setShowConfirmDeleteModal(true);
@@ -201,39 +208,55 @@ const TransferMoney = () => {
             </FloatingLabel>
             <div className="receiver-list">
               {accountList?.map((account) => (
-                <div
-                  key={account.id}
-                  className="d-flex align-items-center justify-content-between p-3 mb-2 bg-white rounded border"
-                >
-                  <div className="d-flex align-items-center">
-                    <div
-                      className="rounded-circle bg-light d-flex justify-content-center align-items-center me-3"
-                      style={{ width: "40px", height: "40px" }}
-                    >
-                      <img
-                        src="https://via.placeholder.com/40"
-                        alt={account.name}
-                        className="rounded-circle"
-                        style={{ width: "100%", height: "100%" }}
-                      />
+                <div key={account._id} className="mb-2">
+                  {/* Main Account Row */}
+                  <div
+                    className="d-flex align-items-center justify-content-between p-3 bg-white rounded border"
+                    onClick={() => handleAccountClick(account._id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="rounded-circle bg-light d-flex justify-content-center align-items-center me-3"
+                        style={{ width: "40px", height: "40px" }}
+                      >
+                        <img
+                          src="https://via.placeholder.com/40"
+                          alt={account.nickname}
+                          className="rounded-circle"
+                          style={{ width: "100%", height: "100%" }}
+                        />
+                      </div>
+                      <div>
+                        <p className="mb-0 fw-bold">{account.nickname}</p>
+                        {/* Add additional description if needed */}
+                      </div>
                     </div>
                     <div>
-                      <p className="mb-0 fw-bold">{account.nickname}</p>
-                      {/* <p className="mb-0 text-muted">{account.status}</p> */}
+                      <Button variant="light" className="me-2">
+                        <i className="bi bi-pencil text-primary"></i>
+                      </Button>
+                      <Button
+                        variant="light"
+                        onClick={() => handleDeleteClick(account)}
+                      >
+                        <i className="bi bi-trash text-secondary"></i>
+                      </Button>
                     </div>
                   </div>
 
-                  <div>
-                    <Button variant="light" className="me-2">
-                      <i className="bi bi-pencil text-primary"></i>
-                    </Button>
-                    <Button
-                      variant="light"
-                      onClick={() => handleDeleteClick(account)}
-                    >
-                      <i className="bi bi-trash text-secondary"></i>
-                    </Button>
-                  </div>
+                  {/* Additional Info (Visible when expanded) */}
+                  {expandedAccountId === account._id && (
+                    <div className="p-3 bg-light rounded-bottom border-top">
+                      <p className="mb-1">
+                        <strong>Số tài khoản:</strong> {account.accountNumber}
+                      </p>
+                      <p className="mb-0">
+                        <strong>Ngân hàng:</strong>{" "}
+                        {account.bank || "Chưa xác định"}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
