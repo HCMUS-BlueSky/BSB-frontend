@@ -1,19 +1,46 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Row, Toast } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { getAccount } from "../../apis/services/Account";
 
 const Home = () => {
   const [account, setAccount] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     async function fetchAccountData() {
-      const response = await getAccount();
-      setAccount(response.data);
+      try {
+        const response = await getAccount();
+        setAccount(response.data);
+      } catch (error) {
+        console.error("Failed to fetch account data:", error);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchAccountData();
   }, []);
+
+  const handleCopyAccountNumber = () => {
+    if (account?.accountNumber) {
+      navigator.clipboard.writeText(account.accountNumber);
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000); // Automatically hide toast after 3 seconds
+    }
+  };
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <Container className="text-center mt-5">
+          <div>Loading account data...</div>
+        </Container>
+      </>
+    );
+  }
 
   return (
     <>
@@ -36,7 +63,7 @@ const Home = () => {
             <Col xs={10} md={8} lg={6}>
               <Row>
                 <Col>
-                  <Link to={"/transfer-money"}>
+                  <Link to="/transfer-money">
                     <Button className="w-100" variant="light">
                       <div className="d-flex justify-content-center p-2">
                         <div className="d-flex gap-2 text-primary text-uppercase">
@@ -64,24 +91,48 @@ const Home = () => {
           </Row>
           <Row className="d-flex justify-content-center mb-3">
             <Col xs={10} md={8} lg={6}>
-              <Button className="w-100" variant="light">
+              <Button
+                className="w-100"
+                variant="light"
+                onClick={handleCopyAccountNumber}
+              >
                 <div className="d-flex justify-content-between align-items-center p-2">
-                  <div className="d-flex flex-column gap-2">
-                    <p className="text-start">Tài khoản chính</p>
-                    <div>
-                      <i className="bi bi-bank"></i>
-                      <span className="m-2">
-                        Số tài khoản: {account?.accountNumber}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-primary fs-4">{account?.balance} vnd</p>
+                  {account ? (
+                    <>
+                      <div className="d-flex flex-column gap-2">
+                        <p className="text-start">Tài khoản chính</p>
+                        <div>
+                          <i className="bi bi-bank"></i>
+                          <span className="m-2">
+                            Số tài khoản: {account.accountNumber}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-primary fs-4">{account.balance} vnd</p>
+                    </>
+                  ) : (
+                    <p className="text-danger">Account data not available</p>
+                  )}
                 </div>
               </Button>
             </Col>
           </Row>
         </Container>
       </main>
+
+      {/* Toast Notification */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 1050,
+        }}
+      >
+        <Toast show={showToast} onClose={() => setShowToast(false)} autohide>
+          <Toast.Body>Đã sao chép số tài khoản</Toast.Body>
+        </Toast>
+      </div>
     </>
   );
 };

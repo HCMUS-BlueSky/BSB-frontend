@@ -6,7 +6,7 @@ import DropdownBank from "../Dropdown/DropdownBank";
 const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminders }) => {
 
   const [bank, setBank] = useState([]);
-  const [selectAccount, setSelectAccount] = useState("BẠN MUỐN NHẮC NỢ TỚI AI?");
+  const [selectAccount, setSelectAccount] = useState("Chọn tài khoản bạn muốn nhắc nợ");
   const [amount, setAmount] = useState("");
   const [reason, setReason] = useState("");
 
@@ -27,9 +27,9 @@ const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminde
 
   useEffect(() => {
     const data = [
-      { id: 1, name: "KHOI", icon:"", description: "LEADER" },
-      { id: 2, name: "UYEN", icon:"", description: "KHUNG" },
-      { id: 3, name: "NHAN", icon:"", description: "TRAM" },
+      { id: 1, name: "KHOI", icon:"", accountNumber: "13333423524545", bank: "Vietcombank" },
+      { id: 2, name: "UYEN", icon:"", accountNumber: "13333423524545", bank: "Agribank" },
+      { id: 3, name: "NHAN", icon:"", accountNumber: "13333423524545", bank: "Vietinbank" },
     ];
     setBank(data);
   }, []);
@@ -58,15 +58,6 @@ const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminde
       </Modal.Header>
 
       <Modal.Body>
-        <Row className="d-flex justify-content-center align-items-center mb-3">
-          <Col 
-            xs={12} md={10} 
-            className="text-center"
-          >
-            <img src="" alt="BSB Logo" />
-          </Col>
-        </Row>
-
         <Row className="d-flex justify-content-center align-items-center mb-3 w-100">
           <Col 
             xs={12} md={10} 
@@ -87,7 +78,7 @@ const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminde
             <FloatingLabel 
               className="shadow-sm" 
               controlId="txtAccountNumber" 
-              label="SỐ TIỀN"
+              label="Số tiền"
             >
               <Form.Control 
                 placeholder="123456789" 
@@ -104,7 +95,7 @@ const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminde
             <FloatingLabel 
               className="shadow-sm" 
               controlId="txtAccountNumber" 
-              label="LÝ DO (KHÔNG BẮT BUỘC)"
+              label="Lý do (không bắt buộc)"
             >
               <Form.Control 
                 as="textarea"
@@ -121,7 +112,7 @@ const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminde
 
       {/* Button "Tìm người nhận" */}
       <Row className="d-flex justify-content-center align-items-center mb-3 mx-1">
-        <Col xs={12} md={10}>
+        <Col xs={12} md={10} className="mb-3">
           <Button 
             variant="primary" 
             // onClick={handleClose} 
@@ -129,7 +120,7 @@ const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminde
             onClick={handleSubmit}
           >
             <div className="d-flex justify-content-center align-items-center">
-              <span className="text-light fw-bold">Tìm người nhận</span>
+              <span className="text-light">TẠO NHẮC NỢ MỚI</span>
             </div>
           </Button>
         </Col>
