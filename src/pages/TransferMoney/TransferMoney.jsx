@@ -31,6 +31,30 @@ const TransferMoney = () => {
   const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
   const [selectedDeleteAccount, setSelectedDeleteAccount] = useState(null);
   const [expandedAccountId, setExpandedAccountId] = useState(null);
+  const [editingAccountId, setEditingAccountId] = useState(null);
+
+  const handleEditClick = (account) => {
+    setEditingAccountId(account._id);
+    setNickname(account.nickname); // Populate input with the current nickname
+  };
+
+  const handleEditSaveClick = async (accountId) => {
+    // Add the logic to save the edited nickname here
+    // const res = await addReceiver({
+    //   accountNumber: accountId,
+    //   nickname,
+    //   type: "INTERNAL",
+    // });
+
+    // if (res.statusCode !== 200) {
+    //   return;
+    // }
+    setEditingAccountId(null);
+  };
+
+  const handleEditCancelClick = () => {
+    setEditingAccountId(null); // Exit edit mode without saving
+  };
 
   const handleAccountClick = (accountId) => {
     // Toggle expanded state
@@ -227,21 +251,60 @@ const TransferMoney = () => {
                           style={{ width: "100%", height: "100%" }}
                         />
                       </div>
-                      <div>
-                        <p className="mb-0 fw-bold">{account.nickname}</p>
-                        {/* Add additional description if needed */}
-                      </div>
+                      {/* Edit Mode */}
+                      {editingAccountId === account._id ? (
+                        <FloatingLabel
+                          controlId={`floatingInput-${account._id}`}
+                          label="Tên gợi nhớ"
+                          className="w-100"
+                        >
+                          <Form.Control
+                            type="text"
+                            value={nickname}
+                            onChange={(e) => setNickname(e.target.value)}
+                          />
+                        </FloatingLabel>
+                      ) : (
+                        // Display Mode
+                        <div>
+                          <p className="mb-0 fw-bold">{account.nickname}</p>
+                        </div>
+                      )}
                     </div>
                     <div>
-                      <Button variant="light" className="me-2">
-                        <i className="bi bi-pencil text-primary"></i>
-                      </Button>
-                      <Button
-                        variant="light"
-                        onClick={() => handleDeleteClick(account)}
-                      >
-                        <i className="bi bi-trash text-secondary"></i>
-                      </Button>
+                      {editingAccountId === account._id ? (
+                        <>
+                          <Button
+                            variant="primary"
+                            className="me-2 text-light"
+                            onClick={() => handleEditSaveClick(account._id)}
+                          >
+                            LƯU
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={handleEditCancelClick}
+                          >
+                            HỦY
+                          </Button>
+                        </>
+                      ) : (
+                        <div>
+                          <Button
+                            variant="light"
+                            className="me-2"
+                            onClick={() => handleEditClick(account)}
+                          >
+                            <i className="bi bi-pencil text-primary"></i>
+                          </Button>
+                          <Button
+                            variant="light"
+                            onClick={() => handleDeleteClick(account)}
+                          >
+                            <i className="bi bi-trash text-secondary"></i>
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
