@@ -27,8 +27,25 @@ const TransferMoney = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchAccountInfo, setSearchAccountInfo] = useState({});
   const [accountList, setAccountList] = useState([]);
-  const [showToastCreateReceiver, setShowToastCreateReceiver] =
-    useState(false);
+  const [showToastCreateReceiver, setShowToastCreateReceiver] = useState(false);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [selectedDeleteAccount, setSelectedDeleteAccount] = useState(null);
+  const handleDeleteClick = (account) => {
+    setSelectedDeleteAccount(account);
+    setShowConfirmDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    console.log("Deleted account:", selectedDeleteAccount);
+    // Add the logic to delete the account here
+    setShowConfirmDeleteModal(false);
+    setSelectedDeleteAccount(null);
+  };
+
+  const handleCloseConfirmDelete = () => {
+    setShowConfirmDeleteModal(false);
+    setSelectedDeleteAccount(null);
+  };
 
   useEffect(() => {
     async function getAccountList() {
@@ -210,7 +227,10 @@ const TransferMoney = () => {
                     <Button variant="light" className="me-2">
                       <i className="bi bi-pencil text-primary"></i>
                     </Button>
-                    <Button variant="light">
+                    <Button
+                      variant="light"
+                      onClick={() => handleDeleteClick(account)}
+                    >
                       <i className="bi bi-trash text-secondary"></i>
                     </Button>
                   </div>
@@ -221,6 +241,21 @@ const TransferMoney = () => {
         </Row>
         <Row></Row>
       </Container>
+      {/* Modal for Confirmation */}
+      <Modal show={showConfirmDeleteModal} onHide={handleCloseConfirmDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận xóa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Bạn chắc chắn muốn xóa người nhận này?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseConfirmDelete}>
+            Hủy
+          </Button>
+          <Button variant="danger" onClick={handleConfirmDelete}>
+            Xóa
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* Modal Logic */}
       <Modal show={showModal} onHide={handleClose} centered>
