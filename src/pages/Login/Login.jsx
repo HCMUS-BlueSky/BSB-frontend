@@ -8,13 +8,27 @@ import {
   Form,
   Row,
 } from "react-bootstrap";
+import ReCAPTCHA from "react-google-recaptcha";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+
   const { login } = useAuth();
+
+  const handleLogin = async () => {
+    console.log('token: ', recaptchaToken)
+    if (!recaptchaToken) {
+      alert("Vui lòng xác nhận reCAPTCHA!");
+      return;
+    }
+
+    await login(email, password, recaptchaToken);
+    setRecaptchaToken(null); // Reset token sau khi gửi
+  };
 
   return (
     <Container
@@ -51,9 +65,16 @@ const Login = () => {
                   />
                 </FloatingLabel>
 
+                {/* Thêm reCAPTCHA widget */}
+                <ReCAPTCHA
+                  sitekey="6LeHbaEqAAAAAPrW2icmbu9Kz2RNuufAAhexE9wi" // Site Key từ Google Admin Console
+                  onChange={(token) => setRecaptchaToken(token)}
+                  onExpired={() => setRecaptchaToken(null)} // Reset token khi hết hạn
+                />
+
                 <Button
-                  onClick={() => login(email, password)}
-                  className="w-100 text-light p-2"
+                  onClick={handleLogin}
+                  className="w-100 text-light p-2 mt-3"
                   variant="primary"
                   type="button"
                 >
