@@ -8,11 +8,14 @@ import {
   Form,
   Modal,
   Row,
+  Toast,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./TransferMoney.scss";
 import { getUserByAccountNumber } from "../../apis/services/Account";
 import { addReceiver, getReceiver } from "../../apis/services/Receiver";
+import { ToastContainer } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const TransferMoney = () => {
   const [showModal, setShowModal] = useState(false);
@@ -24,6 +27,56 @@ const TransferMoney = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchAccountInfo, setSearchAccountInfo] = useState({});
   const [accountList, setAccountList] = useState([]);
+  const [showToastCreateReceiver, setShowToastCreateReceiver] = useState(false);
+  const [showConfirmDeleteModal, setShowConfirmDeleteModal] = useState(false);
+  const [selectedDeleteAccount, setSelectedDeleteAccount] = useState(null);
+  const [expandedAccountId, setExpandedAccountId] = useState(null);
+  const [editingAccountId, setEditingAccountId] = useState(null);
+
+  const handleEditClick = (account) => {
+    setEditingAccountId(account._id);
+    setNickname(account.nickname); // Populate input with the current nickname
+  };
+
+  const handleEditSaveClick = async (accountId) => {
+    // Add the logic to save the edited nickname here
+    // const res = await addReceiver({
+    //   accountNumber: accountId,
+    //   nickname,
+    //   type: "INTERNAL",
+    // });
+
+    // if (res.statusCode !== 200) {
+    //   return;
+    // }
+    setEditingAccountId(null);
+  };
+
+  const handleEditCancelClick = () => {
+    setEditingAccountId(null); // Exit edit mode without saving
+  };
+
+  const handleAccountClick = (accountId) => {
+    // Toggle expanded state
+    setExpandedAccountId((prevId) => (prevId === accountId ? null : accountId));
+  };
+
+  const handleDeleteClick = (account) => {
+    setSelectedDeleteAccount(account);
+    setShowConfirmDeleteModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    console.log("Deleted account:", selectedDeleteAccount);
+    // Add the logic to delete the account here
+    setShowConfirmDeleteModal(false);
+    setSelectedDeleteAccount(null);
+  };
+
+  const handleCloseConfirmDelete = () => {
+    setShowConfirmDeleteModal(false);
+    setSelectedDeleteAccount(null);
+  };
 
   useEffect(() => {
     async function getAccountList() {
@@ -179,36 +232,94 @@ const TransferMoney = () => {
             </FloatingLabel>
             <div className="receiver-list">
               {accountList?.map((account) => (
-                <div
-                  key={account.id}
-                  className="d-flex align-items-center justify-content-between p-3 mb-2 bg-white rounded border"
-                >
-                  <div className="d-flex align-items-center">
-                    <div
-                      className="rounded-circle bg-light d-flex justify-content-center align-items-center me-3"
-                      style={{ width: "40px", height: "40px" }}
-                    >
-                      <img
-                        src="https://via.placeholder.com/40"
-                        alt={account.name}
-                        className="rounded-circle"
-                        style={{ width: "100%", height: "100%" }}
-                      />
+                <div key={account._id} className="mb-2">
+                  {/* Main Account Row */}
+                  <div
+                    className="d-flex align-items-center justify-content-between p-3 bg-white rounded border"
+                    onClick={() => handleAccountClick(account._id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <div className="d-flex align-items-center">
+                      <div
+                        className="rounded-circle bg-light d-flex justify-content-center align-items-center me-3"
+                        style={{ width: "40px", height: "40px" }}
+                      >
+                        <img
+                          src="https://via.placeholder.com/40"
+                          alt={account.nickname}
+                          className="rounded-circle"
+                          style={{ width: "100%", height: "100%" }}
+                        />
+                      </div>
+                      {/* Edit Mode */}
+                      {editingAccountId === account._id ? (
+                        <FloatingLabel
+                          controlId={`floatingInput-${account._id}`}
+                          label="Tên gợi nhớ"
+                          className="w-100"
+                        >
+                          <Form.Control
+                            type="text"
+                            value={nickname}
+                            onChange={(e) => setNickname(e.target.value)}
+                          />
+                        </FloatingLabel>
+                      ) : (
+                        // Display Mode
+                        <div>
+                          <p className="mb-0 fw-bold">{account.nickname}</p>
+                        </div>
+                      )}
                     </div>
                     <div>
-                      <p className="mb-0 fw-bold">{account.nickname}</p>
-                      {/* <p className="mb-0 text-muted">{account.status}</p> */}
+                      {editingAccountId === account._id ? (
+                        <>
+                          <Button
+                            variant="primary"
+                            className="me-2 text-light"
+                            onClick={() => handleEditSaveClick(account._id)}
+                          >
+                            LƯU
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={handleEditCancelClick}
+                          >
+                            HỦY
+                          </Button>
+                        </>
+                      ) : (
+                        <div>
+                          <Button
+                            variant="light"
+                            className="me-2"
+                            onClick={() => handleEditClick(account)}
+                          >
+                            <i className="bi bi-pencil text-primary"></i>
+                          </Button>
+                          <Button
+                            variant="light"
+                            onClick={() => handleDeleteClick(account)}
+                          >
+                            <i className="bi bi-trash text-secondary"></i>
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div>
-                    <Button variant="light" className="me-2">
-                      <i className="bi bi-plus-circle text-primary"></i>
-                    </Button>
-                    <Button variant="light">
-                      <i className="bi bi-pencil text-secondary"></i>
-                    </Button>
-                  </div>
+                  {/* Additional Info (Visible when expanded) */}
+                  {expandedAccountId === account._id && (
+                    <div className="p-3 bg-light rounded-bottom border-top">
+                      <p className="mb-1">
+                        <strong>Số tài khoản:</strong> {account.accountNumber}
+                      </p>
+                      <p className="mb-0">
+                        <strong>Ngân hàng:</strong>{" "}
+                        {account.bank || "Chưa xác định"}
+                      </p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -216,6 +327,21 @@ const TransferMoney = () => {
         </Row>
         <Row></Row>
       </Container>
+      {/* Modal for Confirmation */}
+      <Modal show={showConfirmDeleteModal} onHide={handleCloseConfirmDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận xóa</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Bạn chắc chắn muốn xóa người nhận này?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseConfirmDelete}>
+            Hủy
+          </Button>
+          <Button variant="danger" onClick={handleConfirmDelete}>
+            Xóa
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* Modal Logic */}
       <Modal show={showModal} onHide={handleClose} centered>
@@ -299,7 +425,11 @@ const TransferMoney = () => {
               <Button
                 className="text-light"
                 variant="primary"
-                onClick={handleSave}
+                onClick={() => {
+                  handleSave();
+                  setShowModal(false);
+                  setShowToastCreateReceiver(true);
+                }}
               >
                 LƯU NGƯỜI NHẬN
               </Button>
@@ -307,6 +437,18 @@ const TransferMoney = () => {
           </>
         )}
       </Modal>
+      <ToastContainer className="p-3" position="bottom-end">
+        <Toast
+          className="bg-success text-white"
+          onClose={() => setShowToastCreateReceiver(false)}
+          show={showToastCreateReceiver}
+          delay={3000}
+          autohide
+        >
+          <Toast.Header></Toast.Header>
+          <Toast.Body>Thêm người nhận thành công</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </>
   );
 };
