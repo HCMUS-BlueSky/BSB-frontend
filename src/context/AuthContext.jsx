@@ -24,15 +24,16 @@ export const AuthProvider = ({ children }) => {
     checkTokenValidity();
   }, [isAuthenticated]);
 
-  const login = async (email, password) => {
+  const login = async (email, password, recaptchaToken) => {
     try {
-      const response = await authenticate(email, password);
+      const response = await authenticate(email, password, recaptchaToken);
       const { accessToken } = response.data;
       localStorage.setItem("access_token", accessToken);
       setIsAuthenticated(true);
       navigate("/");
     } catch (error) {
       setIsAuthenticated(false);
+      console.error("Lỗi đăng nhập:", error.message);
     }
   };
 
