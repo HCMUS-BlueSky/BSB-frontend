@@ -10,15 +10,22 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkTokenValidity = async () => {
-      const res = await getUser();
-      if (res.statusCode !== 200) return;
+      try {
+        const res = await getUser();
+        if (res.statusCode !== 200) return;
 
-      setUser(res.data);
-      setIsAuthenticated(true);
+        setUser(res.data);
+        setIsAuthenticated(true);
+      } catch {
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
+      }
     };
 
     checkTokenValidity();
@@ -33,12 +40,11 @@ export const AuthProvider = ({ children }) => {
       navigate("/");
     } catch (error) {
       setIsAuthenticated(false);
-      console.error("Lỗi đăng nhập:", error.message);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, user }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, user, loading }}>
       {children}
     </AuthContext.Provider>
   );

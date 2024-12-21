@@ -93,61 +93,9 @@ const TransferMoney = () => {
     console.log(accountList);
   }, [accountList]);
 
-  // const accountList = [
-  //   {
-  //     id: 1,
-  //     accountNumber: "123456",
-  //     name: "Thanh Thien Nhan",
-  //     status: "Chưa có thanh toán cho nơi nhận này",
-  //     avatar: "https://via.placeholder.com/40",
-  //   },
-  //   {
-  //     id: 2,
-  //     accountNumber: "654321",
-  //     name: "Vo Thi Tam",
-  //     status: "Chưa có thanh toán cho nơi nhận này",
-  //     avatar: "https://via.placeholder.com/40",
-  //   },
-  //   {
-  //     id: 3,
-  //     accountNumber: "112233",
-  //     name: "Tran Quang",
-  //     status: "Đã thanh toán một lần trước đó",
-  //     avatar: "https://via.placeholder.com/40",
-  //   },
-  //   {
-  //     id: 4,
-  //     accountNumber: "445566",
-  //     name: "Pham Minh",
-  //     status: "Chưa có thanh toán cho nơi nhận này",
-  //     avatar: "https://via.placeholder.com/40",
-  //   },
-  //   {
-  //     id: 5,
-  //     accountNumber: "778899",
-  //     name: "Le Hoang Anh",
-  //     status: "Đã thanh toán nhiều lần trước đó",
-  //     avatar: "https://via.placeholder.com/40",
-  //   },
-  //   {
-  //     id: 6,
-  //     accountNumber: "998877",
-  //     name: "Nguyen Thi Mai",
-  //     status: "Chưa có thanh toán cho nơi nhận này",
-  //     avatar: "https://via.placeholder.com/40",
-  //   },
-  //   {
-  //     id: 7,
-  //     accountNumber: "334455",
-  //     name: "Dang Minh Tuan",
-  //     status: "Chưa có thanh toán cho nơi nhận này",
-  //     avatar: "https://via.placeholder.com/40",
-  //   },
-  // ];
-
   const handleClose = () => {
     setShowModal(false);
-    setShowBSBAccountInfoScreen(true); // Renamed
+    setShowBSBAccountInfoScreen(true);
     setShowError(false);
     setAccountInfo("");
   };

@@ -10,19 +10,24 @@ import ExternalTransfer from "./pages/TransferMoney/ExternalTransfer";
 import PaymentRequest from "./pages/PaymentRequest/PaymentRequest";
 import Profile from "./pages/Profile/Profile";
 import { useAuth } from "./context/AuthContext";
+import Loading from "./components/Loading/Loading";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 };
 
 const App = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <Routes>
@@ -41,11 +46,6 @@ const App = () => {
         <Route path="/transfer-money/external" element={<ExternalTransfer />} />
         <Route path="/profile" element={<Profile />} />
       </Route>
-
-      <Route
-        path="*"
-        element={<Navigate to={isAuthenticated ? "/" : "/login"} />}
-      />
     </Routes>
   );
 };
