@@ -10,5 +10,6 @@ export const authenticate = async (email, password, recaptchaToken) => {
       },
     }
   );
+  
   return response.data;
 };

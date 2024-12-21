@@ -4,88 +4,53 @@ import { Button, Col, Container, Row, Card } from "react-bootstrap";
 import RequestList from "../../components/PaymentRequest/RequestList";
 import Completed from "../../components/PaymentRequest/CompletedList";
 import { formatCurrency } from "../../utils/formatCurrency";
-import PopUpNewDebtReminder from "../../components/PopUp/PopUpNewDebtReminder.jsx";
+import PopUpNewDebtReminder from "../../components/PopUp/PopUpNewDebtReminder";
+import { getAccount } from "../../apis/services/Account";
 import "./PaymentRequest.css";
+import { getAllRemind } from "../../apis/services/Remind";
 
 const PaymentRequest = () => {
   const [isRequestListVisible, setIsRequestListVisible] = useState(true);
   const [isCompletedListVisible, setIsCompletedListVisible] = useState(true);
-  const [sortOptionRequestList, setSortOptionRequestList] =
-    useState("Gần đây nhất");
-  const [sortOptionCompletedList, setSortOptionCompletedList] =
-    useState("Gần đây nhất");
-
-  // State để thêm nhắc nợ vào danh sách
-  const [debtReminders, setDebtReminders] = useState([
-    {
-      name: "Nguyen Minh Khoi",
-      profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
-      amount: 10000,
-      direction: "tới",
-      date: "9/12/2024",
-    },
-    {
-      name: "Nguyen Minh Khoi",
-      profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
-      amount: 20000,
-      direction: "từ",
-      date: "9/12/2024",
-    },
-    {
-      name: "Nguyen Minh Khoi",
-      profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
-      amount: 10000,
-      direction: "từ",
-      date: "9/12/2024",
-    },
-  ]);
-
-  // State để điều khiển PopUp nào sẽ được hiển thị
+  const [sortOptionRequestList, setSortOptionRequestList] = useState("Gần đây nhất");
+  const [sortOptionCompletedList, setSortOptionCompletedList] = useState("Gần đây nhất");
+  const [account, setAccount] = useState(null);
+  const [debtReminders, setDebtReminders] = useState([]);
   const [showNewDebtReminder, setShowNewDebtReminder] = useState(false);
-  // Hàm đóng PopUp
-  const handleCloseNewDebtReminder = () => setShowNewDebtReminder(false);
-  // Hàm mở PopUp tương ứng
-  const handleShowNewDebtReminder = () => setShowNewDebtReminder(true);
+  const [loading, setLoading] = useState(true);
 
-  const completedList = [
-    {
-      name: "Nguyen Minh Khoi",
-      profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
-      amount: 10000,
-      direction: "tới",
-      date: "9/12/2024",
+  useEffect(() => {
+    // Fetch account and debt reminders data in parallel
+    const fetchData = async () => {
+      try {
+        const [accountResponse, receiverResponse] = await Promise.all([getAccount(), getAllRemind()]);
+        setAccount(accountResponse.data);
+        setDebtReminders(receiverResponse.data);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+
+  const toggleVisibility = (setState) => setState((prev) => !prev);
+
+  const moneyAnalysis = debtReminders.reduce(
+    (acc, item) => {
+      if (item.direction === "tới") {
+        acc.totalReceived += item.amount;
+      } else {
+        acc.totalPaid += item.amount;
+      }
+      return acc;
     },
-    {
-      name: "Nguyen Minh Khoi",
-      profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
-      amount: 20000,
-      direction: "từ",
-      date: "9/12/2024",
-    },
-    {
-      name: "Nguyen Minh Khoi",
-      profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
-      amount: 10000,
-      direction: "từ",
-      date: "9/12/2024",
-    },
-  ];
+    { totalReceived: 0, totalPaid: 0 }
+  );
 
-  const toggleRequestList = () => {
-    setIsRequestListVisible(!isRequestListVisible);
-  };
-
-  const toggleCompletedList = () => {
-    setIsCompletedListVisible(!isCompletedListVisible);
-  };
-
-  const handleSortRequestChange = (option) => {
-    setSortOptionRequestList(option);
-  };
-
-  const handleSortCompletedChange = (option) => {
-    setSortOptionCompletedList(option);
-  };
+  if (loading) return <div>Loading...</div>;
 
   return (
     <>
@@ -94,23 +59,18 @@ const PaymentRequest = () => {
         <Container>
           <Row className="justify-content-center mb-4">
             <Col xs={12} md={8}>
-              <div className="d-flex justify-content-center">
-                <h2 className="text-primary mb-3">Nhắc Nợ</h2>
-              </div>
               <Card className="shadow-sm p-3">
                 <Row className="d-flex justify-content-between p-1">
-                  <Col className="d-flex flex-column align-items-center">
-                    <p className="mb-0 text-muted">Số dư khả dụng</p>
-                    <h5>{formatCurrency(30000000)}</h5>
-                  </Col>
-                  <Col className="d-flex flex-column align-items-center">
-                    <p className="mb-0 text-muted">Tổng tiền nhận</p>
-                    <h5>{formatCurrency(10000)}</h5>
-                  </Col>
-                  <Col className="d-flex flex-column align-items-center">
-                    <p className="mb-0 text-muted">Tổng tiền trả</p>
-                    <h5 className="text-danger">{formatCurrency(30000)}</h5>
-                  </Col>
+                  {[
+                    { label: "Số dư khả dụng", value: account?.balance },
+                    { label: "Tổng tiền nhận", value: moneyAnalysis.totalReceived },
+                    { label: "Tổng tiền trả", value: moneyAnalysis.totalPaid, className: "text-danger" },
+                  ].map(({ label, value, className = "" }, index) => (
+                    <Col key={index} className="d-flex flex-column align-items-center">
+                      <p className="mb-0 text-muted">{label}</p>
+                      <h5 className={className}>{formatCurrency(value)}</h5>
+                    </Col>
+                  ))}
                 </Row>
               </Card>
             </Col>
@@ -122,34 +82,32 @@ const PaymentRequest = () => {
                 <Button
                   variant="light"
                   className="w-auto shadow-sm py-2 text-primary"
-                  onClick={handleShowNewDebtReminder}
+                  onClick={() => setShowNewDebtReminder(true)}
                 >
                   TẠO NHẮC NỢ MỚI
                 </Button>
                 <PopUpNewDebtReminder
                   show={showNewDebtReminder}
-                  handleClose={handleCloseNewDebtReminder}
-                  debtReminders={debtReminders}
-                  setDebtReminders={setDebtReminders}
+                  handleClose={() => setShowNewDebtReminder(false)}
                 />
               </div>
             </Col>
           </Row>
 
           <RequestList
-            requestList={debtReminders}
+            requestList={debtReminders.filter((item) => item.status === "pending")}
             sortOptionRequestList={sortOptionRequestList}
-            toggleRequestList={toggleRequestList}
+            toggleRequestList={() => toggleVisibility(setIsRequestListVisible)}
             isRequestListVisible={isRequestListVisible}
-            handleSortRequestChange={handleSortRequestChange}
+            handleSortRequestChange={setSortOptionRequestList}
           />
 
           <Completed
-            completedList={completedList}
+            completedList={debtReminders.filter((item) => item.status === "completed")}
             sortOptionCompletedList={sortOptionCompletedList}
-            toggleCompletedList={toggleCompletedList}
+            toggleCompletedList={() => toggleVisibility(setIsCompletedListVisible)}
             isCompletedListVisible={isCompletedListVisible}
-            handleSortCompletedChange={handleSortCompletedChange}
+            handleSortCompletedChange={setSortOptionCompletedList}
           />
         </Container>
       </main>

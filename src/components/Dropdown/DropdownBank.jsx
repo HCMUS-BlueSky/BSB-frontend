@@ -24,7 +24,7 @@ const DropdownBank = ({ bank, selectedBank, setSelectedBank }) => {
             key={item.id}
             eventKey={item.id}
             className="w-100 d-flex align-items-center"
-            onClick={() => setSelectedBank(item.name)}
+            onClick={() => setSelectedBank(item.accountNumber)}
             style={{
               padding: "10px",
               fontSize: "16px",

@@ -2,36 +2,56 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Row, Col, Form, FloatingLabel } from "react-bootstrap";
 import DropdownBank from "../Dropdown/DropdownBank";
+import { getReceiver } from "../../apis/services/Receiver";
+import { addRemind } from "../../apis/services/Remind";
 
-const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminders }) => {
+const PopUpNewDebtReminder = ({ show, handleClose }) => {
 
   const [bank, setBank] = useState([]);
   const [selectAccount, setSelectAccount] = useState("Chọn tài khoản bạn muốn nhắc nợ");
   const [amount, setAmount] = useState("");
   const [reason, setReason] = useState("");
 
-  const handleSubmit = () => {
-    console.log("Bank: ", selectAccount);
-    console.log("Amount: ", amount);
-    console.log("Reason: ", reason);
-    const newDebtReminder = {
-      name: selectAccount,
-      profilePic: "https://my.timo.vn/static/media/default_avatar.32a9a6f8.svg",
-      amount: amount,
-      direction: "tới",
-      reason: reason,
-      date: new Date().toLocaleDateString(),
+  const handleSubmit = async () => {
+    const dataRequest = {
+      remindUserAccount: selectAccount,
+      remindMessage: reason,
+      amount: parseInt(amount),
     }
-    setDebtReminders([newDebtReminder, ...debtReminders]);
+    try {
+      const response = await addRemind(dataRequest);
+      console.log("Add remind success: ", response);
+      handleClose();
+    } catch (error) {
+      console.error("Failed to add remind: ", error.remindMessage);
+    }
   };
 
+  // const data = [
+  //   { id: 1, name: "KHOI", icon:"", accountNumber: "13333423524545", bank: "Vietcombank" },
+  //   { id: 2, name: "UYEN", icon:"", accountNumber: "13333423524545", bank: "Agribank" },
+  //   { id: 3, name: "NHAN", icon:"", accountNumber: "13333423524545", bank: "Vietinbank" },
+  // ];
+
   useEffect(() => {
-    const data = [
-      { id: 1, name: "KHOI", icon:"", accountNumber: "13333423524545", bank: "Vietcombank" },
-      { id: 2, name: "UYEN", icon:"", accountNumber: "13333423524545", bank: "Agribank" },
-      { id: 3, name: "NHAN", icon:"", accountNumber: "13333423524545", bank: "Vietinbank" },
-    ];
-    setBank(data);
+    async function fetchReciverData(){
+      try {
+        const response = await getReceiver();
+        const dataResponse = response.data.receiverList.map((data) => {
+          return {
+            id: data.id,
+            name: data.nickname,
+            icon: "",
+            accountNumber: data.accountNumber,
+            bank: data.type == "INTERNAL" ? "Timo" : data.bankName,
+          }
+        })
+        setBank(dataResponse);
+      } catch (error) {
+        console.error("Failed to fetch receiver data:", error);
+      }
+    }
+    fetchReciverData();
   }, []);
 
   return (
@@ -81,6 +101,7 @@ const PopUpNewDebtReminder = ({ show, handleClose, debtReminders, setDebtReminde
               label="Số tiền"
             >
               <Form.Control 
+                type="number"
                 placeholder="123456789" 
                 className="w-100" 
                 value={amount}

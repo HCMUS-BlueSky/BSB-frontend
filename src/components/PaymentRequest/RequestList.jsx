@@ -1,6 +1,7 @@
 import React from "react";
 import { Row, Col, Button, Dropdown, Card } from "react-bootstrap";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { formatDate } from "../../utils/formatDate";
 
 const RequestList = ({
   requestList,
@@ -73,7 +74,7 @@ const RequestList = ({
                             Nhắc nợ {item.direction}{" "}
                             <strong>{item.name}</strong>
                           </p>
-                          <small className="text-muted">Vào {item.date}</small>
+                          <small className="text-muted">Vào {formatDate(item.date)}</small>
                         </div>
                       </Col>
                       <Col xs="auto">
