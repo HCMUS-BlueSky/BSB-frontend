@@ -11,6 +11,7 @@ import PaymentRequest from "./pages/PaymentRequest/PaymentRequest";
 import Profile from "./pages/Profile/Profile";
 import { useAuth } from "./context/AuthContext";
 import Loading from "./components/Loading/Loading";
+import ForgotPassword from "./pages/ResetPassword/ResetPassword";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -35,6 +36,7 @@ const App = () => {
         path="/login"
         element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
       />
+      <Route path="/reset-password" element={<ForgotPassword />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<Home />} />
