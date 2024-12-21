@@ -92,9 +92,11 @@ const RequestList = ({
                   ))}
                 </Row>
               ) : (
-                <div className="pb-4 text-center">
-                  Bạn không có nhắc nợ cần xử lý nào
-                </div>
+                <Row>
+                  <div className="pb-4 text-center w-100">
+                    Bạn không có nhắc nợ cần xử lý nào
+                  </div>
+                </Row>
               )
             ) : null}
           </Card.Body>

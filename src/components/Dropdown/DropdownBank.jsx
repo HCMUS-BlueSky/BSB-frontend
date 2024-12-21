@@ -1,7 +1,7 @@
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 
-const DropdownBank = ({ bank, selectedBank, setSelectedBank }) => {
+const DropdownBank = ({ bank, selectedBank, setSelectedBank, formikFieldName, setFieldValue }) => {
   return (
     <Dropdown>
       <Dropdown.Toggle
@@ -24,7 +24,10 @@ const DropdownBank = ({ bank, selectedBank, setSelectedBank }) => {
             key={item.id}
             eventKey={item.id}
             className="w-100 d-flex align-items-center"
-            onClick={() => setSelectedBank(item.accountNumber)}
+            onClick={() => {
+              setSelectedBank(item.accountNumber); // Cập nhật state local
+              setFieldValue(formikFieldName, item.accountNumber); // Cập nhật giá trị Formik
+            }}
             style={{
               padding: "10px",
               fontSize: "16px",
@@ -45,7 +48,9 @@ const DropdownBank = ({ bank, selectedBank, setSelectedBank }) => {
             </div>
             <div className="d-flex flex-column text-black">
               <div className="font-weight-bold">{item.name}</div>
-              <div className="text-muted">{item.accountNumber} | {item.bank}</div>
+              <div className="text-muted">
+                {item.accountNumber} | {item.bank}
+              </div>
             </div>
           </Dropdown.Item>
         ))}
