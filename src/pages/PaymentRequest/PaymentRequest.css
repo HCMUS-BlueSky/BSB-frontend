@@ -1,14 +1,6 @@
-<<<<<<< HEAD
 .list-item-hover:hover {
-    box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.1);  /* Shadow on top */
-    transition: box-shadow 0.3s ease-in-out;
-    cursor:pointer
-  }
-=======
-.list-item-hover:hover {
-    box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.1);  /* Shadow on top */
-    transition: box-shadow 0.3s ease-in-out;
-    cursor:pointer
-  }
->>>>>>> 4c5f844e9d87a0ff9db7f5a841a16ad78353ecba
-  
+  box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.1);
+  /* Shadow on top */
+  transition: box-shadow 0.3s ease-in-out;
+  cursor: pointer
+}

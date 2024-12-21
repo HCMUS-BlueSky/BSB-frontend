@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("access_token", accessToken);
       setIsAuthenticated(true);
       navigate("/");
-    } catch (error) {
+    } catch  {
       setIsAuthenticated(false);
     }
   };

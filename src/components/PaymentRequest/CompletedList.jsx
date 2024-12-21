@@ -90,15 +90,17 @@ const Completed = ({
                   ))}
                 </Row>
               ) : (
-                <div className="pb-4">
-                  <div className="text-center mb-2">
-                    Bạn không có nhắc nợ nào
+                <Row className="justify-content-center">
+                  <div className="pb-4">
+                    <div className="text-center mb-2 w-100">
+                      Bạn không có nhắc nợ nào
+                    </div>
+                    <div className="text-muted fw-light text-center w-100">
+                      Khi hoàn tất thanh toán, giao dịch nhắc nợ sẽ hiển thị tại
+                      đây và tại danh sách giao dịch của Tài khoản Thanh toán
+                    </div>
                   </div>
-                  <div className="text-muted fw-light text-center">
-                    Khi hoàn tất thanh toán, giao dịch nhắc nợ sẽ hiển thị tại
-                    đây và tại danh sách giao dịch của Tài khoản Thanh toán
-                  </div>
-                </div>
+                </Row>
               )
             ) : null}
           </Card.Body>
