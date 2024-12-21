@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import { Button, Col, Container, Row, Toast } from "react-bootstrap";
+import { Button, Col, Container, Row, Toast, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { getAccount } from "../../apis/services/Account";
+import { getTransferHistory } from "../../apis/services/Transaction";
+import TransactionHistory from "../../components/TransactionHistory.jsx/TransactionHistory";
 
 const Home = () => {
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     async function fetchAccountData() {
@@ -20,7 +23,21 @@ const Home = () => {
         setLoading(false);
       }
     }
+
+    async function fetchTransferHistory() {
+      try {
+        const response = await getTransferHistory();
+        const sortedHistory = response.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setHistory(sortedHistory);
+      } catch (error) {
+        console.error("Failed to fetch transfer history:", error);
+      }
+    }
+
     fetchAccountData();
+    fetchTransferHistory();
   }, []);
 
   const handleCopyAccountNumber = () => {
@@ -117,6 +134,9 @@ const Home = () => {
               </Button>
             </Col>
           </Row>
+
+          <TransactionHistory history={history} account={account} />
+
         </Container>
       </main>
 
