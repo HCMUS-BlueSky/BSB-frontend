@@ -96,13 +96,9 @@ const Login = () => {
                   ĐĂNG NHẬP
                 </Button>
 
-                <div className="d-flex justify-content-between mt-3">
-                  <Link>
-                    <span>Đổi mật khẩu</span>
-                  </Link>
-
-                  <Link>
-                    <span>Quên mật khẩu</span>
+                <div className="d-flex justify-content-end mt-3">
+                  <Link to="/reset-password">
+                    <span>Đặt lại mật khẩu</span>
                   </Link>
                 </div>
               </Form>
