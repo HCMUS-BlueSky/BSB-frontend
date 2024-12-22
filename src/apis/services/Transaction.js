@@ -22,3 +22,8 @@ export const confirmTransfer = async (otp, transaction) => {
   });
   return response.data;
 };
+
+export const getTransferHistory = async () => {
+  const response = await api.get("/transfer/history");
+  return response.data;
+};
