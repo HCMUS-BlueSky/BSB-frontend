@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Col, Container, Image, Row, Dropdown } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
@@ -20,8 +20,7 @@ const Navbar = () => {
         navigate("/change-password");
         break;
       case "logout":
-        // Add your logout logic here
-        console.log("User logged out");
+        logout();
         break;
       default:
         break;

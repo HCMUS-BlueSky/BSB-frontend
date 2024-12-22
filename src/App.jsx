@@ -11,17 +11,30 @@ import PaymentRequest from "./pages/PaymentRequest/PaymentRequest";
 import Profile from "./pages/Profile/Profile";
 import { useAuth } from "./context/AuthContext";
 import Loading from "./components/Loading/Loading";
-import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import AccountList from "./pages/Employee/AccountList";
+import AccountDetails from "./pages/Employee/AccountDetails";
+import DepositPage from "./pages/Employee/DepositPage";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 
-const ProtectedRoute = () => {
-  const { isAuthenticated, loading } = useAuth();
+const RoleProtectedRoute = ({ allowedRoles }) => {
+  const { loading, isAuthenticated, user } = useAuth();
 
   if (loading) {
     return <Loading />;
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  const userHasAccess = allowedRoles.includes(user.role);
+
+  if (!userHasAccess && user.role === "EMPLOYEE") {
+    return <Navigate to="/employee" />;
+  }
+
+  return userHasAccess ? <Outlet /> : <Navigate to="/" />;
 };
 
 const App = () => {
@@ -37,9 +50,11 @@ const App = () => {
         path="/login"
         element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
       />
+
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/change-password" element={<ChangePassword />} />
-      <Route element={<ProtectedRoute />}>
+
+      <Route element={<RoleProtectedRoute allowedRoles={["CUSTOMER"]} />}>
         <Route path="/" element={<Home />} />
         <Route path="/payment-request" element={<Payment />} />
         <Route path="/payment-request/list" element={<PaymentRequest />} />
@@ -48,6 +63,15 @@ const App = () => {
         <Route path="/transfer-money/internal" element={<InternalTransfer />} />
         <Route path="/transfer-money/external" element={<ExternalTransfer />} />
         <Route path="/profile" element={<Profile />} />
+      </Route>
+
+      <Route element={<RoleProtectedRoute allowedRoles={["EMPLOYEE"]} />}>
+        <Route path="/employee" element={<AccountList />} />
+        <Route path="/employee/deposit" element={<DepositPage />} />
+        <Route
+          path="/employee/account/:accountId"
+          element={<AccountDetails />}
+        />
       </Route>
     </Routes>
   );

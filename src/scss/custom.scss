@@ -43,3 +43,7 @@ $icon-size-father: 50px;
   background-color: rgba(255, 255, 255, 0.9);
   z-index: 9999;
 }
+
+.dropdown-toggle::after {
+  display: none !important;
+}

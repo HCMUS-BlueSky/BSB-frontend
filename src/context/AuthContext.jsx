@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await getUser();
         if (res.statusCode !== 200) return;
-
         setUser(res.data);
         setIsAuthenticated(true);
       } catch {
@@ -38,13 +37,21 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("access_token", accessToken);
       setIsAuthenticated(true);
       navigate("/");
-    } catch  {
+    } catch {
       setIsAuthenticated(false);
     }
   };
 
+  const logout = () => {
+    localStorage.removeItem("access_token");
+    setIsAuthenticated(false);
+    navigate("/login");
+  };
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, user, loading }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, login, user, loading, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
