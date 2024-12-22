@@ -11,10 +11,11 @@ import PaymentRequest from "./pages/PaymentRequest/PaymentRequest";
 import Profile from "./pages/Profile/Profile";
 import { useAuth } from "./context/AuthContext";
 import Loading from "./components/Loading/Loading";
-import ForgotPassword from "./pages/ResetPassword/ResetPassword";
 import AccountList from "./pages/Employee/AccountList";
 import AccountDetails from "./pages/Employee/AccountDetails";
 import DepositPage from "./pages/Employee/DepositPage";
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 
 const RoleProtectedRoute = ({ allowedRoles }) => {
   const { loading, isAuthenticated, user } = useAuth();
@@ -49,7 +50,9 @@ const App = () => {
         path="/login"
         element={!isAuthenticated ? <Login /> : <Navigate to="/" />}
       />
-      <Route path="/reset-password" element={<ForgotPassword />} />
+
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/change-password" element={<ChangePassword />} />
 
       <Route element={<RoleProtectedRoute allowedRoles={["CUSTOMER"]} />}>
         <Route path="/" element={<Home />} />

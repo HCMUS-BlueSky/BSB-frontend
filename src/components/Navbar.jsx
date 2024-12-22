@@ -1,14 +1,30 @@
 import React from "react";
-import { Col, Container, Image, Row } from "react-bootstrap";
+import { Col, Container, Image, Row, Dropdown } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
     navigate("/");
+  };
+
+  const handleMenuClick = (action) => {
+    switch (action) {
+      case "profile":
+        navigate("/profile");
+        break;
+      case "changePassword":
+        navigate("/change-password");
+        break;
+      case "logout":
+        logout();
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -16,7 +32,6 @@ const Navbar = () => {
       <Container>
         <Row className="d-flex justify-content-between">
           <Col>
-            {/* Add onClick event to navigate to the home page */}
             <img
               style={{ width: "50px", height: "50px", cursor: "pointer" }}
               src="/img/logo/logo.png"
@@ -27,10 +42,40 @@ const Navbar = () => {
 
           <Col>
             <div className="d-flex justify-content-end">
-              <div className="d-flex gap-2 align-items-center">
-                <h6>{user?.fullName}</h6>
-                <Image src="/img/profile/default.svg" roundedCircle />
-              </div>
+              <Dropdown>
+                <Dropdown.Toggle
+                  id="dropdown-basic"
+                  className="d-flex align-items-center gap-2 bg-transparent border-0 text-dark"
+                >
+                  <h6 className="m-0">{user?.fullName || "Guest"}</h6>
+                  <Image
+                    src="/img/profile/default.svg"
+                    roundedCircle
+                    style={{ width: "35px", height: "35px" }}
+                  />
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu align="end" className="m-lg">
+                  <Dropdown.Item
+                    className="p-lg"
+                    onClick={() => handleMenuClick("profile")}
+                  >
+                    Thông tin tài khoản
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className="p-lg"
+                    onClick={() => handleMenuClick("changePassword")}
+                  >
+                    Đổi mật khẩu
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    className="p-lg"
+                    onClick={() => handleMenuClick("logout")}
+                  >
+                    Đăng xuất
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
           </Col>
         </Row>
