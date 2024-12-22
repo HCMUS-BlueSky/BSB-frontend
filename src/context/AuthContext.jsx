@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await getUser();
         if (res.statusCode !== 200) return;
-
         setUser(res.data);
         setIsAuthenticated(true);
       } catch {
@@ -38,7 +37,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("access_token", accessToken);
       setIsAuthenticated(true);
       navigate("/");
-    } catch  {
+    } catch {
       setIsAuthenticated(false);
     }
   };

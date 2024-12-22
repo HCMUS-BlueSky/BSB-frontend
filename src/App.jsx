@@ -12,15 +12,27 @@ import Profile from "./pages/Profile/Profile";
 import { useAuth } from "./context/AuthContext";
 import Loading from "./components/Loading/Loading";
 import ForgotPassword from "./pages/ResetPassword/ResetPassword";
+import AccountList from "./pages/Employee/AccountList";
+import AccountDetails from "./pages/Employee/AccountDetails";
 
-const ProtectedRoute = () => {
-  const { isAuthenticated, loading } = useAuth();
+const RoleProtectedRoute = ({ allowedRoles }) => {
+  const { loading, isAuthenticated, user } = useAuth();
 
   if (loading) {
     return <Loading />;
   }
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  const userHasAccess = allowedRoles.includes(user.role);
+
+  if (!userHasAccess && user.role === "EMPLOYEE") {
+    return <Navigate to="/employee" />;
+  }
+
+  return userHasAccess ? <Outlet /> : <Navigate to="/" />;
 };
 
 const App = () => {
@@ -38,7 +50,7 @@ const App = () => {
       />
       <Route path="/reset-password" element={<ForgotPassword />} />
 
-      <Route element={<ProtectedRoute />}>
+      <Route element={<RoleProtectedRoute allowedRoles={["CUSTOMER"]} />}>
         <Route path="/" element={<Home />} />
         <Route path="/payment-request" element={<Payment />} />
         <Route path="/payment-request/list" element={<PaymentRequest />} />
@@ -47,6 +59,14 @@ const App = () => {
         <Route path="/transfer-money/internal" element={<InternalTransfer />} />
         <Route path="/transfer-money/external" element={<ExternalTransfer />} />
         <Route path="/profile" element={<Profile />} />
+      </Route>
+
+      <Route element={<RoleProtectedRoute allowedRoles={["EMPLOYEE"]} />}>
+        <Route path="/employee" element={<AccountList />} />
+        <Route
+          path="/employee/account/:accountId"
+          element={<AccountDetails />}
+        />
       </Route>
     </Routes>
   );
