@@ -97,8 +97,8 @@ const Login = () => {
                 </Button>
 
                 <div className="d-flex justify-content-end mt-3">
-                  <Link to="/reset-password">
-                    <span>Đặt lại mật khẩu</span>
+                  <Link to="/forgot-password">
+                    <span>Quên mật khẩu</span>
                   </Link>
                 </div>
               </Form>
