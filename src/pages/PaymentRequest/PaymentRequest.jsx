@@ -80,11 +80,11 @@ const PaymentRequest = () => {
             <Col xs={12} md={8}>
               <div className="d-flex justify-content-end">
                 <Button
-                  variant="light"
-                  className="w-auto shadow-sm py-2 text-primary"
+                  variant="primary"
+                  className="w-auto shadow-sm py-2 text-light"
                   onClick={() => setShowNewDebtReminder(true)}
                 >
-                  TẠO NHẮC NỢ MỚI
+                   <i className="bi bi-plus me-2"></i> TẠO NHẮC NỢ MỚI
                 </Button>
                 <PopUpNewDebtReminder
                   show={showNewDebtReminder}
