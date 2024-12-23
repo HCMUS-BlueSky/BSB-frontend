@@ -7,6 +7,7 @@ import {
   FloatingLabel,
   Form,
   Row,
+  Toast,
 } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -18,6 +19,9 @@ const ChangePassword = () => {
   const [showOldPassword, setShowOldPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [showToast, setShowToast] = React.useState(false);
+  const [toastMessage, setToastMessage] = React.useState("");
+  const [toastVariant, setToastVariant] = React.useState("success");
 
   const location = useLocation();
 
@@ -36,132 +40,168 @@ const ChangePassword = () => {
         .oneOf([Yup.ref("newPassword"), null], "Mật khẩu không khớp")
         .required("Vui lòng xác nhận mật khẩu"),
     }),
-    onSubmit: async (values) => {
-      const token = new URLSearchParams(location.search).get("token"); 
-      await changePassword(values.oldPassword, values.newPassword, token);
+    onSubmit: async (values, { resetForm }) => {
+      const token = new URLSearchParams(location.search).get("token");
+
+      try {
+        await changePassword(values.oldPassword, values.newPassword, token);
+        setToastMessage("Mật khẩu đã được thay đổi thành công!");
+        setToastVariant("success");
+        resetForm(); 
+      } catch (error) {
+        setToastMessage("Đổi mật khẩu thất bại! Vui lòng thử lại.");
+        setToastVariant("danger");
+      }
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000); 
+      
     },
   });
 
   return (
-    <Container
-      fluid
-      className="min-vh-100 d-flex justify-content-center align-items-center"
-    >
-      <Row className="w-100">
-        <Col xs={8} md={6} lg={4} className="mx-auto">
-          <Card className="p-4">
-            <Card.Title>
-              <h3 className="w-100 text-center mt-3">Đổi mật khẩu</h3>
-            </Card.Title>
-            <Card.Body>
-              <Form onSubmit={formik.handleSubmit}>
-                {/* Old Password */}
-                <FloatingLabel
-                  className="mb-3"
-                  controlId="oldPassword"
-                  label="Mật khẩu hiện tại"
-                >
-                  <Form.Control
-                    type={showOldPassword ? "text" : "password"}
-                    placeholder="Current Password"
-                    {...formik.getFieldProps("oldPassword")}
-                    isInvalid={
-                      formik.touched.oldPassword && !!formik.errors.oldPassword
-                    }
-                  />
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => setShowOldPassword(!showOldPassword)}
-                    className="position-absolute end-0 top-50 translate-middle-y"
-                    style={{ border: "none" }}
+    <>
+      <Container
+        fluid
+        className="min-vh-100 d-flex justify-content-center align-items-center"
+      >
+        <Row className="w-100">
+          <Col xs={8} md={6} lg={4} className="mx-auto">
+            <Card className="p-4">
+              <Card.Title>
+                <h3 className="w-100 text-center mt-3">Đổi mật khẩu</h3>
+              </Card.Title>
+              <Card.Body>
+                <Form onSubmit={formik.handleSubmit}>
+                  {/* Old Password */}
+                  <FloatingLabel
+                    className="mb-3"
+                    controlId="oldPassword"
+                    label="Mật khẩu hiện tại"
                   >
-                    <i
-                      className={
-                        showOldPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                    <Form.Control
+                      type={showOldPassword ? "text" : "password"}
+                      placeholder="Current Password"
+                      {...formik.getFieldProps("oldPassword")}
+                      isInvalid={
+                        formik.touched.oldPassword &&
+                        !!formik.errors.oldPassword
                       }
-                    ></i>
-                  </Button>
-                  <Form.Control.Feedback type="invalid">
-                    {formik.errors.oldPassword}
-                  </Form.Control.Feedback>
-                </FloatingLabel>
+                    />
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                      className="position-absolute end-0 top-50 translate-middle-y"
+                      style={{ border: "none" }}
+                    >
+                      <i
+                        className={
+                          showOldPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                        }
+                      ></i>
+                    </Button>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.oldPassword}
+                    </Form.Control.Feedback>
+                  </FloatingLabel>
 
-                {/* New Password */}
-                <FloatingLabel
-                  className="mb-3"
-                  controlId="newPassword"
-                  label="Mật khẩu mới"
-                >
-                  <Form.Control
-                    type={showNewPassword ? "text" : "password"}
-                    placeholder="New Password"
-                    {...formik.getFieldProps("newPassword")}
-                    isInvalid={
-                      formik.touched.newPassword && !!formik.errors.newPassword
-                    }
-                  />
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="position-absolute end-0 top-50 translate-middle-y"
-                    style={{ border: "none" }}
+                  {/* New Password */}
+                  <FloatingLabel
+                    className="mb-3"
+                    controlId="newPassword"
+                    label="Mật khẩu mới"
                   >
-                    <i
-                      className={
-                        showNewPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                    <Form.Control
+                      type={showNewPassword ? "text" : "password"}
+                      placeholder="New Password"
+                      {...formik.getFieldProps("newPassword")}
+                      isInvalid={
+                        formik.touched.newPassword &&
+                        !!formik.errors.newPassword
                       }
-                    ></i>
-                  </Button>
-                  <Form.Control.Feedback type="invalid">
-                    {formik.errors.newPassword}
-                  </Form.Control.Feedback>
-                </FloatingLabel>
+                    />
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="position-absolute end-0 top-50 translate-middle-y"
+                      style={{ border: "none" }}
+                    >
+                      <i
+                        className={
+                          showNewPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                        }
+                      ></i>
+                    </Button>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.newPassword}
+                    </Form.Control.Feedback>
+                  </FloatingLabel>
 
-                {/* Confirm Password */}
-                <FloatingLabel
-                  className="mb-3"
-                  controlId="confirmPassword"
-                  label="Xác nhận mật khẩu"
-                >
-                  <Form.Control
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm Password"
-                    {...formik.getFieldProps("confirmPassword")}
-                    isInvalid={
-                      formik.touched.confirmPassword &&
-                      !!formik.errors.confirmPassword
-                    }
-                  />
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="position-absolute end-0 top-50 translate-middle-y"
-                    style={{ border: "none" }}
+                  {/* Confirm Password */}
+                  <FloatingLabel
+                    className="mb-3"
+                    controlId="confirmPassword"
+                    label="Xác nhận mật khẩu"
                   >
-                    <i
-                      className={
-                        showConfirmPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                    <Form.Control
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm Password"
+                      {...formik.getFieldProps("confirmPassword")}
+                      isInvalid={
+                        formik.touched.confirmPassword &&
+                        !!formik.errors.confirmPassword
                       }
-                    ></i>
-                  </Button>
-                  <Form.Control.Feedback type="invalid">
-                    {formik.errors.confirmPassword}
-                  </Form.Control.Feedback>
-                </FloatingLabel>
+                    />
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="position-absolute end-0 top-50 translate-middle-y"
+                      style={{ border: "none" }}
+                    >
+                      <i
+                        className={
+                          showConfirmPassword ? "bi bi-eye-slash" : "bi bi-eye"
+                        }
+                      ></i>
+                    </Button>
+                    <Form.Control.Feedback type="invalid">
+                      {formik.errors.confirmPassword}
+                    </Form.Control.Feedback>
+                  </FloatingLabel>
 
-                <Button
-                  type="submit"
-                  className="w-100 text-light p-2 mt-3"
-                  variant="primary"
-                >
-                  ĐỔI MẬT KHẨU
-                </Button>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                  <Button
+                    type="submit"
+                    className="w-100 text-light p-2 mt-3"
+                    variant="primary"
+                  >
+                    ĐỔI MẬT KHẨU
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
+
+      <div
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 1050,
+        }}
+      >
+        <Toast
+          show={showToast}
+          onClose={() => setShowToast(false)}
+          autohide
+          bg={toastVariant}
+        >
+          <Toast.Body>{toastMessage}</Toast.Body>
+        </Toast>
+      </div>
+    </>
   );
 };
 
