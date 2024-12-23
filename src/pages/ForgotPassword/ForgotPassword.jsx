@@ -12,9 +12,9 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../context/AuthContext";
+import { forgetPassword } from "../../apis/services/Auth";
 
 const ForgotPassword = () => {
-  const { resetPassword } = useAuth();
   const [emailSent, setEmailSent] = React.useState(false);
 
   const formik = useFormik({
@@ -28,7 +28,7 @@ const ForgotPassword = () => {
     }),
     onSubmit: async (values) => {
       try {
-        await resetPassword(values.email);
+        await forgetPassword(values.email);
         setEmailSent(true);
       } catch (error) {
         alert("Không thể gửi yêu cầu, vui lòng thử lại sau.");

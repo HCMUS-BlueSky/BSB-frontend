@@ -11,12 +11,15 @@ import {
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useAuth } from "../../context/AuthContext";
+import { changePassword } from "../../apis/services/Auth";
+import { useLocation } from "react-router-dom";
 
 const ChangePassword = () => {
-  const { changePassword } = useAuth();
   const [showOldPassword, setShowOldPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+
+  const location = useLocation();
 
   const formik = useFormik({
     initialValues: {
@@ -34,7 +37,8 @@ const ChangePassword = () => {
         .required("Vui lòng xác nhận mật khẩu"),
     }),
     onSubmit: async (values) => {
-      await changePassword(values.oldPassword, values.newPassword);
+      const token = new URLSearchParams(location.search).get("token"); 
+      await changePassword(values.oldPassword, values.newPassword, token);
     },
   });
 
