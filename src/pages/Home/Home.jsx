@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { getAccount } from "../../apis/services/Account";
 import { getTransferHistory } from "../../apis/services/Transaction";
 import TransactionHistory from "../../components/TransactionHistory.jsx/TransactionHistory";
+import Loading from "../../components/Loading/Loading";
 
 const Home = () => {
   const [account, setAccount] = useState(null);
@@ -19,8 +20,6 @@ const Home = () => {
         setAccount(response.data);
       } catch (error) {
         console.error("Failed to fetch account data:", error);
-      } finally {
-        setLoading(false);
       }
     }
 
@@ -33,6 +32,8 @@ const Home = () => {
         setHistory(sortedHistory);
       } catch (error) {
         console.error("Failed to fetch transfer history:", error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -49,14 +50,7 @@ const Home = () => {
   };
 
   if (loading) {
-    return (
-      <>
-        <Navbar />
-        <Container className="text-center mt-5">
-          <div>Loading account data...</div>
-        </Container>
-      </>
-    );
+    return <Loading></Loading>;
   }
 
   return (
@@ -135,7 +129,13 @@ const Home = () => {
             </Col>
           </Row>
 
-          <TransactionHistory history={history} account={account} />
+          <Row className="mb-3">
+            <TransactionHistory
+              history={history}
+              account={account}
+              loading={loading}
+            />
+          </Row>
 
         </Container>
       </main>

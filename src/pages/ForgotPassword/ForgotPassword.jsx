@@ -47,10 +47,12 @@ const ForgotPassword = () => {
             <Card.Title>
               <h3 className="w-100 text-center mt-3">Quên mật khẩu</h3>
             </Card.Title>
-            <Card.Body>
+            <Card.Body className="d-flex flex-column align-items-center">
               {emailSent ? (
-                <div className="text-center">
-                  <p>Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.</p>
+                <div className="text-center w-100">
+                  <p>
+                    Liên kết đặt lại mật khẩu đã được gửi đến email của bạn.
+                  </p>
                   <Link to="/login">
                     <Button className="mt-3" variant="primary">
                       Quay lại đăng nhập
@@ -58,7 +60,7 @@ const ForgotPassword = () => {
                   </Link>
                 </div>
               ) : (
-                <Form onSubmit={formik.handleSubmit}>
+                <Form onSubmit={formik.handleSubmit} className="w-100">
                   <FloatingLabel
                     className="mb-3"
                     controlId="email"

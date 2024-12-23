@@ -39,7 +39,7 @@ const AccountDetailCard = () => {
               </div>
               <div className=" ">
                 <a
-                  href="/reset-password"
+                  href="/change-password"
                   variant="link"
                   className="text-primary d-flex "
                 >
