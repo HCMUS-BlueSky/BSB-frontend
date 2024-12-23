@@ -124,7 +124,7 @@ const RequestList = ({
 
       {/* Render the modal */}
       {selectedRequest && (
-        <RequestToModal
+        <RequestFromModal
           show={modalShow}
           onHide={() => setModalShow(false)}
           data={selectedRequest}
