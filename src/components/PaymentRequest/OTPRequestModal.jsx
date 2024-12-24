@@ -20,7 +20,6 @@ const OTPRequestModal = ({ show, onHide, onSubmit }) => {
     },
   });
 
-  // Trạng thái loading khi gửi OTP
   const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = async () => {
@@ -63,7 +62,7 @@ const OTPRequestModal = ({ show, onHide, onSubmit }) => {
           className="text-white"
           variant="primary"
           onClick={handleSubmit}
-          disabled={formik.isSubmitting || !formik.isValid || loading} // Vô hiệu hóa nút nếu đang gửi hoặc form không hợp lệ
+          disabled={formik.isSubmitting || !formik.isValid || loading}
         >
           {loading ? (
             <Spinner animation="border" size="sm" className="me-2" />

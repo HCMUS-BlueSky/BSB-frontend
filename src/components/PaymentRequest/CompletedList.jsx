@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Row, Col, Button, Dropdown, Card } from "react-bootstrap";
 import { formatCurrency } from "../../utils/formatCurrency";
 import RequestCompleteModal from "./RequestCompleteModal";
+import { formatDate } from "../../utils/formatDate";
 
-const Completed = ({
+const CompletedList = ({
   completedList,
   sortOptionCompletedList,
   toggleCompletedList,
@@ -14,13 +15,13 @@ const Completed = ({
   const [selectedItem, setSelectedItem] = useState(null);
 
   const handleItemClick = (item) => {
-    setSelectedItem(item); 
-    setShowModal(true); 
+    setSelectedItem(item);
+    setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); 
-    setSelectedItem(null); 
+    setShowModal(false);
+    setSelectedItem(null);
   };
 
   return (
@@ -79,11 +80,11 @@ const Completed = ({
                           borderTop: "1px solid #f4f5f6",
                           cursor: "pointer",
                         }}
-                        onClick={() => handleItemClick(item)} // Handle item click
+                        onClick={() => handleItemClick(item)}
                       >
                         <Col className="d-flex align-items-center">
                           <img
-                            src={item.profilePic}
+                            src="/img/profile/default.svg"
                             alt="profile"
                             className="rounded-circle"
                             width="40"
@@ -91,10 +92,11 @@ const Completed = ({
                           />
                           <div className="ms-3">
                             <p className="mb-0">
-                              Đã hoàn tất với <strong>{item.name}</strong>
+                              Đã hoàn tất với{" "}
+                              <strong>{item.to.owner.fullName}</strong>
                             </p>
                             <small className="text-muted">
-                              Vào {item.date}
+                              Vào {formatDate(item.createdAt)}
                             </small>
                           </div>
                         </Col>
@@ -137,11 +139,11 @@ const Completed = ({
         <RequestCompleteModal
           show={showModal}
           onHide={handleCloseModal}
-          data={selectedItem} 
+          data={selectedItem}
         />
       )}
     </>
   );
 };
 
-export default Completed;
+export default CompletedList;

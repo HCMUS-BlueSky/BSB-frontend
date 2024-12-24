@@ -1,23 +1,19 @@
 import React from "react";
-import { Modal, Button, Form, FloatingLabel } from "react-bootstrap";
+import { Modal, Button, Form, FloatingLabel, Image } from "react-bootstrap";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
 import { Formik, Field, Form as FormikForm } from "formik";
-import { deleteRemind } from "../../apis/services/Remind"; // Import API hủy nhắc nợ
+import { deleteRemind } from "../../apis/services/Remind";
 
 const RequestToModal = ({ show, onHide, data }) => {
-  // Handle submit for the "Hủy Nhắc Nợ" action
   const handleCancelDebt = async (values) => {
     try {
-      // Gọi API hủy nhắc nợ
-      const response = await deleteRemind(data.id); // Giả sử bạn có `id` trong `data`
+      const response = await deleteRemind(data.id);
       console.log("Xóa nhắc nợ thành công:", response);
 
-      // Nếu thành công, đóng modal
-      onHide(); 
+      onHide();
     } catch (error) {
       console.error("Lỗi khi hủy nhắc nợ:", error);
-      // Có thể thêm logic thông báo lỗi cho người dùng
     }
   };
 
@@ -29,7 +25,7 @@ const RequestToModal = ({ show, onHide, data }) => {
           <h6 className="mb-2">Nhắc nợ tới</h6>
           <h4 className="mb-2 fw-bold text-primary">{data?.name}</h4>
 
-          <div className="d-flex align-items-center justify-content-center mb-3">
+          <div className="d-flex align-items-center justify-content-center mb-3 gap-2">
             <div className="me-2">
               <div
                 className="bg-secondary text-white rounded-circle d-flex justify-content-center align-items-center"
@@ -46,20 +42,25 @@ const RequestToModal = ({ show, onHide, data }) => {
                 className="bg-light rounded-circle d-flex justify-content-center align-items-center"
                 style={{ width: "50px", height: "50px" }}
               >
-                <i className="bi bi-person"></i>
+                <Image
+                  src="/img/profile/default.svg"
+                  className="rounded-circle"
+                  style={{ width: "50px", height: "50px" }}
+                />
               </div>
             </div>
           </div>
 
-          <p className="text-muted mb-4">{formatDate(data?.date)}</p>
+          <p className="text-muted mb-4">{formatDate(data?.createdAt)}</p>
 
           <h2 className="mb-4 fw-bold">{formatCurrency(data?.amount)}</h2>
 
-          <p className="text-muted mb-4">
-            {data?.description ? data.description : "Không có nội dung nhắc nợ"}
-          </p>
+          <h7>Lý do nhắc nợ</h7>
 
-          {/* Formik Form */}
+          <p className="text-muted mb-4">
+            {data?.message ? data.message : "Không có nội dung nhắc nợ"}
+          </p>
+          {/* 
           <Formik
             initialValues={{ cancelInfo: "" }}
             onSubmit={handleCancelDebt}
@@ -91,7 +92,7 @@ const RequestToModal = ({ show, onHide, data }) => {
                 </Button>
               </FormikForm>
             )}
-          </Formik>
+          </Formik> */}
         </div>
       </Modal.Body>
     </Modal>

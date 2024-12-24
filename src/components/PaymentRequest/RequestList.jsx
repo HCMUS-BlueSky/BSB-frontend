@@ -2,10 +2,8 @@ import React, { useState } from "react";
 import { Row, Col, Button, Dropdown, Card } from "react-bootstrap";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
-import RequestToModal from "./RequestToModal"; 
-import RequestCompleteModal from "./RequestCompleteModal";
+import RequestToModal from "./RequestToModal";
 import RequestFromModal from "./RequestFromModal";
-import { deleteRemind } from "../../apis/services/Remind";
 
 const RequestList = ({
   requestList,
@@ -75,12 +73,12 @@ const RequestList = ({
                         style={{
                           borderTop: "1px solid #f4f5f6",
                           cursor: "pointer",
-                        }} // Add pointer cursor
-                        onClick={() => handleItemClick(item)} // Trigger modal on click
+                        }}
+                        onClick={() => handleItemClick(item)}
                       >
                         <Col className="d-flex align-items-center">
                           <img
-                            src={item.profilePic}
+                            src="/img/profile/default.svg"
                             alt="profile"
                             className="rounded-circle"
                             width="40"
@@ -88,18 +86,19 @@ const RequestList = ({
                           />
                           <div className="ms-3">
                             <p className="mb-0">
-                              Nhắc nợ {item.direction}{" "}
-                              <strong>{item.name}</strong>
+                              Nhắc nợ{" "}
+                              {item.direction === "sent" ? "tới " : "từ"}{" "}
+                              <strong>{item.to.owner.fullName}</strong>
                             </p>
                             <small className="text-muted">
-                              Vào {formatDate(item.date)}
+                              Vào {formatDate(item.createdAt)}
                             </small>
                           </div>
                         </Col>
                         <Col xs="auto">
                           <h6
                             className={
-                              item.direction === "từ"
+                              item.direction === "received"
                                 ? "text-danger mb-0"
                                 : "mb-0"
                             }
@@ -123,25 +122,20 @@ const RequestList = ({
         </Col>
       </Row>
 
-      {/* Render the modal */}
-      {/* RequestCompleteModal
-      RequestFromModal 
-      RequestToModal */}
-      {selectedRequest && (
-        selectedRequest.direction === "tới" ? (
+      {selectedRequest &&
+        (selectedRequest.direction === "sent" ? (
           <RequestToModal
-          show={modalShow}
-          onHide={() => setModalShow(false)}
-          data={selectedRequest}
-        />
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+            data={selectedRequest}
+          />
         ) : (
           <RequestFromModal
-          show={modalShow}
-          onHide={() => setModalShow(false)}
-          data={selectedRequest}
-        />
-        )
-      )}
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+            data={selectedRequest}
+          />
+        ))}
     </>
   );
 };
