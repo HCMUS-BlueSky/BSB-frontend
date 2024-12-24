@@ -40,6 +40,7 @@ const PaymentRequest = () => {
 
   const moneyAnalysis = debtReminders.reduce(
     (acc, item) => {
+      if(item.status != "pending") return acc;
       if (item.direction === "tới") {
         acc.totalReceived += item.amount;
       } else {

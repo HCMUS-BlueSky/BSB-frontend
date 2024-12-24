@@ -10,17 +10,17 @@ const Completed = ({
   isCompletedListVisible,
   handleSortCompletedChange,
 }) => {
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
-  const [selectedItem, setSelectedItem] = useState(null); // State to store the selected item
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const handleItemClick = (item) => {
-    setSelectedItem(item); // Set the selected item
-    setShowModal(true); // Show the modal
+    setSelectedItem(item); 
+    setShowModal(true); 
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); // Hide the modal
-    setSelectedItem(null); // Clear the selected item
+    setShowModal(false); 
+    setSelectedItem(null); 
   };
 
   return (
@@ -137,7 +137,7 @@ const Completed = ({
         <RequestCompleteModal
           show={showModal}
           onHide={handleCloseModal}
-          data={selectedItem} // Pass selected item to modal
+          data={selectedItem} 
         />
       )}
     </>

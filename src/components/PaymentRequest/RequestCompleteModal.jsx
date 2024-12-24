@@ -39,8 +39,8 @@ const RequestCompleteModal = ({ show, onHide, data }) => {
 
           <h2 className="mb-4 fw-bold">{formatCurrency(data?.amount)}</h2>
 
-          <div className="border border-danger rounded p-3 text-danger mb-4 w-100">
-            Nhắc nợ này đã được xóa bởi{" "}
+          <div className="border border-danger rounded p-3 text-success mb-4 w-100">
+            Nhắc nợ này đã được thanh toán bởi{" "}
             <span className="fw-bold">{data?.name}</span> vào ngày{" "}
             <span className="fw-bold">{formatDate(data?.date)}</span>
           </div>

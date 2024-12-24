@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Modal, Form, FloatingLabel } from "react-bootstrap";
+import { Button, Modal, Form, FloatingLabel, Spinner } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -19,6 +19,15 @@ const OTPRequestModal = ({ show, onHide, onSubmit }) => {
       onHide();
     },
   });
+
+  // Trạng thái loading khi gửi OTP
+  const [loading, setLoading] = React.useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    await formik.handleSubmit();
+    setLoading(false);
+  };
 
   return (
     <Modal show={show} onHide={onHide} centered>
@@ -49,8 +58,18 @@ const OTPRequestModal = ({ show, onHide, onSubmit }) => {
         >
           HỦY
         </Button>
-        <Button type="submit" className="text-white" variant="primary">
-          XÁC NHẬN
+        <Button
+          type="submit"
+          className="text-white"
+          variant="primary"
+          onClick={handleSubmit}
+          disabled={formik.isSubmitting || !formik.isValid || loading} // Vô hiệu hóa nút nếu đang gửi hoặc form không hợp lệ
+        >
+          {loading ? (
+            <Spinner animation="border" size="sm" className="me-2" />
+          ) : (
+            "XÁC NHẬN"
+          )}
         </Button>
       </Modal.Footer>
     </Modal>

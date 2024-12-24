@@ -5,6 +5,7 @@ import { formatDate } from "../../utils/formatDate";
 import RequestToModal from "./RequestToModal"; 
 import RequestCompleteModal from "./RequestCompleteModal";
 import RequestFromModal from "./RequestFromModal";
+import { deleteRemind } from "../../apis/services/Remind";
 
 const RequestList = ({
   requestList,
@@ -123,12 +124,23 @@ const RequestList = ({
       </Row>
 
       {/* Render the modal */}
+      {/* RequestCompleteModal
+      RequestFromModal 
+      RequestToModal */}
       {selectedRequest && (
-        <RequestFromModal
+        selectedRequest.direction === "tới" ? (
+          <RequestToModal
           show={modalShow}
           onHide={() => setModalShow(false)}
           data={selectedRequest}
         />
+        ) : (
+          <RequestFromModal
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          data={selectedRequest}
+        />
+        )
       )}
     </>
   );

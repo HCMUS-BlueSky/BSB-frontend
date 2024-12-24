@@ -1,9 +1,26 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal, Button, Form, FloatingLabel } from "react-bootstrap";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
+import { Formik, Field, Form as FormikForm } from "formik";
+import { deleteRemind } from "../../apis/services/Remind"; // Import API hủy nhắc nợ
 
 const RequestToModal = ({ show, onHide, data }) => {
+  // Handle submit for the "Hủy Nhắc Nợ" action
+  const handleCancelDebt = async (values) => {
+    try {
+      // Gọi API hủy nhắc nợ
+      const response = await deleteRemind(data.id); // Giả sử bạn có `id` trong `data`
+      console.log("Xóa nhắc nợ thành công:", response);
+
+      // Nếu thành công, đóng modal
+      onHide(); 
+    } catch (error) {
+      console.error("Lỗi khi hủy nhắc nợ:", error);
+      // Có thể thêm logic thông báo lỗi cho người dùng
+    }
+  };
+
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton></Modal.Header>
@@ -41,18 +58,42 @@ const RequestToModal = ({ show, onHide, data }) => {
           <p className="text-muted mb-4">
             {data?.description ? data.description : "Không có nội dung nhắc nợ"}
           </p>
+
+          {/* Formik Form */}
+          <Formik
+            initialValues={{ cancelInfo: "" }}
+            onSubmit={handleCancelDebt}
+          >
+            {({ handleChange, handleBlur, values }) => (
+              <FormikForm>
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Thông tin xóa"
+                  className="mb-3 w-100"
+                >
+                  <Field
+                    as={Form.Control}
+                    type="text"
+                    placeholder="Nhập thông tin xóa"
+                    name="cancelInfo"
+                    value={values.cancelInfo}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </FloatingLabel>
+                <Button
+                  variant="danger"
+                  type="submit"
+                  className="w-100 text-white"
+                  style={{ backgroundColor: "#dc3545", borderColor: "#dc3545" }}
+                >
+                  HỦY NHẮC NỢ
+                </Button>
+              </FormikForm>
+            )}
+          </Formik>
         </div>
       </Modal.Body>
-      <Modal.Footer className="justify-content-center">
-        <Button
-          variant="danger"
-          onClick={onHide}
-          className="text-white"
-          style={{ backgroundColor: "#dc3545", borderColor: "#dc3545" }}
-        >
-          HỦY NHẮC NỢ
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };

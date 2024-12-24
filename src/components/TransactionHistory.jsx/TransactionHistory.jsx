@@ -3,6 +3,7 @@ import { Row, Col, Card } from "react-bootstrap";
 import moment from "moment";
 
 const TransactionHistory = ({ history, account }) => {
+  console.log(history);
   return (
     <Row className="d-flex justify-content-center my-3">
       <Col xs={10} md={8} lg={6}>

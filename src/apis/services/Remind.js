@@ -10,3 +10,13 @@ export const addRemind = async (remind) => {
   return response.data;
 };
 
+export const deleteRemind = async (id) => {
+  const response = await api.delete(`/remind/${id}`);
+  return response.data;
+}
+
+export const updateRemind = async (id) => {
+  const response = await api.patch(`/remind/${id}`);
+  return response.data;
+}
+
