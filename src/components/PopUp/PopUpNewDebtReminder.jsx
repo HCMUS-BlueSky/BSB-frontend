@@ -38,26 +38,34 @@ const PopUpNewDebtReminder = ({ show, handleClose, onAddReminder }) => {
       remindMessage: "",
     },
     validationSchema: Yup.object({
-      remindUserAccount: Yup.string()
-        .required("Vui lòng chọn tài khoản bạn muốn nhắc nợ."),
+      remindUserAccount: Yup.string().required(
+        "Vui lòng chọn tài khoản bạn muốn nhắc nợ."
+      ),
       amount: Yup.number()
         .required("Số tiền là bắt buộc.")
         .min(1, "Số tiền phải lớn hơn 0."),
-      remindMessage: Yup.string().max(255, "Lý do không được vượt quá 255 ký tự."),
+      remindMessage: Yup.string().max(
+        255,
+        "Lý do không được vượt quá 255 ký tự."
+      ),
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
         const response = await addRemind({
-          ...values,
-          remindUserAccount: selectAccount, // Add selected account
+          accountNumber: values.remindUserAccount,
+          message: values.remindMessage,
+          amount: values.amount,
         });
         console.log("Add remind success: ", response);
         onAddReminder(response.data);
-        resetForm(); 
+        resetForm();
       } catch (error) {
-        console.error("Failed to add remind: ", error.response?.data || error.message);
+        console.error(
+          "Failed to add remind: ",
+          error.response?.data || error.message
+        );
       }
-      handleClose(); 
+      handleClose();
     },
   });
 
@@ -95,16 +103,19 @@ const PopUpNewDebtReminder = ({ show, handleClose, onAddReminder }) => {
 
           <Row className="d-flex justify-content-center align-items-center mb-4">
             <Col xs={12} md={10}>
-            <DropdownBank
-              bank={bank}
-              selectedBank={selectAccount}
-              setSelectedBank={setSelectAccount}
-              formikFieldName="remindUserAccount" 
-              setFieldValue={formik.setFieldValue}
-            />
-              {formik.errors.remindUserAccount && formik.touched.remindUserAccount && (
-                <div className="text-danger">{formik.errors.remindUserAccount}</div>
-              )}
+              <DropdownBank
+                bank={bank}
+                selectedBank={selectAccount}
+                setSelectedBank={setSelectAccount}
+                formikFieldName="remindUserAccount"
+                setFieldValue={formik.setFieldValue}
+              />
+              {formik.errors.remindUserAccount &&
+                formik.touched.remindUserAccount && (
+                  <div className="text-danger">
+                    {formik.errors.remindUserAccount}
+                  </div>
+                )}
             </Col>
           </Row>
 
@@ -129,7 +140,10 @@ const PopUpNewDebtReminder = ({ show, handleClose, onAddReminder }) => {
 
           <Row className="d-flex justify-content-center align-items-center mb-4">
             <Col xs={12} md={10}>
-              <FloatingLabel controlId="txtReason" label="Lý do (không bắt buộc)">
+              <FloatingLabel
+                controlId="txtReason"
+                label="Lý do (không bắt buộc)"
+              >
                 <Form.Control
                   as="textarea"
                   rows={3}

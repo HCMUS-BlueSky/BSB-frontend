@@ -62,7 +62,10 @@ const TransactionHistory = ({ history, account, loading }) => {
               );
             })
           ) : (
-            <p className="text-center pb-3 text-muted" style={{ whiteSpace: "nowrap" }}>
+            <p
+              className="text-center pb-3 text-muted"
+              style={{ whiteSpace: "nowrap" }}
+            >
               Chưa có lịch sử giao dịch
             </p>
           )}
