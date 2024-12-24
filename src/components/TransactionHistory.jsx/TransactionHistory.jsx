@@ -2,8 +2,10 @@ import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import moment from "moment";
 
-const TransactionHistory = ({ history, account }) => {
-  console.log(history);
+const TransactionHistory = ({ history, account, loading }) => {
+  if (loading) {
+    return <p className="text-center">Đang tải dữ liệu...</p>;
+  }
   return (
     <Row className="d-flex justify-content-center my-3">
       <Col xs={10} md={8} lg={6}>
@@ -27,12 +29,18 @@ const TransactionHistory = ({ history, account }) => {
                           : transaction.sender.owner.fullName}
                       </strong>
                     </p>
-                    <p className="mb-0 text-muted" style={{ fontSize: "0.85rem" }}>
+                    <p
+                      className="mb-0 text-muted"
+                      style={{ fontSize: "0.85rem" }}
+                    >
                       {transaction.description
                         ? `Nội dung: ${transaction.description}`
                         : "Không có nội dung"}
                     </p>
-                    <p className="mb-0 text-muted" style={{ fontSize: "0.85rem" }}>
+                    <p
+                      className="mb-0 text-muted"
+                      style={{ fontSize: "0.85rem" }}
+                    >
                       Thời gian:{" "}
                       {moment(transaction.createdAt).format("DD/MM/YYYY HH:mm")}
                     </p>
@@ -54,7 +62,12 @@ const TransactionHistory = ({ history, account }) => {
               );
             })
           ) : (
-            <p className="text-center">Chưa có lịch sử giao dịch</p>
+            <p
+              className="text-center pb-3 text-muted"
+              style={{ whiteSpace: "nowrap" }}
+            >
+              Chưa có lịch sử giao dịch
+            </p>
           )}
         </Card>
       </Col>

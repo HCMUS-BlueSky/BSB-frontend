@@ -16,6 +16,7 @@ import AccountDetails from "./pages/Employee/AccountDetails";
 import DepositPage from "./pages/Employee/DepositPage";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import EmployeeList from "./pages/Admin/EmployeeList";
 
 const RoleProtectedRoute = ({ allowedRoles }) => {
   const { loading, isAuthenticated, user } = useAuth();
@@ -32,6 +33,10 @@ const RoleProtectedRoute = ({ allowedRoles }) => {
 
   if (!userHasAccess && user.role === "EMPLOYEE") {
     return <Navigate to="/employee" />;
+  }
+
+  if (!userHasAccess && user.role === "ADMIN") {
+    return <Navigate to="/admin" />;
   }
 
   return userHasAccess ? <Outlet /> : <Navigate to="/" />;
@@ -72,6 +77,10 @@ const App = () => {
           path="/employee/account/:accountId"
           element={<AccountDetails />}
         />
+      </Route>
+
+      <Route element={<RoleProtectedRoute allowedRoles={["ADMIN"]} />}>
+        <Route path="/admin" element={<EmployeeList />} />
       </Route>
     </Routes>
   );
