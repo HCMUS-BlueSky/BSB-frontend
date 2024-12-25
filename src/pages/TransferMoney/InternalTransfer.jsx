@@ -135,9 +135,10 @@ const InternalTransfer = () => {
                       <div
                         className="ms-1"
                         style={{
-                          fontSize: "0.875rem", // Chữ nhỏ
-                          color: account.status === "success" ? "#6c757d" : "#dc3545", // Màu xám nếu thành công, đỏ nếu lỗi
+                          fontSize: "0.875rem", 
+                          color: account.status === "success" ? "#6c757d" : "#dc3545",
                           fontWeight: 400,
+                          paddingTop: "10px",
                         }}
                       >
                         {account.name} | Timo
