@@ -12,7 +12,7 @@ import {
   confirmTransfer,
   transferInternal,
 } from "../../apis/services/Transaction";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loading from "../../components/Loading/Loading";
@@ -23,10 +23,12 @@ const InternalTransfer = () => {
   const [transaction, setTransaction] = useState(null);
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const passedAccountNumber = location.state?.accountNumber || "";
 
   const formik = useFormik({
     initialValues: {
-      email: "",
+      email: passedAccountNumber,
       amount: "",
       description: "",
     },
@@ -37,7 +39,7 @@ const InternalTransfer = () => {
         .required("Vui lòng nhập số tiền"),
       description: Yup.string()
         .max(255, "Mô tả không được vượt quá 255 ký tự")
-        .required("Vui lòng nhập mô tả"),
+        .required("Vui lòng nhập nội dung chuyển khoản"),
     }),
     onSubmit: async (values) => {
       setLoading(true);

@@ -10,7 +10,7 @@ import {
   Row,
   Toast,
 } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./TransferMoney.scss";
 import { getUserByAccountNumber } from "../../apis/services/Account";
 import { addReceiver, getReceiver } from "../../apis/services/Receiver";
@@ -32,6 +32,7 @@ const TransferMoney = () => {
   const [selectedDeleteAccount, setSelectedDeleteAccount] = useState(null);
   const [expandedAccountId, setExpandedAccountId] = useState(null);
   const [editingAccountId, setEditingAccountId] = useState(null);
+  const navigate = useNavigate();
 
   const handleEditClick = (account) => {
     setEditingAccountId(account._id);
@@ -101,6 +102,10 @@ const TransferMoney = () => {
   };
 
   const handleShow = () => setShowModal(true);
+
+  const handleTransferClick = (accountNumber) => {
+    navigate("/transfer-money/internal", { state: { accountNumber } });
+  };
 
   const handleSave = async () => {
     const res = await addReceiver({
@@ -258,14 +263,24 @@ const TransferMoney = () => {
 
                   {/* Additional Info (Visible when expanded) */}
                   {expandedAccountId === account._id && (
-                    <div className="p-3 bg-light rounded-bottom border-top">
-                      <p className="mb-1">
-                        <strong>Số tài khoản:</strong> {account.accountNumber}
-                      </p>
-                      <p className="mb-0">
-                        <strong>Ngân hàng:</strong>{" "}
-                        {account.bank || "Chưa xác định"}
-                      </p>
+                    <div className="p-3 bg-light rounded-bottom border-top d-flex justify-content-between align-items-center">
+                      <div>
+                        <p className="mb-1">
+                          <strong>Số tài khoản:</strong> {account.accountNumber}
+                        </p>
+                        <p className="mb-0">
+                          <strong>Ngân hàng:</strong>{" "}
+                          {account.bank || "Chưa xác định"}
+                        </p>
+                      </div>
+                      <button
+                        className="btn btn-primary text-white"
+                        onClick={() =>
+                          handleTransferClick(account.accountNumber)
+                        }
+                      >
+                        CHUYỂN KHOẢN
+                      </button>
                     </div>
                   )}
                 </div>
