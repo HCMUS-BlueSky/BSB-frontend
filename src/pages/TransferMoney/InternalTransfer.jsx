@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loading from "../../components/Loading/Loading";
+import { getUserByAccountNumber } from "../../apis/services/Account";
 
 const InternalTransfer = () => {
   const [loading, setLoading] = useState(false);
@@ -23,6 +24,7 @@ const InternalTransfer = () => {
   const [transaction, setTransaction] = useState(null);
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
+  const [account, setAccount] = useState(null);
 
   const formik = useFormik({
     initialValues: {
@@ -56,6 +58,19 @@ const InternalTransfer = () => {
       }
     },
   });
+
+  const handleFindAccount = async () => {
+    setLoading(true);
+    try {
+      const respsone = await getUserByAccountNumber(formik.values.email);
+      setAccount({name: respsone.data.fullName, status: "success"})
+      console.log(respsone);
+    } catch (error) {
+      setAccount({name: "Không tìm thấy tài khoản", status: "error"})
+      console.log(error); 
+    }
+    setLoading(false);
+  }
 
   const handleConfirm = async () => {
     setLoading(true);
@@ -113,10 +128,27 @@ const InternalTransfer = () => {
                       type="text"
                       placeholder="name@example.com"
                       {...formik.getFieldProps("email")}
+                      onBlur={handleFindAccount}
                     />
+
+                    {account && (
+                      <div
+                        className="ms-1"
+                        style={{
+                          fontSize: "0.875rem", 
+                          color: account.status === "success" ? "#6c757d" : "#dc3545",
+                          fontWeight: 400,
+                          paddingTop: "10px",
+                        }}
+                      >
+                        {account.name} | Timo
+                      </div>
+                    )}
+
                     {formik.touched.email && formik.errors.email ? (
                       <div className="text-danger">{formik.errors.email}</div>
                     ) : null}
+
                   </FloatingLabel>
 
                   <FloatingLabel
