@@ -60,14 +60,16 @@ const Home = () => {
         <Container>
           <Row className="d-flex justify-content-center my-3">
             <Col xs={10} md={8} lg={6}>
-              <Button className="w-100" variant="orange">
-                <div className="d-flex justify-content-between p-2">
-                  <div className="text-light">
-                    <i className="bi bi-bell"></i>
-                    <span className="m-2">Lời nhắc của bạn</span>
+              <Link to="/notification">
+                <Button className="w-100" variant="orange">
+                  <div className="d-flex justify-content-between p-2">
+                    <div className="text-light">
+                      <i className="bi bi-bell"></i>
+                      <span className="m-2">Lời nhắc của bạn</span>
+                    </div>
                   </div>
-                </div>
-              </Button>
+                </Button>
+              </Link>
             </Col>
           </Row>
           <Row className="d-flex justify-content-center mb-3">
@@ -136,7 +138,6 @@ const Home = () => {
               loading={loading}
             />
           </Row>
-
         </Container>
       </main>
 

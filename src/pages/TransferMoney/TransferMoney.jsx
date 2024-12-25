@@ -182,13 +182,6 @@ const TransferMoney = () => {
               </Button>
             </div>
 
-            <FloatingLabel
-              controlId="floatingInput"
-              label="Tìm kiếm"
-              className="mb-3"
-            >
-              <Form.Control type="text" placeholder="Số tài khoản" />
-            </FloatingLabel>
             <div className="receiver-list">
               {accountList?.map((account) => (
                 <div key={account._id} className="mb-2">

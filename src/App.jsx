@@ -17,6 +17,7 @@ import DepositPage from "./pages/Employee/DepositPage";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import EmployeeList from "./pages/Admin/EmployeeList";
+import Notification from "./pages/Notification/Notification";
 
 const RoleProtectedRoute = ({ allowedRoles }) => {
   const { loading, isAuthenticated, user } = useAuth();
@@ -68,6 +69,7 @@ const App = () => {
         <Route path="/transfer-money/internal" element={<InternalTransfer />} />
         <Route path="/transfer-money/external" element={<ExternalTransfer />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/notification" element={<Notification />} />
       </Route>
 
       <Route element={<RoleProtectedRoute allowedRoles={["EMPLOYEE"]} />}>

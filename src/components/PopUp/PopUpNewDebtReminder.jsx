@@ -75,6 +75,7 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
       onHide={handleClose}
       dialogClassName="modal-90w"
       aria-labelledby="example-custom-modal-styling-title"
+      centered
     >
       <Modal.Header className="d-flex justify-content-between p-2">
         <Button
@@ -140,10 +141,7 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
 
           <Row className="d-flex justify-content-center align-items-center mb-4">
             <Col xs={12} md={10}>
-              <FloatingLabel
-                controlId="txtReason"
-                label="Lý do (không bắt buộc)"
-              >
+              <FloatingLabel controlId="txtReason" label="Lý do">
                 <Form.Control
                   as="textarea"
                   rows={3}
@@ -161,7 +159,7 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
             </Col>
           </Row>
 
-          <Row className="d-flex justify-content-center align-items-center mb-3 mx-1">
+          <Row className="d-flex justify-content-center align-items-center mb-3">
             <Col xs={12} md={10} className="mb-3">
               <Button variant="primary" className="w-100 p-2" type="submit">
                 <div className="d-flex justify-content-center align-items-center">
