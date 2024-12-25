@@ -21,6 +21,7 @@ const PaymentRequest = () => {
   const [debtReminders, setDebtReminders] = useState([]);
   const [showNewDebtReminder, setShowNewDebtReminder] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +55,7 @@ const PaymentRequest = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [reload]);
 
   const toggleVisibility = (setState) => setState((prev) => !prev);
 
@@ -118,6 +119,7 @@ const PaymentRequest = () => {
                   <i className="bi bi-plus me-2"></i> TẠO NHẮC NỢ MỚI
                 </Button>
                 <PopUpNewDebtReminder
+                  setReload={setReload}
                   show={showNewDebtReminder}
                   handleClose={() => setShowNewDebtReminder(false)}
                 />
@@ -126,6 +128,7 @@ const PaymentRequest = () => {
           </Row>
 
           <RequestList
+            setReload={setReload}
             requestList={debtReminders.filter(
               (item) => item.status === "PENDING"
             )}

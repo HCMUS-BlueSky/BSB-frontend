@@ -6,11 +6,10 @@ import DropdownBank from "../Dropdown/DropdownBank";
 import { getReceiver } from "../../apis/services/Receiver";
 import { addRemind } from "../../apis/services/Remind";
 
-const PopUpNewDebtReminder = ({ show, handleClose, onAddReminder }) => {
+const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
   const [bank, setBank] = useState([]);
   const [selectAccount, setSelectAccount] = useState("");
 
-  // Fetch receiver data
   useEffect(() => {
     async function fetchReceiverData() {
       try {
@@ -30,7 +29,6 @@ const PopUpNewDebtReminder = ({ show, handleClose, onAddReminder }) => {
     fetchReceiverData();
   }, []);
 
-  // Formik setup
   const formik = useFormik({
     initialValues: {
       remindUserAccount: "",
@@ -56,9 +54,11 @@ const PopUpNewDebtReminder = ({ show, handleClose, onAddReminder }) => {
           message: values.remindMessage,
           amount: values.amount,
         });
-        console.log("Add remind success: ", response);
-        onAddReminder(response.data);
-        resetForm();
+
+        if (response.statusCode === 200) {
+          resetForm();
+          setReload((prev) => !prev);
+        }
       } catch (error) {
         console.error(
           "Failed to add remind: ",

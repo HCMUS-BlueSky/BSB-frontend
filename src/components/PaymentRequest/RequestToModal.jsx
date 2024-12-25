@@ -1,15 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Button, Form, FloatingLabel, Image } from "react-bootstrap";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
 import { Formik, Field, Form as FormikForm } from "formik";
 import { deleteRemind } from "../../apis/services/Remind";
 
-const RequestToModal = ({ show, onHide, data }) => {
+const RequestToModal = ({ setReload, show, onHide, data }) => {
+  const [showDeleteInput, setShowDeleteInput] = useState(false);
+
   const handleCancelDebt = async (values) => {
     try {
-      const response = await deleteRemind(data.id);
-      console.log("Xóa nhắc nợ thành công:", response);
+      const response = await deleteRemind(data._id, values.deleteMessage);
+
+      if (response.statusCode === 200) {
+        setReload((prev) => !prev);
+      }
 
       onHide();
     } catch (error) {
@@ -60,39 +65,55 @@ const RequestToModal = ({ show, onHide, data }) => {
           <p className="text-muted mb-4">
             {data?.message ? data.message : "Không có nội dung nhắc nợ"}
           </p>
-          {/* 
-          <Formik
-            initialValues={{ cancelInfo: "" }}
-            onSubmit={handleCancelDebt}
+
+          <Button
+            hidden={showDeleteInput}
+            onClick={() => setShowDeleteInput(!showDeleteInput)}
+            variant="danger"
+            type="submit"
+            className="w-100 text-white"
+            style={{ backgroundColor: "#dc3545", borderColor: "#dc3545" }}
           >
-            {({ handleChange, handleBlur, values }) => (
-              <FormikForm>
-                <FloatingLabel
-                  controlId="floatingInput"
-                  label="Thông tin xóa"
-                  className="mb-3 w-100"
-                >
-                  <Field
-                    as={Form.Control}
-                    type="text"
-                    placeholder="Nhập thông tin xóa"
-                    name="cancelInfo"
-                    value={values.cancelInfo}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
-                </FloatingLabel>
-                <Button
-                  variant="danger"
-                  type="submit"
-                  className="w-100 text-white"
-                  style={{ backgroundColor: "#dc3545", borderColor: "#dc3545" }}
-                >
-                  HỦY NHẮC NỢ
-                </Button>
-              </FormikForm>
-            )}
-          </Formik> */}
+            HỦY NHẮC NỢ
+          </Button>
+
+          {showDeleteInput && (
+            <Formik
+              initialValues={{ deleteMessage: "" }}
+              onSubmit={handleCancelDebt}
+            >
+              {({ handleChange, handleBlur, values }) => (
+                <FormikForm className="w-100">
+                  <FloatingLabel
+                    controlId="floatingInput"
+                    label="Lý do hủy nhắc nợ"
+                    className="mb-3 w-100"
+                  >
+                    <Field
+                      as={Form.Control}
+                      type="text"
+                      placeholder="Nhập thông tin xóa"
+                      name="deleteMessage"
+                      value={values.deleteMessage}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                  </FloatingLabel>
+                  <Button
+                    variant="danger"
+                    type="submit"
+                    className="w-100 text-white"
+                    style={{
+                      backgroundColor: "#dc3545",
+                      borderColor: "#dc3545",
+                    }}
+                  >
+                    XÁC NHẬN HỦY NHẮC NỢ
+                  </Button>
+                </FormikForm>
+              )}
+            </Formik>
+          )}
         </div>
       </Modal.Body>
     </Modal>

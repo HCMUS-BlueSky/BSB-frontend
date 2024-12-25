@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Image } from "react-bootstrap";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+import { Modal, Button, Form, Image, FloatingLabel } from "react-bootstrap";
+import { Field, Formik, Form as FormikForm } from "formik";
 import { formatCurrency } from "../../utils/formatCurrency";
 import { formatDate } from "../../utils/formatDate";
 import OTPRequestModal from "./OTPRequestModal";
@@ -10,48 +9,59 @@ import {
   deleteRemind,
   sendOtpForRemind,
 } from "../../apis/services/Remind";
-import { useNavigate } from "react-router-dom";
+import Loading from "../Loading/Loading";
 
-const RequestFromModal = ({ show, onHide, data }) => {
+const RequestFromModal = ({ setReload, show, onHide, data }) => {
   const [otpModalShow, setOtpModalShow] = useState(false);
-  const [transaction, setTransaction] = useState(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [showDeleteInput, setShowDeleteInput] = useState(false);
 
-  const formik = useFormik({
-    initialValues: {
-      confirmText: "",
-    },
-    validationSchema: Yup.object({
-      confirmText: Yup.string()
-        .oneOf(["XÓA"], "Vui lòng nhập 'XÓA' để xác nhận xóa nhắc nợ")
-        .required("Bắt buộc"),
-    }),
-    onSubmit: async (values) => {
-      try {
-        const response = await deleteRemind(data.id);
-        console.log("Xóa nhắc nợ thành công:", response);
-        onHide();
-      } catch (error) {
-        console.error("Lỗi khi xóa nhắc nợ:", error);
+  const handleCancelDebt = async (values) => {
+    try {
+      const response = await deleteRemind(data._id, values.deleteMessage);
+
+      if (response.statusCode === 200) {
+        setReload((prev) => !prev);
       }
-    },
-  });
+
+      onHide();
+    } catch (error) {
+      console.error("Lỗi khi hủy nhắc nợ:", error);
+    }
+  };
 
   const handlePaymentClick = async () => {
-    const response = await sendOtpForRemind(data._id);
-
-    if (response && response.statusCode === 200) {
-      setOtpModalShow(true);
-      setTransaction(response.data);
-      onHide();
+    setLoading(true);
+    try {
+      const response = await sendOtpForRemind(data._id);
+      if (response && response.statusCode === 200) {
+        onHide();
+        setOtpModalShow(true);
+      }
+    } catch (error) {
+      console.error("Lỗi khi gửi mã OTP:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmitOtp = async (otp) => {
-    console.log("OTP submitted:", otp);
-    const response = await confirmRemind(data._id, otp);
-    console.log("Confirm transfer response:", response);
+    try {
+      const response = await confirmRemind(data._id, otp);
+      if (response.statusCode === 200) {
+        setReload((prev) => !prev);
+        setOtpModalShow(false);
+      }
+    } catch (error) {
+      console.error("Lỗi khi xác nhận mã OTP:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -99,48 +109,64 @@ const RequestFromModal = ({ show, onHide, data }) => {
               {data?.message ? data.message : "Không có nội dung nhắc nợ"}
             </p>
 
-            <Form noValidate className="w-100" onSubmit={formik.handleSubmit}>
-              {/* <p>
-                Bạn đang cố gắng xóa nhắc nợ <strong>{data?.name}</strong>. Vui
-                lòng nhập <strong>"XÓA"</strong> để xác nhận.
-              </p> */}
+            <div className="w-100 d-flex gap-2">
+              <Button
+                variant="danger"
+                hidden={showDeleteInput}
+                onClick={() => setShowDeleteInput(!showDeleteInput)}
+                className="w-100 text-white"
+                style={{ backgroundColor: "#dc3545", borderColor: "#dc3545" }}
+              >
+                HỦY NHẮC NỢ
+              </Button>
+              <Button
+                variant="success"
+                hidden={showDeleteInput}
+                onClick={handlePaymentClick}
+                className="w-100 text-white"
+                style={{ backgroundColor: "#198754", borderColor: "#198754" }}
+              >
+                THANH TOÁN
+              </Button>
+            </div>
 
-              {/* <Form.Group className="mb-3">
-                <Form.Label>Xác nhận xóa</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="confirmText"
-                  value={formik.values.confirmText}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  isInvalid={
-                    formik.touched.confirmText && formik.errors.confirmText
-                  }
-                />
-                <Form.Control.Feedback type="invalid">
-                  {formik.errors.confirmText}
-                </Form.Control.Feedback>
-              </Form.Group> */}
-
-              <div className="w-100 d-flex gap-2">
-                <Button
-                  variant="danger"
-                  onClick={formik.handleSubmit}
-                  className="w-100 text-white"
-                  style={{ backgroundColor: "#dc3545", borderColor: "#dc3545" }}
-                >
-                  HỦY NHẮC NỢ
-                </Button>
-                <Button
-                  variant="success"
-                  onClick={handlePaymentClick}
-                  className="w-100 text-white"
-                  style={{ backgroundColor: "#198754", borderColor: "#198754" }}
-                >
-                  THANH TOÁN
-                </Button>
-              </div>
-            </Form>
+            {showDeleteInput && (
+              <Formik
+                initialValues={{ deleteMessage: "" }}
+                onSubmit={handleCancelDebt}
+              >
+                {({ handleChange, handleBlur, values }) => (
+                  <FormikForm className="w-100">
+                    <FloatingLabel
+                      controlId="floatingInput"
+                      label="Lý do hủy nhắc nợ"
+                      className="mb-3 w-100"
+                    >
+                      <Field
+                        as={Form.Control}
+                        type="text"
+                        placeholder="Nhập thông tin xóa"
+                        name="deleteMessage"
+                        value={values.deleteMessage}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                    </FloatingLabel>
+                    <Button
+                      variant="danger"
+                      type="submit"
+                      className="w-100 text-white"
+                      style={{
+                        backgroundColor: "#dc3545",
+                        borderColor: "#dc3545",
+                      }}
+                    >
+                      XÁC NHẬN HỦY NHẮC NỢ
+                    </Button>
+                  </FormikForm>
+                )}
+              </Formik>
+            )}
           </div>
         </Modal.Body>
       </Modal>

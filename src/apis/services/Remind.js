@@ -10,8 +10,10 @@ export const addRemind = async (remind) => {
   return response.data;
 };
 
-export const deleteRemind = async (id) => {
-  const response = await api.delete(`/remind/${id}`);
+export const deleteRemind = async (id, message) => {
+  const response = await api.delete(`/remind/${id}`, {
+    data: { message },
+  });
   return response.data;
 };
 

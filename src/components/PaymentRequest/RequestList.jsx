@@ -6,6 +6,7 @@ import RequestToModal from "./RequestToModal";
 import RequestFromModal from "./RequestFromModal";
 
 const RequestList = ({
+  setReload,
   requestList,
   sortOptionRequestList,
   toggleRequestList,
@@ -88,7 +89,11 @@ const RequestList = ({
                             <p className="mb-0">
                               Nhắc nợ{" "}
                               {item.direction === "sent" ? "tới " : "từ"}{" "}
-                              <strong>{item.to.owner.fullName}</strong>
+                              {item.direction === "sent" ? (
+                                <strong>{item.to.owner.fullName}</strong>
+                              ) : (
+                                <strong>{item.from.owner.fullName}</strong>
+                              )}
                             </p>
                             <small className="text-muted">
                               Vào {formatDate(item.createdAt)}
@@ -125,12 +130,14 @@ const RequestList = ({
       {selectedRequest &&
         (selectedRequest.direction === "sent" ? (
           <RequestToModal
+            setReload={setReload}
             show={modalShow}
             onHide={() => setModalShow(false)}
             data={selectedRequest}
           />
         ) : (
           <RequestFromModal
+            setReload={setReload}
             show={modalShow}
             onHide={() => setModalShow(false)}
             data={selectedRequest}
