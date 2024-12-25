@@ -6,6 +6,7 @@ import { getAccount } from "../../apis/services/Account";
 import { getTransferHistory } from "../../apis/services/Transaction";
 import TransactionHistory from "../../components/TransactionHistory.jsx/TransactionHistory";
 import Loading from "../../components/Loading/Loading";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const Home = () => {
   const [account, setAccount] = useState(null);
@@ -121,23 +122,28 @@ const Home = () => {
                           </span>
                         </div>
                       </div>
-                      <p className="text-primary fs-4">{account.balance} vnd</p>
+                      <p className="text-primary fs-4">
+                        {formatCurrency(account.balance)} VND
+                      </p>
                     </>
                   ) : (
-                    <p className="text-danger">Account data not available</p>
+                    <p className="text-danger">
+                      Không có dữ liệu cho tài khoản
+                    </p>
                   )}
                 </div>
               </Button>
             </Col>
           </Row>
 
-          <Row className="mb-3">
-            <TransactionHistory
-              history={history}
-              account={account}
-              loading={loading}
-            />
-          </Row>
+          <TransactionHistory
+            history={history}
+            account={account}
+            loading={loading}
+          />
+
+          <Row></Row>
+       
         </Container>
       </main>
 
