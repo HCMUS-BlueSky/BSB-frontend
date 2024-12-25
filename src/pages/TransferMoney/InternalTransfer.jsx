@@ -7,7 +7,7 @@ import {
   Form,
   Row,
 } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   confirmTransfer,
   transferInternal,
@@ -16,6 +16,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loading from "../../components/Loading/Loading";
+import { getUserByAccountNumber } from "../../apis/services/Account";
 
 const InternalTransfer = () => {
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,14 @@ const InternalTransfer = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const passedAccountNumber = location.state?.accountNumber || "";
+  const [account, setAccount] = useState(null);
+
+  useEffect(() => {
+    // Automatically fetch account details if passedAccountNumber exists
+    if (passedAccountNumber) {
+      handleFindAccount(passedAccountNumber);
+    }
+  }, [passedAccountNumber]);
 
   const formik = useFormik({
     initialValues: {
@@ -58,6 +67,18 @@ const InternalTransfer = () => {
       }
     },
   });
+
+  const handleFindAccount = async (accountNumber) => {
+    setLoading(true);
+    try {
+      const response = await getUserByAccountNumber(accountNumber);
+      setAccount({ name: response.data.fullName, status: "success" });
+    } catch (error) {
+      setAccount({ name: "Không tìm thấy tài khoản", status: "error" });
+      console.error("Error fetching account details:", error);
+    }
+    setLoading(false);
+  };
 
   const handleConfirm = async () => {
     setLoading(true);
@@ -115,7 +136,26 @@ const InternalTransfer = () => {
                       type="text"
                       placeholder="name@example.com"
                       {...formik.getFieldProps("email")}
+                      onBlur={() => handleFindAccount(formik.values.email)}
                     />
+
+                    {account && (
+                      <div
+                        className="ms-1"
+                        style={{
+                          fontSize: "0.875rem",
+                          color:
+                            account.status === "success"
+                              ? "#6c757d"
+                              : "#dc3545",
+                          fontWeight: 400,
+                          paddingTop: "10px",
+                        }}
+                      >
+                        {account.name} | Timo
+                      </div>
+                    )}
+
                     {formik.touched.email && formik.errors.email ? (
                       <div className="text-danger">{formik.errors.email}</div>
                     ) : null}
@@ -147,7 +187,8 @@ const InternalTransfer = () => {
                       style={{ height: "100px" }}
                       {...formik.getFieldProps("description")}
                     />
-                    {formik.touched.description && formik.errors.description ? (
+                    {formik.touched.description &&
+                    formik.errors.description ? (
                       <div className="text-danger">
                         {formik.errors.description}
                       </div>

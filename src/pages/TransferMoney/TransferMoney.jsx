@@ -10,7 +10,7 @@ import {
   Row,
   Toast,
 } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import "./TransferMoney.scss";
 import { getUserByAccountNumber } from "../../apis/services/Account";
 import { addReceiver, getReceiver } from "../../apis/services/Receiver";
