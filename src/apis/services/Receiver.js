@@ -11,7 +11,7 @@ export const addReceiver = async (receiver) => {
 };
 
 export const updateReceiver = async (receiver) => {
-  const response = await api.put(`/receiver/${receiver.id}`, receiver);
+  const response = await api.patch(`/receiver/${receiver.id}`, receiver);
   return response.data;
 };
 

@@ -7,12 +7,12 @@ import {
   Form,
   Row,
 } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   confirmTransfer,
   transferInternal,
 } from "../../apis/services/Transaction";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loading from "../../components/Loading/Loading";
@@ -24,11 +24,20 @@ const InternalTransfer = () => {
   const [transaction, setTransaction] = useState(null);
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const passedAccountNumber = location.state?.accountNumber || "";
   const [account, setAccount] = useState(null);
+
+  useEffect(() => {
+    // Automatically fetch account details if passedAccountNumber exists
+    if (passedAccountNumber) {
+      handleFindAccount(passedAccountNumber);
+    }
+  }, [passedAccountNumber]);
 
   const formik = useFormik({
     initialValues: {
-      email: "",
+      email: passedAccountNumber,
       amount: "",
       description: "",
     },
@@ -39,7 +48,7 @@ const InternalTransfer = () => {
         .required("Vui lòng nhập số tiền"),
       description: Yup.string()
         .max(255, "Mô tả không được vượt quá 255 ký tự")
-        .required("Vui lòng nhập mô tả"),
+        .required("Vui lòng nhập nội dung chuyển khoản"),
     }),
     onSubmit: async (values) => {
       setLoading(true);
@@ -59,18 +68,15 @@ const InternalTransfer = () => {
     },
   });
 
-  const handleFindAccount = async () => {
-    setLoading(true);
+  const handleFindAccount = async (accountNumber) => {
     try {
-      const respsone = await getUserByAccountNumber(formik.values.email);
-      setAccount({name: respsone.data.fullName, status: "success"})
-      console.log(respsone);
+      const response = await getUserByAccountNumber(accountNumber);
+      setAccount({ name: response.data.fullName, status: "success" });
     } catch (error) {
-      setAccount({name: "Không tìm thấy tài khoản", status: "error"})
-      console.log(error); 
+      setAccount({ name: "Không tìm thấy tài khoản", status: "error" });
+      console.error("Error fetching account details:", error);
     }
-    setLoading(false);
-  }
+  };
 
   const handleConfirm = async () => {
     setLoading(true);
@@ -128,27 +134,29 @@ const InternalTransfer = () => {
                       type="text"
                       placeholder="name@example.com"
                       {...formik.getFieldProps("email")}
-                      onBlur={handleFindAccount}
+                      onBlur={() => handleFindAccount(formik.values.email)}
                     />
 
                     {account && (
                       <div
                         className="ms-1"
                         style={{
-                          fontSize: "0.875rem", 
-                          color: account.status === "success" ? "#6c757d" : "#dc3545",
+                          fontSize: "0.875rem",
+                          color:
+                            account.status === "success"
+                              ? "#6c757d"
+                              : "#dc3545",
                           fontWeight: 400,
                           paddingTop: "10px",
                         }}
                       >
-                        {account.name} | Timo
+                        {account.name}
                       </div>
                     )}
 
                     {formik.touched.email && formik.errors.email ? (
                       <div className="text-danger">{formik.errors.email}</div>
                     ) : null}
-
                   </FloatingLabel>
 
                   <FloatingLabel
