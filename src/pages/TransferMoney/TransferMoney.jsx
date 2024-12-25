@@ -10,10 +10,15 @@ import {
   Row,
   Toast,
 } from "react-bootstrap";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./TransferMoney.scss";
 import { getUserByAccountNumber } from "../../apis/services/Account";
-import { addReceiver, getReceiver } from "../../apis/services/Receiver";
+import {
+  addReceiver,
+  deleteReceiver,
+  getReceiver,
+  updateReceiver,
+} from "../../apis/services/Receiver";
 import { ToastContainer } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -24,7 +29,6 @@ const TransferMoney = () => {
   const [accountInfo, setAccountInfo] = useState("");
   const [nickname, setNickname] = useState("");
   const [showError, setShowError] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
   const [searchAccountInfo, setSearchAccountInfo] = useState({});
   const [accountList, setAccountList] = useState([]);
   const [showToastCreateReceiver, setShowToastCreateReceiver] = useState(false);
@@ -32,6 +36,7 @@ const TransferMoney = () => {
   const [selectedDeleteAccount, setSelectedDeleteAccount] = useState(null);
   const [expandedAccountId, setExpandedAccountId] = useState(null);
   const [editingAccountId, setEditingAccountId] = useState(null);
+  const [reload, setReload] = useState(false);
   const navigate = useNavigate();
 
   const handleEditClick = (account) => {
@@ -40,16 +45,16 @@ const TransferMoney = () => {
   };
 
   const handleEditSaveClick = async (accountId) => {
-    // Add the logic to save the edited nickname here
-    // const res = await addReceiver({
-    //   accountNumber: accountId,
-    //   nickname,
-    //   type: "INTERNAL",
-    // });
+    const response = await updateReceiver({
+      id: accountId,
+      nickname,
+    });
 
-    // if (res.statusCode !== 200) {
-    //   return;
-    // }
+    if (response.statusCode !== 200) {
+      return;
+    }
+
+    setReload(!reload);
     setEditingAccountId(null);
   };
 
@@ -58,7 +63,6 @@ const TransferMoney = () => {
   };
 
   const handleAccountClick = (accountId) => {
-    // Toggle expanded state
     setExpandedAccountId((prevId) => (prevId === accountId ? null : accountId));
   };
 
@@ -67,9 +71,14 @@ const TransferMoney = () => {
     setShowConfirmDeleteModal(true);
   };
 
-  const handleConfirmDelete = () => {
-    console.log("Deleted account:", selectedDeleteAccount);
-    // Add the logic to delete the account here
+  const handleConfirmDelete = async () => {
+    const response = await deleteReceiver(selectedDeleteAccount._id);
+
+    if (response.statusCode !== 200) {
+      return;
+    }
+
+    setReload(!reload);
     setShowConfirmDeleteModal(false);
     setSelectedDeleteAccount(null);
   };
@@ -88,11 +97,7 @@ const TransferMoney = () => {
       setAccountList(res.data.receiverList);
     }
     getAccountList();
-  }, []);
-
-  useEffect(() => {
-    console.log(accountList);
-  }, [accountList]);
+  }, [reload]);
 
   const handleClose = () => {
     setShowModal(false);
@@ -118,6 +123,7 @@ const TransferMoney = () => {
       return;
     }
 
+    setReload(!reload);
     handleClose();
   };
 
@@ -186,9 +192,12 @@ const TransferMoney = () => {
             <div className="receiver-list">
               {accountList?.map((account) => (
                 <div key={account._id} className="mb-2">
-                  {/* Main Account Row */}
                   <div
-                    className="d-flex align-items-center justify-content-between p-3 bg-white rounded border"
+                    className={`d-flex align-items-center justify-content-between p-3 bg-white ${
+                      expandedAccountId === account._id
+                        ? "rounded-top"
+                        : "rounded"
+                    }`}
                     onClick={() => handleAccountClick(account._id)}
                     style={{ cursor: "pointer" }}
                   >
@@ -198,13 +207,12 @@ const TransferMoney = () => {
                         style={{ width: "40px", height: "40px" }}
                       >
                         <img
-                          src="https://via.placeholder.com/40"
+                          src="/img/profile/default.svg"
                           alt={account.nickname}
                           className="rounded-circle"
                           style={{ width: "100%", height: "100%" }}
                         />
                       </div>
-                      {/* Edit Mode */}
                       {editingAccountId === account._id ? (
                         <FloatingLabel
                           controlId={`floatingInput-${account._id}`}
@@ -214,11 +222,13 @@ const TransferMoney = () => {
                           <Form.Control
                             type="text"
                             value={nickname}
-                            onChange={(e) => setNickname(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => {
+                              setNickname(e.target.value);
+                            }}
                           />
                         </FloatingLabel>
                       ) : (
-                        // Display Mode
                         <div>
                           <p className="mb-0 fw-bold">{account.nickname}</p>
                         </div>
@@ -230,13 +240,19 @@ const TransferMoney = () => {
                           <Button
                             variant="primary"
                             className="me-2 text-light"
-                            onClick={() => handleEditSaveClick(account._id)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditSaveClick(account._id);
+                            }}
                           >
                             LƯU
                           </Button>
                           <Button
                             variant="secondary"
-                            onClick={handleEditCancelClick}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditCancelClick();
+                            }}
                           >
                             HỦY
                           </Button>
@@ -246,13 +262,19 @@ const TransferMoney = () => {
                           <Button
                             variant="light"
                             className="me-2"
-                            onClick={() => handleEditClick(account)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditClick(account);
+                            }}
                           >
                             <i className="bi bi-pencil text-primary"></i>
                           </Button>
                           <Button
                             variant="light"
-                            onClick={() => handleDeleteClick(account)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteClick(account);
+                            }}
                           >
                             <i className="bi bi-trash text-secondary"></i>
                           </Button>
@@ -261,7 +283,6 @@ const TransferMoney = () => {
                     </div>
                   </div>
 
-                  {/* Additional Info (Visible when expanded) */}
                   {expandedAccountId === account._id && (
                     <div className="p-3 bg-light rounded-bottom border-top d-flex justify-content-between align-items-center">
                       <div>
@@ -290,8 +311,11 @@ const TransferMoney = () => {
         </Row>
         <Row></Row>
       </Container>
-      {/* Modal for Confirmation */}
-      <Modal show={showConfirmDeleteModal} onHide={handleCloseConfirmDelete}>
+      <Modal
+        show={showConfirmDeleteModal}
+        onHide={handleCloseConfirmDelete}
+        centered
+      >
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận xóa</Modal.Title>
         </Modal.Header>
@@ -306,9 +330,8 @@ const TransferMoney = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Modal Logic */}
       <Modal show={showModal} onHide={handleClose} centered>
-        {showBSBAccountInfoScreen ? ( // Renamed
+        {showBSBAccountInfoScreen ? (
           <>
             <Modal.Header closeButton>
               <Modal.Title></Modal.Title>

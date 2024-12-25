@@ -69,7 +69,6 @@ const InternalTransfer = () => {
   });
 
   const handleFindAccount = async (accountNumber) => {
-    setLoading(true);
     try {
       const response = await getUserByAccountNumber(accountNumber);
       setAccount({ name: response.data.fullName, status: "success" });
@@ -77,7 +76,6 @@ const InternalTransfer = () => {
       setAccount({ name: "Không tìm thấy tài khoản", status: "error" });
       console.error("Error fetching account details:", error);
     }
-    setLoading(false);
   };
 
   const handleConfirm = async () => {
@@ -152,7 +150,7 @@ const InternalTransfer = () => {
                           paddingTop: "10px",
                         }}
                       >
-                        {account.name} | Timo
+                        {account.name}
                       </div>
                     )}
 
@@ -187,8 +185,7 @@ const InternalTransfer = () => {
                       style={{ height: "100px" }}
                       {...formik.getFieldProps("description")}
                     />
-                    {formik.touched.description &&
-                    formik.errors.description ? (
+                    {formik.touched.description && formik.errors.description ? (
                       <div className="text-danger">
                         {formik.errors.description}
                       </div>
