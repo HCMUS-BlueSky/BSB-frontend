@@ -1,19 +1,48 @@
 import React from "react";
-import { Row, Col, Card } from "react-bootstrap";
+import { Row, Col, Card, Badge } from "react-bootstrap";
 import moment from "moment";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const TransactionHistory = ({ history, account, loading }) => {
   if (loading) {
     return <p className="text-center">Đang tải dữ liệu...</p>;
   }
+
   return (
-    <Row className="d-flex justify-content-center my-3">
+    <Row className="d-flex justify-content-center mb-3">
       <Col xs={10} md={8} lg={6}>
         <Card className="px-4" style={{ border: "none" }}>
           <p className="text-start py-3">Lịch sử giao dịch</p>
           {history.length > 0 ? (
             history.map((transaction) => {
-              const isSender = transaction.sender._id === account._id;
+              const isInternal = transaction.sender && transaction.receiver;
+              const isSender = isInternal
+                ? transaction.sender._id === account._id
+                : transaction.to._id === account._id;
+
+              const counterpartName = isInternal
+                ? isSender
+                  ? transaction.receiver.owner.fullName
+                  : transaction.sender.owner.fullName
+                : isSender
+                ? transaction.from.owner.fullName
+                : transaction.to.owner.fullName;
+
+              const description = transaction.description
+                ? `Nội dung: ${transaction.description}`
+                : "Không có nội dung";
+
+              const transactionType = isInternal
+                ? isSender
+                  ? "Chuyển đến"
+                  : "Chuyển từ"
+                : isSender
+                ? "Trả nợ cho"
+                : "Được trả nợ bởi";
+
+              const badgeText = isInternal ? "Nội bộ" : "Nhắc nợ";
+              const badgeVariant = isInternal ? "primary" : "warning";
+
               return (
                 <Row
                   key={transaction._id}
@@ -21,21 +50,17 @@ const TransactionHistory = ({ history, account, loading }) => {
                   style={{ borderColor: "#f4f5f6" }}
                 >
                   <Col>
+                    <p className="mb-1">
+                      <Badge bg={badgeVariant}>{badgeText}</Badge>
+                    </p>
                     <p className="mb-0">
-                      {isSender ? "Chuyển đến" : "Chuyển từ"}{" "}
-                      <strong>
-                        {isSender
-                          ? transaction.receiver.owner.fullName
-                          : transaction.sender.owner.fullName}
-                      </strong>
+                      {transactionType} <strong>{counterpartName}</strong>
                     </p>
                     <p
                       className="mb-0 text-muted"
                       style={{ fontSize: "0.85rem" }}
                     >
-                      {transaction.description
-                        ? `Nội dung: ${transaction.description}`
-                        : "Không có nội dung"}
+                      {description}
                     </p>
                     <p
                       className="mb-0 text-muted"
@@ -53,8 +78,8 @@ const TransactionHistory = ({ history, account, loading }) => {
                       }`}
                     >
                       {isSender
-                        ? `- ${transaction.amount}`
-                        : `+ ${transaction.amount}`}{" "}
+                        ? `- ${formatCurrency(transaction.amount)}`
+                        : `+ ${formatCurrency(transaction.amount)}`}{" "}
                       VND
                     </p>
                   </Col>

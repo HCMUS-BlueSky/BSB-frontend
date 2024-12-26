@@ -1,60 +1,94 @@
-import React from "react";
-import { Card, Col, Container, Row, Button, Form } from "react-bootstrap";
-import "bootstrap-icons/font/bootstrap-icons.css"; // Import Bootstrap Icons
+import React, { useState, useEffect } from "react";
+import { Container, Row, Col } from "react-bootstrap";
 import Navbar from "../../components/Navbar";
-import { useState } from "react";
 import PersonalInformationCard from "../../components/Profile/PersonalInformationCard";
 import AccountDetailCard from "../../components/Profile/AccountDetailCard";
 import AccountInformationCard from "../../components/Profile/AccountInformationCard";
+import { getUser,updateUser } from "../../apis/services/User"; 
+import { getAccount } from "../../apis/services/Account"; 
+import { formatCurrency } from "../../utils/formatCurrency"; 
 
 function Profile() {
-  const handleProfilePicClick = () => {
-    document.getElementById("profilePicInput").click();
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      console.log("Selected file:", file.name);
-      // API image upload
-    }
-  };
-
   const [editing, setEditing] = useState({
-    maritalStatus: false,
-    currentAddress: false,
-    occupation: false,
-    title: false,
-    taxCode: false,
+    address: false,
+    dob: false,
   });
 
   const [inputValues, setInputValues] = useState({
-    currentAddress: "227 Nguyễn Văn Cừ, Phường 4, Quận 5, TP Hồ Chí Minh",
-    occupation: "Giáo viên/giảng viên",
-    title: "Giáo sư, tiến sĩ",
-    taxCode: "1234567890",
-    maritalStatus: "",
+    address: "",
+    dob: "",
   });
 
   const [originalValues, setOriginalValues] = useState(inputValues);
 
+  const [accountData, setAccountData] = useState({
+    accountNumber: "",
+    balance: "",
+  });
+
+  const [userData, setUserData] = useState({
+    fullName: "",
+    email: "",
+    phone: "",
+  });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await getUser();
+        const userData = response.data;
+        setInputValues({
+          address: userData.address || "",
+          dob: userData.dob || "",
+        });
+        setUserData({
+          fullName: userData.fullName || "",
+          email: userData.email || "",
+          phone: userData.phone || "",
+        })
+        setOriginalValues({
+          address: userData.address || "",
+          dob: userData.dob || "",
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    const fetchAccountData = async () => {
+      try {
+        const response = await getAccount();
+        const accountData = response.data;
+        setAccountData({
+          accountNumber: accountData.accountNumber || "",
+          balance: accountData.balance || "",
+        });
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      }
+    };
+
+    fetchAccountData();
+
+    fetchUserData();
+  }, []);
+
   const handleEditClick = (field) => {
     setEditing((prev) => ({ ...prev, [field]: !prev[field] }));
-    // Store original value when editing begins
     setOriginalValues((prev) => ({ ...prev, [field]: inputValues[field] }));
   };
 
-  const handleSaveClick = (field) => {
-    setEditing((prev) => ({ ...prev, [field]: false }));
-    // API update
-  };
 
-  const handleMaritalStatusChange = (e) => {
-    setInputValues((prev) => ({
-      ...prev,
-      maritalStatus: e.target.value,
-    }));
+  const handleSaveClick = async (field) => {
+    try {
+      const updateUserDto = { [field]: inputValues[field] };
+      await updateUser(updateUserDto);
+      setEditing((prev) => ({ ...prev, [field]: false }));
+    } catch (error) {
+      console.error(`Error updating ${field}:`, error);
+    }
   };
+  
 
   const handleInputChange = (e, field) => {
     setInputValues((prev) => ({ ...prev, [field]: e.target.value }));
@@ -74,60 +108,29 @@ function Profile() {
       <main className="py-3">
         <Container>
           {/* Profile Picture and Info */}
-          <Row className="mb-4 d-flex justify-content-end align-items-center">
-            <Col className="d-flex align-items-end justify-content-end">
-              <div
-                onClick={handleProfilePicClick}
-                className="mb-3"
-                style={{
-                  cursor: "pointer",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  display: "inline-block",
-                }}
-              >
-                <img
-                  src="https://via.placeholder.com/150"
-                  alt="Profile"
-                  style={{
-                    width: "150px",
-                    height: "150px",
-                    objectFit: "cover",
-                  }}
-                />
-              </div>
-              <input
-                type="file"
-                id="profilePicInput"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleImageChange}
-              />
-            </Col>
-            <Col className="d-flex align-items-start flex-column">
-              <h1 className="text-primary">John Doe</h1>
+          <Row className="mb-4 d-flex justify-content-center align-items-center">
+            <Col className="d-flex align-items-center flex-column">
+              <h1 className="text-primary">{userData.fullName}</h1>
               <p className="text-muted">
                 Số dư khả dụng:{" "}
-                <span className="fw-bold text-primary">30.000.000</span>
+                <span className="fw-bold text-primary">{formatCurrency(accountData.balance)}</span>
               </p>
             </Col>
           </Row>
 
           {/* Account Information */}
-          <AccountInformationCard />
+          <AccountInformationCard accountNumber={accountData.accountNumber} />
 
           {/* Account Details */}
-          <AccountDetailCard />
+          <AccountDetailCard email={userData.email} phone={userData.phone} />
 
           {/* Personal Information Card */}
           <PersonalInformationCard
             editing={editing}
             inputValues={inputValues}
-            maritalStatus={inputValues.maritalStatus}
             handleEditClick={handleEditClick}
             handleSaveClick={handleSaveClick}
             handleInputChange={handleInputChange}
-            handleMaritalStatusChange={handleMaritalStatusChange}
             handleCancelClick={handleCancelClick}
           />
         </Container>

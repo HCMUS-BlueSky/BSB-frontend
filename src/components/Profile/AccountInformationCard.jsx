@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css"; 
 
-const AccountInformationCard = () => {
+const AccountInformationCard = ({accountNumber}) => {
   return (
     <Row className="d-flex justify-content-center">
       <Col xs={12} md={8}>
@@ -20,7 +20,7 @@ const AccountInformationCard = () => {
             <div className="d-flex align-items-center">
               <i className="bi bi-bank2 me-2"></i>
               <p className="mb-0">
-                <strong>Số tài khoản:</strong> 123456789
+                <strong>Số tài khoản:</strong> {accountNumber}
               </p>
             </div>
           </Row>
@@ -37,9 +37,9 @@ const AccountInformationCard = () => {
                   <strong>Tên ngân hàng:</strong> BSB Digital Bank by Blue Sky
                 </p>
               </div>
-              <p className="mb-0">
+              {/* <p className="mb-0">
                 Mã SWIFT: <strong className="fw-bold">ABCXYZ</strong>
-              </p>
+              </p> */}
             </Col>
           </Row>
         </Card>
