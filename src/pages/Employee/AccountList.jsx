@@ -50,7 +50,12 @@ const AccountList = () => {
           <Button variant="outline-primary" size="md" onClick={handleOpenModal}>
             Tạo tài khoản
           </Button>
-          <Button variant="primary" size="md" onClick={handleDeposit}>
+          <Button
+            variant="primary"
+            size="md"
+            className="text-light"
+            onClick={handleDeposit}
+          >
             Nạp tiền
           </Button>
         </div>
