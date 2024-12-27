@@ -21,6 +21,7 @@ import {
 } from "../../apis/services/Receiver";
 import { ToastContainer } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Loading from "../../components/Loading/Loading";
 
 const TransferMoney = () => {
   const [showModal, setShowModal] = useState(false);
@@ -37,6 +38,7 @@ const TransferMoney = () => {
   const [expandedAccountId, setExpandedAccountId] = useState(null);
   const [editingAccountId, setEditingAccountId] = useState(null);
   const [reload, setReload] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleEditClick = (account) => {
@@ -90,7 +92,9 @@ const TransferMoney = () => {
 
   useEffect(() => {
     async function getAccountList() {
+      setLoading(true);
       const res = await getReceiver();
+      setLoading(false);
       if (res.statusCode !== 200) {
         return;
       }
@@ -135,6 +139,10 @@ const TransferMoney = () => {
     setSearchAccountInfo(res.data);
     setShowBSBAccountInfoScreen(false);
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>

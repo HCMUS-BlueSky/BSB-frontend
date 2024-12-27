@@ -71,7 +71,7 @@ const AccountDetails = () => {
             </p>
             <p>
               <strong>Số dư: </strong>
-              {accountDetails.balance?.toFixed(2) || "0.00"}
+              {accountDetails.balance?.toFixed(2) || "0.00"} VND
             </p>
           </Card.Body>
         </Card>

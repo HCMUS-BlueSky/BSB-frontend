@@ -29,7 +29,6 @@ const InternalTransfer = () => {
   const [account, setAccount] = useState(null);
 
   useEffect(() => {
-    // Automatically fetch account details if passedAccountNumber exists
     if (passedAccountNumber) {
       handleFindAccount(passedAccountNumber);
     }
@@ -40,6 +39,8 @@ const InternalTransfer = () => {
       email: passedAccountNumber,
       amount: "",
       description: "",
+      saveAsReceiver: false,
+      feePayer: "SENDER",
     },
     validationSchema: Yup.object({
       email: Yup.string().required("Vui lòng nhập số tài khoản"),
@@ -56,8 +57,9 @@ const InternalTransfer = () => {
       const response = await transferInternal(
         values.email,
         parseInt(values.amount),
-        "SENDER",
-        values.description
+        values.feePayer,
+        values.description,
+        values.saveAsReceiver
       );
 
       setLoading(false);
@@ -192,10 +194,40 @@ const InternalTransfer = () => {
                     ) : null}
                   </FloatingLabel>
 
+                  <div className="d-flex align-items-center gap-4">
+                    <Form.Check
+                      type={"radio"}
+                      id={`default-radio`}
+                      label={`Người gửi trả phí`}
+                      checked={formik.values.feePayer === "SENDER"}
+                      onChange={() =>
+                        formik.setFieldValue("feePayer", "SENDER")
+                      }
+                      className="mb-3"
+                    />
+                    <Form.Check
+                      type={"radio"}
+                      id={`default-radio`}
+                      label={`Người nhận trả phí`}
+                      checked={formik.values.feePayer === "RECEIVER"}
+                      onChange={() =>
+                        formik.setFieldValue("feePayer", "RECEIVER")
+                      }
+                      className="mb-3"
+                    />
+                  </div>
+
                   <Form.Check
                     type={"checkbox"}
                     id={`default-checkbox`}
-                    label={`Lưu vào Danh sách Chuyển tiền`}
+                    label={`Lưu vào Danh sách người nhận`}
+                    checked={formik.values.saveAsReceiver}
+                    onChange={() =>
+                      formik.setFieldValue(
+                        "saveAsReceiver",
+                        !formik.values.saveAsReceiver
+                      )
+                    }
                     className="mb-3"
                   />
 

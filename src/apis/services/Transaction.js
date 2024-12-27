@@ -4,13 +4,15 @@ export const transferInternal = async (
   accountNumber,
   amount,
   feePayer,
-  description
+  description,
+  saveAsReceiver
 ) => {
   const response = await api.post("/transfer/internal", {
     accountNumber,
     amount,
     feePayer,
     description,
+    saveAsReceiver,
   });
   return response.data;
 };
