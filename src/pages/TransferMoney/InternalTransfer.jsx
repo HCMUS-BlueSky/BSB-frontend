@@ -16,7 +16,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loading from "../../components/Loading/Loading";
-import { getUserByAccountNumber } from "../../apis/services/Account";
+import { getUserInfo } from "../../apis/services/Account";
 
 const InternalTransfer = () => {
   const [loading, setLoading] = useState(false);
@@ -72,7 +72,7 @@ const InternalTransfer = () => {
 
   const handleFindAccount = async (accountNumber) => {
     try {
-      const response = await getUserByAccountNumber(accountNumber);
+      const response = await getUserInfo(accountNumber);
       setAccount({ name: response.data.fullName, status: "success" });
     } catch (error) {
       setAccount({ name: "Không tìm thấy tài khoản", status: "error" });
@@ -136,7 +136,13 @@ const InternalTransfer = () => {
                       type="text"
                       placeholder="name@example.com"
                       {...formik.getFieldProps("email")}
-                      onBlur={() => handleFindAccount(formik.values.email)}
+                      onBlur={() => {
+                        if (formik.values.email.trim()) {
+                          handleFindAccount(formik.values.email);
+                        } else {
+                          setAccount(null);
+                        }
+                      }}
                     />
 
                     {account && (

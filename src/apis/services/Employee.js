@@ -15,7 +15,10 @@ export const getAccountDetails = async (accountId) => {
   return response.data;
 };
 
-export const deposit = async (data) => {
-  const response = await api.post("/employee/topup", data);
+export const deposit = async (accountNumberOrEmail,amount) => {
+  const response = await api.post("/employee/topup", {
+    accountNumberOrEmail,
+    amount,
+  });
   return response.data;
 };
