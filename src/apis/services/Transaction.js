@@ -29,3 +29,8 @@ export const getTransferHistory = async () => {
   const response = await api.get("/transfer/history");
   return response.data;
 };
+
+export const getTransferDetail = async (transactionId) => {
+  const response = await api.get(`/transfer/history/${transactionId}`);
+  return response.data;
+}

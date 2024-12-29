@@ -3,11 +3,14 @@ import Navbar from "../../components/Navbar";
 import { useParams } from "react-router-dom";
 import { Card, Spinner } from "react-bootstrap";
 import { getAccountDetails } from "../../apis/services/Employee";
+import { getTransferDetail } from "../../apis/services/Transaction";
+import TransactionHistoryDetail from "../../components/TransactionHistoryDetail/TransactionHistoryDetail";
 
 const AccountDetails = () => {
   const { accountId } = useParams();
   const [accountDetails, setAccountDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState([]);
 
   useEffect(() => {
     const fetchAccountDetails = async () => {
@@ -20,7 +23,22 @@ const AccountDetails = () => {
         setLoading(false);
       }
     };
+    const fetchTransferHistory = async () => {
+      try {
+        const response = await getTransferDetail(accountId);
+        const sortedHistory = response.data.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+        setHistory(sortedHistory);
+      } catch (error) {
+        console.error("Failed to fetch transfer history:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     fetchAccountDetails();
+    fetchTransferHistory();
   }, [accountId]);
 
   if (loading) {
@@ -74,7 +92,9 @@ const AccountDetails = () => {
               {accountDetails.balance?.toFixed(2) || "0.00"} VND
             </p>
           </Card.Body>
+        <TransactionHistoryDetail history={history} account={accountDetails} loading={loading} />
         </Card>
+
       </div>
     </>
   );
