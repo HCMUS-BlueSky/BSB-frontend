@@ -1,33 +1,24 @@
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 
-const DropdownBank = ({ bank, selectedBank, setSelectedBank, formikFieldName, setFieldValue }) => {
+const DropdownBank = ({ setVisibleDropdown, bank, selectedBank, setSelectAccount, formikFieldName, setFieldValue, handleFindAccount }) => {
+  const handleSelect = (item) => {
+    setSelectAccount(item.accountNumber); 
+    setFieldValue(formikFieldName, item.accountNumber); 
+    setVisibleDropdown(false); 
+    handleFindAccount(item.accountNumber);
+  }
+  
+  
   return (
-    <Dropdown>
-      <Dropdown.Toggle
-        id="dropdown-basic"
-        className="w-100 p-3 d-flex justify-content-between align-items-center border border-1 border-gray rounded shadow-sm bg-white"
-        style={{
-          backgroundColor: "white",
-          borderColor: "#dee2e6",
-          fontSize: "16px",
-          color: "#495057",
-          textAlign: "left",
-        }}
-      >
-        <span>{selectedBank || "Chọn tài khoản bạn muốn nhắc nợ"}</span>
-      </Dropdown.Toggle>
-
+    <Dropdown show>
       <Dropdown.Menu className="w-100 shadow-sm">
         {bank.map((item) => (
           <Dropdown.Item
             key={item.id}
             eventKey={item.id}
             className="w-100 d-flex align-items-center"
-            onClick={() => {
-              setSelectedBank(item.accountNumber); // Cập nhật state local
-              setFieldValue(formikFieldName, item.accountNumber); // Cập nhật giá trị Formik
-            }}
+            onClick={() => handleSelect(item)}
             style={{
               padding: "10px",
               fontSize: "16px",
@@ -59,4 +50,4 @@ const DropdownBank = ({ bank, selectedBank, setSelectedBank, formikFieldName, se
   );
 };
 
-export default DropdownBank;
+export default DropdownBank; 
