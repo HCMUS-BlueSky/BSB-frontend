@@ -8,6 +8,7 @@ export const authenticate = async (email, password, recaptchaToken) => {
       headers: {
         recaptcha: recaptchaToken,
       },
+      withCredentials: true
     }
   );
   return response.data;
