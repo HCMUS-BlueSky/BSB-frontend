@@ -10,17 +10,19 @@ import {
   sendOtpForRemind,
 } from "../../apis/services/Remind";
 import Loading from "../Loading/Loading";
+import { useNavigate } from "react-router-dom";
 
-const RequestFromModal = ({ setReload, show, onHide, data }) => {
+const RequestFromModal = ({ notification, setReload, show, onHide, data }) => {
   const [otpModalShow, setOtpModalShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showDeleteInput, setShowDeleteInput] = useState(false);
+  const navigate = useNavigate();
 
   const handleCancelDebt = async (values) => {
     try {
       const response = await deleteRemind(data._id, values.deleteMessage);
 
-      if (response.statusCode === 200) {
+      if (response.statusCode === 200 && !notification) {
         setReload((prev) => !prev);
       }
 
@@ -49,7 +51,11 @@ const RequestFromModal = ({ setReload, show, onHide, data }) => {
     try {
       const response = await confirmRemind(data._id, otp);
       if (response.statusCode === 200) {
-        setReload((prev) => !prev);
+        if (notification) {
+          navigate("/");
+        } else {
+          setReload((prev) => !prev);
+        }
         setOtpModalShow(false);
       }
     } catch (error) {

@@ -23,16 +23,16 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
         item.accountNumber.includes(value)
       );
       if (filterData.length === 0) {
-        filterData.push({ 
-          name: "Chọn để tiếp tục tìm kiếm", 
-          status: "error", 
-          accountNumber: value, 
-          bank: "Timo" 
+        filterData.push({
+          name: "Chọn để tiếp tục tìm kiếm",
+          status: "error",
+          accountNumber: value,
+          bank: "Timo",
         });
       }
       setFilterBank(filterData);
     }
-  }
+  };
 
   const handleFindAccount = async (accountNumber) => {
     console.log(accountNumber);
@@ -42,11 +42,14 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
       const response = await getUserInfo(accountNumber);
       setAccount({ name: response.data.fullName, status: "success" });
     } catch (error) {
-      setAccount({ name: "Không tìm thấy tài khoản", status: "error", message: "" });
+      setAccount({
+        name: "Không tìm thấy tài khoản",
+        status: "error",
+        message: "",
+      });
       console.error("Error fetching account details:", error);
     }
   };
-  
 
   useEffect(() => {
     async function fetchReceiverData() {
@@ -143,7 +146,7 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
 
           <Row className="d-flex justify-content-center align-items-center mb-4">
             <Col xs={12} md={10}>
-            <FloatingLabel
+              <FloatingLabel
                 controlId="floatingInput"
                 label="Nhập số tài khoản hoặc email"
                 className=""
@@ -179,22 +182,20 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
                     )}
                 </>
               )}
-                
+
               {account && (
                 <div
                   className="ms-1"
                   style={{
                     fontSize: "0.875rem",
-                    color:
-                      account.status === "success" ? "#6c757d" : "#dc3545",
+                    color: account.status === "success" ? "#6c757d" : "#dc3545",
                     fontWeight: 400,
                     paddingTop: "10px",
                   }}
                 >
-                  {account.name} | Timo
+                  {account.name}
                 </div>
               )}
-                
             </Col>
           </Row>
 
@@ -252,4 +253,4 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
   );
 };
 
-export default PopUpNewDebtReminder; 
+export default PopUpNewDebtReminder;

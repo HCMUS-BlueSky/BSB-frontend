@@ -45,33 +45,6 @@ const RoleProtectedRoute = ({ allowedRoles }) => {
 
 const App = () => {
   const { isAuthenticated, loading } = useAuth();
-  const [notifications, setNotifications] = useState([]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("access_token");
-
-    const eventSource = new EventSource(
-      `http://localhost:3000/api/live-notification?token=${token}`
-    );
-
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-
-      const { title, message, createdAt, isRead, _id } = data;
-
-      setNotifications((prev) => [
-        ...prev,
-        { id: _id, title, message, createdAt, isRead },
-      ]);
-    };
-    eventSource.onerror = (error) => {
-      console.error("EventSource failed:", error);
-      eventSource.close();
-    };
-    return () => {
-      eventSource.close();
-    };
-  }, []);
 
   if (loading) {
     return <Loading />;
@@ -96,10 +69,7 @@ const App = () => {
         <Route path="/transfer-money/internal" element={<InternalTransfer />} />
         <Route path="/transfer-money/external" element={<ExternalTransfer />} />
         <Route path="/profile" element={<Profile />} />
-        <Route
-          path="/notification"
-          element={<Notification notifications={notifications} />}
-        />
+        <Route path="/notification" element={<Notification />} />
       </Route>
 
       <Route element={<RoleProtectedRoute allowedRoles={["EMPLOYEE"]} />}>

@@ -7,12 +7,14 @@ import { getTransferHistory } from "../../apis/services/Transaction";
 import TransactionHistory from "../../components/TransactionHistory.jsx/TransactionHistory";
 import Loading from "../../components/Loading/Loading";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { useNotifications } from "../../context/NotificationContext";
 
 const Home = () => {
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
   const [history, setHistory] = useState([]);
+  const { notifications } = useNotifications();
 
   useEffect(() => {
     async function fetchAccountData() {
@@ -66,7 +68,9 @@ const Home = () => {
                   <div className="d-flex justify-content-between p-2">
                     <div className="text-light">
                       <i className="bi bi-bell"></i>
-                      <span className="m-2">Lời nhắc của bạn</span>
+                      <span className="m-2">
+                        Lời nhắc của bạn <span>( {notifications.length} )</span>
+                      </span>
                     </div>
                   </div>
                 </Button>
@@ -143,7 +147,6 @@ const Home = () => {
           />
 
           <Row></Row>
-       
         </Container>
       </main>
 

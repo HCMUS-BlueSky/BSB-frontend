@@ -137,6 +137,7 @@ const RequestList = ({
           />
         ) : (
           <RequestFromModal
+            notification={false}
             setReload={setReload}
             show={modalShow}
             onHide={() => setModalShow(false)}
