@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer } from "react";
 import Navbar from "../../components/Navbar";
 import { Button, Col, Container, Row, Card } from "react-bootstrap";
 import RequestList from "../../components/PaymentRequest/RequestList";
@@ -10,25 +10,77 @@ import { getAllRemind } from "../../apis/services/Remind";
 import Loading from "../../components/Loading/Loading";
 import CompletedList from "../../components/PaymentRequest/CompletedList";
 
+const ACTIONS = {
+  SET_LOADING: "SET_LOADING",
+  SET_ACCOUNT: "SET_ACCOUNT",
+  SET_DEBT_REMINDERS: "SET_DEBT_REMINDERS",
+  TOGGLE_REQUEST_LIST: "TOGGLE_REQUEST_LIST",
+  TOGGLE_COMPLETED_LIST: "TOGGLE_COMPLETED_LIST",
+  SET_SORT_REQUEST: "SET_SORT_REQUEST",
+  SET_SORT_COMPLETED: "SET_SORT_COMPLETED",
+  TOGGLE_NEW_DEBT_REMINDER: "TOGGLE_NEW_DEBT_REMINDER",
+  SET_RELOAD: "SET_RELOAD",
+};
+
+const initialState = {
+  isRequestListVisible: true,
+  isCompletedListVisible: true,
+  sortOptionRequestList: "Gần đây nhất",
+  sortOptionCompletedList: "Gần đây nhất",
+  account: null,
+  debtReminders: [],
+  showNewDebtReminder: false,
+  loading: true,
+  reload: false,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.SET_LOADING:
+      return { ...state, loading: action.payload };
+
+    case ACTIONS.SET_ACCOUNT:
+      return { ...state, account: action.payload };
+
+    case ACTIONS.SET_DEBT_REMINDERS:
+      return { ...state, debtReminders: action.payload };
+
+    case ACTIONS.TOGGLE_REQUEST_LIST:
+      return { ...state, isRequestListVisible: !state.isRequestListVisible };
+
+    case ACTIONS.TOGGLE_COMPLETED_LIST:
+      return {
+        ...state,
+        isCompletedListVisible: !state.isCompletedListVisible,
+      };
+
+    case ACTIONS.SET_SORT_REQUEST:
+      return { ...state, sortOptionRequestList: action.payload };
+
+    case ACTIONS.SET_SORT_COMPLETED:
+      return { ...state, sortOptionCompletedList: action.payload };
+
+    case ACTIONS.TOGGLE_NEW_DEBT_REMINDER:
+      return { ...state, showNewDebtReminder: !state.showNewDebtReminder };
+
+    case ACTIONS.SET_RELOAD:
+      return { ...state, reload: !state.reload };
+
+    default:
+      return state;
+  }
+};
+
 const PaymentRequest = () => {
-  const [isRequestListVisible, setIsRequestListVisible] = useState(true);
-  const [isCompletedListVisible, setIsCompletedListVisible] = useState(true);
-  const [sortOptionRequestList, setSortOptionRequestList] =
-    useState("Gần đây nhất");
-  const [sortOptionCompletedList, setSortOptionCompletedList] =
-    useState("Gần đây nhất");
-  const [account, setAccount] = useState(null);
-  const [debtReminders, setDebtReminders] = useState([]);
-  const [showNewDebtReminder, setShowNewDebtReminder] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [reload, setReload] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getAllRemind();
         const accountResponse = await getAccount();
-        setAccount(accountResponse.data);
+
+        dispatch({ type: ACTIONS.SET_ACCOUNT, payload: accountResponse.data });
 
         const reminders = response.data
           .map((item) => {
@@ -47,21 +99,20 @@ const PaymentRequest = () => {
             return null;
           })
           .filter(Boolean);
-        setDebtReminders(reminders);
+
+        dispatch({ type: ACTIONS.SET_DEBT_REMINDERS, payload: reminders });
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
-        setLoading(false);
+        dispatch({ type: ACTIONS.SET_LOADING, payload: false });
       }
     };
     fetchData();
-  }, [reload]);
+  }, [state.reload]);
 
-  const toggleVisibility = (setState) => setState((prev) => !prev);
-
-  const moneyAnalysis = debtReminders.reduce(
+  const moneyAnalysis = state.debtReminders.reduce(
     (acc, item) => {
-      if (item.status != "PENDING") return acc;
+      if (item.status !== "PENDING") return acc;
       if (item.direction === "sent") {
         acc.totalReceived += item.amount;
       } else {
@@ -72,7 +123,7 @@ const PaymentRequest = () => {
     { totalReceived: 0, totalPaid: 0 }
   );
 
-  if (loading) return <Loading />;
+  if (state.loading) return <Loading />;
 
   return (
     <>
@@ -84,7 +135,7 @@ const PaymentRequest = () => {
               <Card className="shadow-sm p-3">
                 <Row className="d-flex justify-content-between p-1">
                   {[
-                    { label: "Số dư khả dụng", value: account?.balance },
+                    { label: "Số dư khả dụng", value: state.account?.balance },
                     {
                       label: "Tổng tiền nhận",
                       value: moneyAnalysis.totalReceived,
@@ -114,40 +165,50 @@ const PaymentRequest = () => {
                 <Button
                   variant="primary"
                   className="w-auto shadow-sm py-2 text-light"
-                  onClick={() => setShowNewDebtReminder(true)}
+                  onClick={() =>
+                    dispatch({ type: ACTIONS.TOGGLE_NEW_DEBT_REMINDER })
+                  }
                 >
                   <i className="bi bi-plus me-2"></i> TẠO NHẮC NỢ MỚI
                 </Button>
                 <PopUpNewDebtReminder
-                  setReload={setReload}
-                  show={showNewDebtReminder}
-                  handleClose={() => setShowNewDebtReminder(false)}
+                  setReload={() => dispatch({ type: ACTIONS.SET_RELOAD })}
+                  show={state.showNewDebtReminder}
+                  handleClose={() =>
+                    dispatch({ type: ACTIONS.TOGGLE_NEW_DEBT_REMINDER })
+                  }
                 />
               </div>
             </Col>
           </Row>
 
           <RequestList
-            setReload={setReload}
-            requestList={debtReminders.filter(
+            setReload={() => dispatch({ type: ACTIONS.SET_RELOAD })}
+            requestList={state.debtReminders.filter(
               (item) => item.status === "PENDING"
             )}
-            sortOptionRequestList={sortOptionRequestList}
-            toggleRequestList={() => toggleVisibility(setIsRequestListVisible)}
-            isRequestListVisible={isRequestListVisible}
-            handleSortRequestChange={setSortOptionRequestList}
+            sortOptionRequestList={state.sortOptionRequestList}
+            toggleRequestList={() =>
+              dispatch({ type: ACTIONS.TOGGLE_REQUEST_LIST })
+            }
+            isRequestListVisible={state.isRequestListVisible}
+            handleSortRequestChange={(value) =>
+              dispatch({ type: ACTIONS.SET_SORT_REQUEST, payload: value })
+            }
           />
 
           <CompletedList
-            completedList={debtReminders.filter(
+            completedList={state.debtReminders.filter(
               (item) => item.status === "FULFILLED"
             )}
-            sortOptionCompletedList={sortOptionCompletedList}
+            sortOptionCompletedList={state.sortOptionCompletedList}
             toggleCompletedList={() =>
-              toggleVisibility(setIsCompletedListVisible)
+              dispatch({ type: ACTIONS.TOGGLE_COMPLETED_LIST })
             }
-            isCompletedListVisible={isCompletedListVisible}
-            handleSortCompletedChange={setSortOptionCompletedList}
+            isCompletedListVisible={state.isCompletedListVisible}
+            handleSortCompletedChange={(value) =>
+              dispatch({ type: ACTIONS.SET_SORT_COMPLETED, payload: value })
+            }
           />
         </Container>
       </main>

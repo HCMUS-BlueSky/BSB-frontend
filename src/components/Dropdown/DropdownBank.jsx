@@ -1,15 +1,22 @@
 import React from "react";
 import { Dropdown } from "react-bootstrap";
 
-const DropdownBank = ({ setVisibleDropdown, bank, selectedBank, setSelectAccount, formikFieldName, setFieldValue, handleFindAccount }) => {
+const DropdownBank = ({
+  setVisibleDropdown,
+  bank,
+  selectedBank,
+  setSelectAccount,
+  formikFieldName,
+  setFieldValue,
+  handleFindAccount,
+}) => {
   const handleSelect = (item) => {
-    setSelectAccount(item.accountNumber); 
-    setFieldValue(formikFieldName, item.accountNumber); 
-    setVisibleDropdown(false); 
+    setSelectAccount(item.accountNumber);
+    setFieldValue(formikFieldName, item.accountNumber);
+    setVisibleDropdown(false);
     handleFindAccount(item.accountNumber);
-  }
-  
-  
+  };
+
   return (
     <Dropdown show>
       <Dropdown.Menu className="w-100 shadow-sm">
@@ -50,4 +57,4 @@ const DropdownBank = ({ setVisibleDropdown, bank, selectedBank, setSelectAccount
   );
 };
 
-export default DropdownBank; 
+export default DropdownBank;

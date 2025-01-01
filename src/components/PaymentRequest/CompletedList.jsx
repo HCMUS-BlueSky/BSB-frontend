@@ -134,7 +134,6 @@ const CompletedList = ({
         </Col>
       </Row>
 
-      {/* Modal Component */}
       {selectedItem && (
         <RequestCompleteModal
           show={showModal}

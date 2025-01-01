@@ -9,6 +9,7 @@ import {
   Modal,
   Row,
   Toast,
+  ToastContainer,
 } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import "./TransferMoney.scss";
@@ -19,7 +20,6 @@ import {
   getReceiver,
   updateReceiver,
 } from "../../apis/services/Receiver";
-import { ToastContainer } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Loading from "../../components/Loading/Loading";
 
@@ -43,7 +43,7 @@ const TransferMoney = () => {
 
   const handleEditClick = (account) => {
     setEditingAccountId(account._id);
-    setNickname(account.nickname); // Populate input with the current nickname
+    setNickname(account.nickname);
   };
 
   const handleEditSaveClick = async (accountId) => {
@@ -61,7 +61,7 @@ const TransferMoney = () => {
   };
 
   const handleEditCancelClick = () => {
-    setEditingAccountId(null); // Exit edit mode without saving
+    setEditingAccountId(null);
   };
 
   const handleAccountClick = (accountId) => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useReducer } from "react";
 import {
   Button,
   Card,
@@ -11,33 +11,111 @@ import {
 import ReCAPTCHA from "react-google-recaptcha";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+
+const ACTIONS = {
+  SET_EMAIL: "SET_EMAIL",
+  SET_PASSWORD: "SET_PASSWORD",
+  SET_RECAPTCHA: "SET_RECAPTCHA",
+  SET_TOUCHED: "SET_TOUCHED",
+  RESET_FORM: "RESET_FORM",
+};
+
+const initialState = {
+  email: {
+    value: "",
+    error: "",
+    touched: false,
+  },
+  password: {
+    value: "",
+    error: "",
+    touched: false,
+  },
+  recaptchaToken: null,
+};
+
+const validateEmail = (email) => {
+  if (!email) return "Vui lòng nhập email";
+  if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)) {
+    return "Email không hợp lệ";
+  }
+  return "";
+};
+
+const validatePassword = (password) => {
+  if (!password) return "Vui lòng nhập mật khẩu";
+  return "";
+};
+
+const formReducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.SET_EMAIL:
+      return {
+        ...state,
+        email: {
+          ...state.email,
+          value: action.payload,
+          error: validateEmail(action.payload),
+        },
+      };
+
+    case ACTIONS.SET_PASSWORD:
+      return {
+        ...state,
+        password: {
+          ...state.password,
+          value: action.payload,
+          error: validatePassword(action.payload),
+        },
+      };
+
+    case ACTIONS.SET_RECAPTCHA:
+      return {
+        ...state,
+        recaptchaToken: action.payload,
+      };
+
+    case ACTIONS.SET_TOUCHED:
+      return {
+        ...state,
+        [action.field]: {
+          ...state[action.field],
+          touched: true,
+        },
+      };
+
+    case ACTIONS.RESET_FORM:
+      return initialState;
+
+    default:
+      return state;
+  }
+};
 
 const Login = () => {
+  const [state, dispatch] = useReducer(formReducer, initialState);
   const { login } = useAuth();
-  const [recaptchaToken, setRecaptchaToken] = React.useState(null);
 
-  const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Email không hợp lệ")
-        .required("Vui lòng nhập email"),
-      password: Yup.string().required("Vui lòng nhập mật khẩu"),
-    }),
-    onSubmit: async (values) => {
-      if (!recaptchaToken) {
-        alert("Vui lòng xác nhận reCAPTCHA!");
-        return;
-      }
-      await login(values.email, values.password, recaptchaToken);
-      setRecaptchaToken(null);
-    },
-  });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    dispatch({ type: ACTIONS.SET_TOUCHED, field: "email" });
+    dispatch({ type: ACTIONS.SET_TOUCHED, field: "password" });
+
+    if (!state.recaptchaToken) {
+      alert("Vui lòng xác nhận reCAPTCHA!");
+      return;
+    }
+
+    if (!state.email.error && !state.password.error) {
+      await login(
+        state.email.value,
+        state.password.value,
+        state.recaptchaToken
+      );
+      dispatch({ type: ACTIONS.SET_RECAPTCHA, payload: null });
+    }
+  };
 
   return (
     <Container
@@ -51,16 +129,28 @@ const Login = () => {
               <h3 className="w-100 text-center mt-3">Đăng nhập</h3>
             </Card.Title>
             <Card.Body>
-              <Form onSubmit={formik.handleSubmit}>
+              <Form onSubmit={handleSubmit}>
                 <FloatingLabel className="mb-3" controlId="email" label="Email">
                   <Form.Control
                     type="email"
                     placeholder="Enter email"
-                    {...formik.getFieldProps("email")}
-                    isInvalid={formik.touched.email && !!formik.errors.email}
+                    value={state.email.value}
+                    onChange={(e) =>
+                      dispatch({
+                        type: ACTIONS.SET_EMAIL,
+                        payload: e.target.value,
+                      })
+                    }
+                    onBlur={() =>
+                      dispatch({
+                        type: ACTIONS.SET_TOUCHED,
+                        field: "email",
+                      })
+                    }
+                    isInvalid={state.email.touched && !!state.email.error}
                   />
                   <Form.Control.Feedback type="invalid">
-                    {formik.errors.email}
+                    {state.email.error}
                   </Form.Control.Feedback>
                 </FloatingLabel>
 
@@ -72,20 +162,40 @@ const Login = () => {
                   <Form.Control
                     type="password"
                     placeholder="Password"
-                    {...formik.getFieldProps("password")}
-                    isInvalid={
-                      formik.touched.password && !!formik.errors.password
+                    value={state.password.value}
+                    onChange={(e) =>
+                      dispatch({
+                        type: ACTIONS.SET_PASSWORD,
+                        payload: e.target.value,
+                      })
                     }
+                    onBlur={() =>
+                      dispatch({
+                        type: ACTIONS.SET_TOUCHED,
+                        field: "password",
+                      })
+                    }
+                    isInvalid={state.password.touched && !!state.password.error}
                   />
                   <Form.Control.Feedback type="invalid">
-                    {formik.errors.password}
+                    {state.password.error}
                   </Form.Control.Feedback>
                 </FloatingLabel>
 
                 <ReCAPTCHA
                   sitekey="6LeHbaEqAAAAAPrW2icmbu9Kz2RNuufAAhexE9wi"
-                  onChange={(token) => setRecaptchaToken(token)}
-                  onExpired={() => setRecaptchaToken(null)}
+                  onChange={(token) =>
+                    dispatch({
+                      type: ACTIONS.SET_RECAPTCHA,
+                      payload: token,
+                    })
+                  }
+                  onExpired={() =>
+                    dispatch({
+                      type: ACTIONS.SET_RECAPTCHA,
+                      payload: null,
+                    })
+                  }
                 />
 
                 <Button

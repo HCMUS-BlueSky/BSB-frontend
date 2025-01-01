@@ -4,9 +4,9 @@ import Navbar from "../../components/Navbar";
 import PersonalInformationCard from "../../components/Profile/PersonalInformationCard";
 import AccountDetailCard from "../../components/Profile/AccountDetailCard";
 import AccountInformationCard from "../../components/Profile/AccountInformationCard";
-import { getUser,updateUser } from "../../apis/services/User"; 
-import { getAccount } from "../../apis/services/Account"; 
-import { formatCurrency } from "../../utils/formatCurrency"; 
+import { getUser, updateUser } from "../../apis/services/User";
+import { getAccount } from "../../apis/services/Account";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 function Profile() {
   const [editing, setEditing] = useState({
@@ -45,7 +45,7 @@ function Profile() {
           fullName: userData.fullName || "",
           email: userData.email || "",
           phone: userData.phone || "",
-        })
+        });
         setOriginalValues({
           address: userData.address || "",
           dob: userData.dob || "",
@@ -78,7 +78,6 @@ function Profile() {
     setOriginalValues((prev) => ({ ...prev, [field]: inputValues[field] }));
   };
 
-
   const handleSaveClick = async (field) => {
     try {
       const updateUserDto = { [field]: inputValues[field] };
@@ -88,7 +87,6 @@ function Profile() {
       console.error(`Error updating ${field}:`, error);
     }
   };
-  
 
   const handleInputChange = (e, field) => {
     setInputValues((prev) => ({ ...prev, [field]: e.target.value }));
@@ -98,7 +96,7 @@ function Profile() {
     setEditing((prev) => ({ ...prev, [field]: false }));
     setInputValues((prev) => ({
       ...prev,
-      [field]: originalValues[field], // Reset to original value
+      [field]: originalValues[field],
     }));
   };
 
@@ -107,24 +105,22 @@ function Profile() {
       <Navbar />
       <main className="py-3">
         <Container>
-          {/* Profile Picture and Info */}
           <Row className="mb-4 d-flex justify-content-center align-items-center">
             <Col className="d-flex align-items-center flex-column">
               <h1 className="text-primary">{userData.fullName}</h1>
               <p className="text-muted">
                 Số dư khả dụng:{" "}
-                <span className="fw-bold text-primary">{formatCurrency(accountData.balance)}</span>
+                <span className="fw-bold text-primary">
+                  {formatCurrency(accountData.balance)}
+                </span>
               </p>
             </Col>
           </Row>
 
-          {/* Account Information */}
           <AccountInformationCard accountNumber={accountData.accountNumber} />
 
-          {/* Account Details */}
           <AccountDetailCard email={userData.email} phone={userData.phone} />
 
-          {/* Personal Information Card */}
           <PersonalInformationCard
             editing={editing}
             inputValues={inputValues}

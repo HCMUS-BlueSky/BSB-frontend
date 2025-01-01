@@ -1,7 +1,6 @@
-// src/components/TransactionList.js
-import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import { formatCurrency } from '../../utils/formatCurrency';
+import React from "react";
+import { Row, Col } from "react-bootstrap";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 const TransactionList = ({ groupedByDate, isMoneyVisible, visibleMoney }) => {
   return (
@@ -22,7 +21,10 @@ const TransactionList = ({ groupedByDate, isMoneyVisible, visibleMoney }) => {
                     <Row
                       key={index}
                       className="p-3 d-flex justify-content-between align-items-center list-item-hover"
-                      style={{ borderTop: "1px solid #f4f5f6", color: item.type === 'Nhận' ? 'green' : null, }}
+                      style={{
+                        borderTop: "1px solid #f4f5f6",
+                        color: item.type === "Nhận" ? "green" : null,
+                      }}
                     >
                       <Col className="d-flex align-items-center">
                         <img
@@ -47,17 +49,16 @@ const TransactionList = ({ groupedByDate, isMoneyVisible, visibleMoney }) => {
                               : "mb-0"
                           }
                         >
-                          {
-                            isMoneyVisible ? 
-                              (item.type === "Nhận" ? "-" + formatCurrency(item.amount) : "+" + formatCurrency(item.amount))
-                            : visibleMoney
-                          }
+                          {isMoneyVisible
+                            ? item.type === "Nhận"
+                              ? "-" + formatCurrency(item.amount)
+                              : "+" + formatCurrency(item.amount)
+                            : visibleMoney}
                         </h6>
                       </Col>
                     </Row>
                   ))}
                 </Row>
-                
               ) : (
                 <div className="pb-4 text-center">
                   Bạn không có giao dịch vào nào

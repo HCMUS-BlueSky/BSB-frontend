@@ -67,7 +67,7 @@ const TransactionHistory = ({ history, account, loading }) => {
                       style={{ fontSize: "0.85rem" }}
                     >
                       Thời gian:{" "}
-                      {moment(transaction.createdAt).format("DD/MM/YYYY HH:mm")}
+                      {moment(transaction.updatedAt).format("DD/MM/YYYY HH:mm")}
                     </p>
                   </Col>
 

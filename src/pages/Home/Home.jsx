@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/Navbar";
-import { Button, Col, Container, Row, Toast, Card } from "react-bootstrap";
+import { Button, Col, Container, Row, Toast } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { getAccount } from "../../apis/services/Account";
 import { getTransferHistory } from "../../apis/services/Transaction";
@@ -48,7 +48,7 @@ const Home = () => {
     if (account?.accountNumber) {
       navigator.clipboard.writeText(account.accountNumber);
       setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000); // Automatically hide toast after 3 seconds
+      setTimeout(() => setShowToast(false), 3000);
     }
   };
 
@@ -150,7 +150,6 @@ const Home = () => {
         </Container>
       </main>
 
-      {/* Toast Notification */}
       <div
         style={{
           position: "fixed",

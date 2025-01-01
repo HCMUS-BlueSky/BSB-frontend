@@ -1,8 +1,8 @@
 import React from "react";
 import { Row, Col, Card } from "react-bootstrap";
-import "bootstrap-icons/font/bootstrap-icons.css"; 
+import "bootstrap-icons/font/bootstrap-icons.css";
 
-const AccountInformationCard = ({accountNumber}) => {
+const AccountInformationCard = ({ accountNumber }) => {
   return (
     <Row className="d-flex justify-content-center">
       <Col xs={12} md={8}>
@@ -12,7 +12,6 @@ const AccountInformationCard = ({accountNumber}) => {
             <h1 className="mb-0 fs-4">THÔNG TIN TÀI KHOẢN</h1>
           </div>
 
-          {/* Account Number */}
           <Row
             className="p-3 d-flex align-items-center"
             style={{ borderTop: "1px solid #f4f5f6" }}
@@ -25,7 +24,6 @@ const AccountInformationCard = ({accountNumber}) => {
             </div>
           </Row>
 
-          {/* Bank Name */}
           <Row
             className="p-3 d-flex align-items-center"
             style={{ borderTop: "1px solid #f4f5f6" }}
@@ -37,9 +35,6 @@ const AccountInformationCard = ({accountNumber}) => {
                   <strong>Tên ngân hàng:</strong> BSB Digital Bank by Blue Sky
                 </p>
               </div>
-              {/* <p className="mb-0">
-                Mã SWIFT: <strong className="fw-bold">ABCXYZ</strong>
-              </p> */}
             </Col>
           </Row>
         </Card>
