@@ -41,10 +41,9 @@ const ChangePassword = () => {
         .required("Vui lòng xác nhận mật khẩu"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      const token = new URLSearchParams(location.search).get("token");
 
       try {
-        await changePassword(values.oldPassword, values.newPassword, token);
+        await changePassword(values.oldPassword, values.newPassword);
         setToastMessage("Mật khẩu đã được thay đổi thành công!");
         setToastVariant("success");
         resetForm(); 
