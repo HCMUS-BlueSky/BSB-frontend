@@ -4,7 +4,7 @@ import { Container, Row, Col, Form, FloatingLabel, Button } from "react-bootstra
 import DropdownExternalBank from "../../components/Dropdown/DropdownExternalBank";
 
 const ExternalTransfer = () => {
-  const [step, setStep] = useState(1); // Quản lý bước hiện tại
+  const [step, setStep] = useState(1); 
   const [banks, setBanks] = useState([
     { id: 1, name: "Ngân hàng A", bank: "Ngân hàng TMCP Công Thương Việt Nam", icon: null },
     { id: 2, name: "Ngân hàng B", bank: "Ngân hàng Đầu tư và Phát triển Việt Nam", icon: null },
@@ -17,26 +17,22 @@ const ExternalTransfer = () => {
     { id: 3, accountNumber: "123456789C", accountName: "Nguyễn Văn C" },
   ]);
 
-  const [selectedBank, setSelectedBank] = useState(null); // Ngân hàng được chọn
-  const [selectedAccount, setSelectedAccount] = useState(null); // Tài khoản được chọn
-  const [otp, setOtp] = useState(""); // Mã OTP
+  const [selectedBank, setSelectedBank] = useState(null); 
+  const [selectedAccount, setSelectedAccount] = useState(null); 
+  const [otp, setOtp] = useState(""); 
 
-  // Tìm tài khoản theo số tài khoản
   const handleFindAccount = (value) => {
     const account = accounts.find((acc) => acc.accountNumber === value);
     setSelectedAccount(account ? account.accountName : "Không tìm thấy tài khoản");
   };
 
-  // Xử lý gửi thông tin
   const handleSubmit = (e) => {
     e.preventDefault();
-    setStep(2); // Chuyển sang bước xác nhận
+    setStep(2); 
   };
 
-  // Xử lý xác nhận OTP
   const handleConfirm = () => {
     console.log("OTP:", otp);
-    // Thực hiện hành động sau khi xác nhận
   };
 
   return (
@@ -62,7 +58,6 @@ const ExternalTransfer = () => {
                 </Col>
               </Row>
 
-              {/* Nội dung từng bước */}
               {step === 1 ? (
                 <Form onSubmit={handleSubmit} className="w-100">
                   <DropdownExternalBank banks={banks} selectedBank={selectedBank} setSelectedBank={setSelectedBank} />
