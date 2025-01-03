@@ -15,10 +15,18 @@ export const authenticate = async (email, password, recaptchaToken) => {
 };
 
 
-export const changePassword = async (oldPassword, newPassword, token) => {
+export const changePassword = async (oldPassword, newPassword) => {
   const response = await api.put(
     "/auth/change-password", 
-    { oldPassword, newPassword },
+    { oldPassword, newPassword }
+  );
+  return response.data;
+};
+
+export const resetPassword = async (newPassword, token) => {
+  const response = await api.put(
+    "/auth/reset-password", 
+    { newPassword },
     {
       headers: {
         Authorization: `Bearer ${token}`,

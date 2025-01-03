@@ -16,6 +16,7 @@ import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import EmployeeList from "./pages/Admin/EmployeeList";
 import Notification from "./pages/Notification/Notification";
+import ResetPassword from "./pages/ResetPasssword/ResetPassword";
 
 const RoleProtectedRoute = ({ allowedRoles }) => {
   const { loading, isAuthenticated, user } = useAuth();
@@ -57,6 +58,7 @@ const App = () => {
 
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       <Route element={<RoleProtectedRoute allowedRoles={["CUSTOMER"]} />}>
         <Route path="/" element={<Home />} />
