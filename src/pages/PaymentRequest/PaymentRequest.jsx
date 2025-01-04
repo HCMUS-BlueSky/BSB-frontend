@@ -139,6 +139,7 @@ const PaymentRequest = () => {
                     {
                       label: "Tổng tiền nhận",
                       value: moneyAnalysis.totalReceived,
+                      className:"text-success"
                     },
                     {
                       label: "Tổng tiền trả",
@@ -151,7 +152,7 @@ const PaymentRequest = () => {
                       className="d-flex flex-column align-items-center"
                     >
                       <p className="mb-0 text-muted">{label}</p>
-                      <h5 className={className}>{formatCurrency(value)}</h5>
+                      <h5 className={className}>{formatCurrency(value)} VND</h5>
                     </Col>
                   ))}
                 </Row>

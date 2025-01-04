@@ -19,3 +19,15 @@ export const deleteEmployee = async (employeeId) => {
   const response = await api.delete(`/employee/${employeeId}`);
   return response.data;
 };
+
+export const getAdminExternalTransactions = async (limitDays,selectedBankId) => {
+  const response = await api.get("/admin/externalTransactions", {
+    params: { limit: limitDays,bank:selectedBankId },
+  });
+  return response.data;
+};
+
+export const getBanks = async () => {
+  const response = await api.get("/external/banks");
+  return response.data;
+};
