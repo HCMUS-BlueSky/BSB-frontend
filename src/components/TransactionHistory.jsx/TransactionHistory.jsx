@@ -16,14 +16,15 @@ const TransactionHistory = ({ history, account, loading }) => {
           {history.length > 0 ? (
             history.map((transaction) => {
               const isInternal = transaction.sender && transaction.receiver;
+              const isExternal = transaction.type === "EXTERNAL";
               const isSender = isInternal
                 ? transaction.sender._id === account._id
                 : transaction.to._id === account._id;
 
               const counterpartName = isInternal
                 ? isSender
-                  ? transaction.receiver.owner.fullName
-                  : transaction.sender.owner.fullName
+                  ? transaction.sender.accountNumber
+                  : transaction.receiver.accountNumber
                 : isSender
                 ? transaction.from.owner.fullName
                 : transaction.to.owner.fullName;
@@ -40,8 +41,16 @@ const TransactionHistory = ({ history, account, loading }) => {
                 ? "Trả nợ cho"
                 : "Được trả nợ bởi";
 
-              const badgeText = isInternal ? "Nội bộ" : "Nhắc nợ";
-              const badgeVariant = isInternal ? "primary" : "warning";
+              const badgeText = isInternal
+                ? isExternal
+                  ? transaction.receiver.bank.name
+                  : "Nội bộ"
+                : "Nhắc nợ";
+              const badgeVariant = isInternal
+                ? isExternal
+                  ? "info"
+                  : "primary"
+                : "warning";
 
               return (
                 <Row

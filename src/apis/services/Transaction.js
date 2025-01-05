@@ -40,6 +40,7 @@ export const transferExternal = async (
   bankId,
   amount,
   description,
+  feePayer,
   saveAsReceiver
 ) => {
   const response = await api.post("/transfer/external", {
@@ -47,6 +48,7 @@ export const transferExternal = async (
     bankId,
     amount,
     description,
+    feePayer,
     saveAsReceiver,
   });
   return response.data;

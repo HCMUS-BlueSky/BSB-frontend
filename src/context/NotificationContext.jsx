@@ -9,7 +9,7 @@ export const NotificationProvider = ({ children }) => {
     const token = localStorage.getItem("access_token");
 
     const eventSource = new EventSource(
-      `http://localhost:3000/api/live-notification?token=${token}`
+      `http://103.199.18.250:3000/api/live-notification?token=${token}`
     );
 
     eventSource.onmessage = (event) => {

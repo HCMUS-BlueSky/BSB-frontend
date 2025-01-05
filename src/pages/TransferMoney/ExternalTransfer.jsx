@@ -18,6 +18,7 @@ import {
   confirmExternalTransfer,
   transferExternal,
 } from "../../apis/services/Transaction";
+import { useNavigate } from "react-router-dom";
 
 const ExternalTransfer = () => {
   const [loading, setLoading] = useState(false);
@@ -27,6 +28,7 @@ const ExternalTransfer = () => {
   const [selectedAccount, setSelectedAccount] = useState(null);
   const [transaction, setTransaction] = useState(null);
   const [otp, setOtp] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -56,6 +58,7 @@ const ExternalTransfer = () => {
       bankId: "",
       amount: "",
       description: "",
+      feePayer: "SENDER",
     },
     validationSchema: Yup.object({
       accountNumber: Yup.string().required("Vui lòng nhập số tài khoản"),
@@ -73,6 +76,7 @@ const ExternalTransfer = () => {
         selectedBank._id,
         parseInt(values.amount),
         values.description,
+        values.feePayer,
         false
       );
 
@@ -204,6 +208,30 @@ const ExternalTransfer = () => {
                         </div>
                       )}
                   </FloatingLabel>
+
+                  <div className="d-flex align-items-center gap-4">
+                    <Form.Check
+                      type={"radio"}
+                      id={`default-radio`}
+                      label={`Người gửi trả phí`}
+                      checked={formik.values.feePayer === "SENDER"}
+                      onChange={() =>
+                        formik.setFieldValue("feePayer", "SENDER")
+                      }
+                      className="mb-3"
+                    />
+                    <Form.Check
+                      type={"radio"}
+                      id={`default-radio`}
+                      label={`Người nhận trả phí`}
+                      checked={formik.values.feePayer === "RECEIVER"}
+                      onChange={() =>
+                        formik.setFieldValue("feePayer", "RECEIVER")
+                      }
+                      className="mb-3"
+                    />
+                  </div>
+
                   <Button
                     type="submit"
                     className="w-100 p-2 mt-3 text-light"
