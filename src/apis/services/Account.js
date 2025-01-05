@@ -16,3 +16,11 @@ export const getUserInfo = async (accountNumberOrEmail) => {
   });
   return response.data;
 };
+
+export const getExternalUserByAccountNumber = async (accountNumber, bankId) => {
+  const response = await api.post(`/account/external/info`, {
+    accountNumber,
+    bankId,
+  });
+  return response.data;
+};

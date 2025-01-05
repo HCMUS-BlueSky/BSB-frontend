@@ -1,7 +1,7 @@
-import React from 'react'
-import { Dropdown } from 'react-bootstrap'
+import React from "react";
+import { Dropdown } from "react-bootstrap";
 
-const DropdownExternalBank = ({ banks, selectedBank ,setSelectedBank }) => {
+const DropdownExternalBank = ({ banks, selectedBank, setSelectedBank }) => {
   const handleSelect = (item) => {
     setSelectedBank(item);
   };
@@ -19,7 +19,7 @@ const DropdownExternalBank = ({ banks, selectedBank ,setSelectedBank }) => {
           textAlign: "left",
         }}
       >
-        <span>{selectedBank || "Chọn tài khoản bạn muốn nhắc nợ"} </span>
+        <span>{selectedBank.name || "Chọn tài khoản bạn muốn nhắc nợ"} </span>
         <i className="bi bi-chevron-down"></i>
       </Dropdown.Toggle>
       <Dropdown.Menu className="w-100 shadow-sm">
@@ -28,7 +28,7 @@ const DropdownExternalBank = ({ banks, selectedBank ,setSelectedBank }) => {
             key={item.id}
             eventKey={item.id}
             className="w-100 d-flex align-items-center"
-            onClick={() => handleSelect(item.name)}
+            onClick={() => handleSelect(item)}
             style={{
               padding: "10px",
               fontSize: "16px",
@@ -57,4 +57,4 @@ const DropdownExternalBank = ({ banks, selectedBank ,setSelectedBank }) => {
   );
 };
 
-export default DropdownExternalBank
+export default DropdownExternalBank;

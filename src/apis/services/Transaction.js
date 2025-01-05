@@ -33,4 +33,29 @@ export const getTransferHistory = async () => {
 export const getTransferDetail = async (transactionId) => {
   const response = await api.get(`/transfer/history/${transactionId}`);
   return response.data;
-}
+};
+
+export const transferExternal = async (
+  accountNumber,
+  bankId,
+  amount,
+  description,
+  saveAsReceiver
+) => {
+  const response = await api.post("/transfer/external", {
+    accountNumber,
+    bankId,
+    amount,
+    description,
+    saveAsReceiver,
+  });
+  return response.data;
+};
+
+export const confirmExternalTransfer = async (otp, transaction) => {
+  const response = await api.post("/transfer/external/confirm", {
+    otp,
+    transaction,
+  });
+  return response.data;
+};
