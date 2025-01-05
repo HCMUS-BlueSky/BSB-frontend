@@ -108,7 +108,7 @@ const CompletedList = ({
                                 : "mb-0"
                             }
                           >
-                            {formatCurrency(item.amount)}
+                            {formatCurrency(item.amount)} VND
                           </h6>
                         </Col>
                       </Row>

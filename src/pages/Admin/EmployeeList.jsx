@@ -15,6 +15,7 @@ import {
   updateEmployee,
 } from "../../apis/services/Admin";
 import EmployeeModal from "../../components/Admin/EmployeeModal";
+import { useNavigate } from "react-router-dom";
 
 const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
@@ -22,6 +23,7 @@ const EmployeeList = () => {
   const [currentEmployee, setCurrentEmployee] = useState({});
   const [reload, setReload] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -90,13 +92,17 @@ const EmployeeList = () => {
       <Container className="my-4">
         {successMessage && <Alert variant="success">{successMessage}</Alert>}
 
-        <div className="w-100 d-flex justify-content-center">
+        <div className="w-100 d-flex gap-2 justify-content-center">
           <Button
             variant="primary"
             className="mb-3"
             onClick={() => handleShowModal()}
           >
             Thêm nhân viên
+          </Button>
+
+          <Button variant="primary" className="mb-3" onClick={()=>navigate("/admin/cross-check")}>
+            Đối soát
           </Button>
         </div>
 

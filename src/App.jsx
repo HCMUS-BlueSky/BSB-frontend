@@ -17,6 +17,7 @@ import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import EmployeeList from "./pages/Admin/EmployeeList";
 import Notification from "./pages/Notification/Notification";
 import ResetPassword from "./pages/ResetPasssword/ResetPassword";
+import CrossCheck from "./pages/CrossCheck/CrossCheck";
 
 const RoleProtectedRoute = ({ allowedRoles }) => {
   const { loading, isAuthenticated, user } = useAuth();
@@ -81,6 +82,7 @@ const App = () => {
 
       <Route element={<RoleProtectedRoute allowedRoles={["ADMIN"]} />}>
         <Route path="/admin" element={<EmployeeList />} />
+        <Route path="/admin/cross-check" element={<CrossCheck />} />
       </Route>
     </Routes>
   );
