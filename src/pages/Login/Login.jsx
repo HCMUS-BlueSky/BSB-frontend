@@ -184,11 +184,12 @@ const Login = () => {
 
                 <ReCAPTCHA
                   sitekey="6LeHbaEqAAAAAPrW2icmbu9Kz2RNuufAAhexE9wi"
-                  onChange={(token) =>
+                  onChange={(token) =>{
+                    console.log(token);
                     dispatch({
                       type: ACTIONS.SET_RECAPTCHA,
                       payload: token,
-                    })
+                    })}
                   }
                   onExpired={() =>
                     dispatch({
