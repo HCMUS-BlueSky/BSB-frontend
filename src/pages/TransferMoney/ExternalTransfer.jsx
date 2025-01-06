@@ -19,6 +19,7 @@ import {
   transferExternal,
 } from "../../apis/services/Transaction";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const ExternalTransfer = () => {
   const [loading, setLoading] = useState(false);
@@ -29,15 +30,48 @@ const ExternalTransfer = () => {
   const [transaction, setTransaction] = useState(null);
   const [otp, setOtp] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const passedAccountNumber = location.state?.accountNumber || "";
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchBanks() {
       const response = await getRegisteredBanks();
       setBanks(response.data);
       setSelectedBank(response.data[0]);
     }
-    fetchData();
-  }, []);
+
+    fetchBanks();
+
+    if (passedAccountNumber) {
+      fetchAccountDetails(passedAccountNumber);
+    }
+  }, [passedAccountNumber]);
+
+  const fetchAccountDetails = async (accountNumber) => {
+    try {
+      const response = await getExternalUserByAccountNumber(
+        accountNumber,
+        selectedBank?._id
+      );
+      if (response.statusCode === 200) {
+        setAccountDetails({
+          fullName: response.data.full_name,
+          status: "success",
+        });
+      } else {
+        setAccountDetails({
+          fullName: "Không tìm thấy tài khoản",
+          status: "error",
+        });
+      }
+    } catch (error) {
+      setAccountDetails({
+        fullName: "Lỗi khi tìm thông tin tài khoản",
+        status: "error",
+      });
+    }
+  };
 
   const handleFindAccount = async (value) => {
     const response = await getExternalUserByAccountNumber(
@@ -54,7 +88,7 @@ const ExternalTransfer = () => {
 
   const formik = useFormik({
     initialValues: {
-      accountNumber: "",
+      accountNumber: passedAccountNumber || "",
       bankId: "",
       amount: "",
       description: "",

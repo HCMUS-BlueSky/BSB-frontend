@@ -112,10 +112,13 @@ const TransferMoney = () => {
 
   const handleShow = () => setShowModal(true);
 
-  const handleTransferClick = (accountNumber) => {
-    navigate("/transfer-money/internal", { state: { accountNumber } });
+  const handleTransferClick = (accountNumber, accountType) => {
+    if (accountType === "INTERNAL") {
+      navigate("/transfer-money/internal", { state: { accountNumber } });
+    } else {
+      navigate("/transfer-money/external", { state: { accountNumber } });
+    }
   };
-
   const handleSave = async () => {
     const res = await addReceiver({
       accountNumber: accountInfo,
@@ -300,7 +303,7 @@ const TransferMoney = () => {
                       <button
                         className="btn btn-primary text-white"
                         onClick={() =>
-                          handleTransferClick(account.accountNumber)
+                          handleTransferClick(account.accountNumber, account.type)
                         }
                       >
                         CHUYỂN KHOẢN

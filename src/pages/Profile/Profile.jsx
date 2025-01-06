@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button, Modal } from "react-bootstrap";
 import Navbar from "../../components/Navbar";
 import PersonalInformationCard from "../../components/Profile/PersonalInformationCard";
 import AccountDetailCard from "../../components/Profile/AccountDetailCard";
 import AccountInformationCard from "../../components/Profile/AccountInformationCard";
 import { getUser, updateUser } from "../../apis/services/User";
-import { getAccount } from "../../apis/services/Account";
+//import {closeAccount } from "../../apis/services/Account"; // Import closeAccount API
+import { getAccount} from "../../apis/services/Account"; 
 import { formatCurrency } from "../../utils/formatCurrency";
 
 function Profile() {
@@ -31,6 +32,9 @@ function Profile() {
     email: "",
     phone: "",
   });
+
+  const [showModal, setShowModal] = useState(false); // State for modal visibility
+  const [loading, setLoading] = useState(false); // State for loading
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -100,6 +104,21 @@ function Profile() {
     }));
   };
 
+  // const handleCloseAccount = async () => {
+  //   setLoading(true);
+  //   try {
+  //     await closeAccount(accountData.accountNumber);
+  //     alert("Tài khoản đã được đóng thành công.");
+  //     setShowModal(false);
+  //     // Redirect to home or perform other actions after closing account
+  //   } catch (error) {
+  //     console.error("Error closing account:", error);
+  //     alert("Đã xảy ra lỗi khi đóng tài khoản.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   return (
     <>
       <Navbar />
@@ -129,8 +148,43 @@ function Profile() {
             handleInputChange={handleInputChange}
             handleCancelClick={handleCancelClick}
           />
+
+          {/* Add "ĐÓNG TÀI KHOẢN" Button */}
+          <Row className="mt-5">
+            <Col className="d-flex justify-content-center">
+              <Button
+                variant="danger"
+                onClick={() => setShowModal(true)}
+                className="px-5 py-2"
+              >
+                ĐÓNG TÀI KHOẢN
+              </Button>
+            </Col>
+          </Row>
         </Container>
       </main>
+
+      {/* Confirmation Modal */}
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Xác nhận đóng tài khoản</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Bạn có chắc chắn muốn đóng tài khoản không? 
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Hủy
+          </Button>
+          <Button
+            variant="danger"
+            //onClick={handleCloseAccount}
+            disabled={loading}
+          >
+            {loading ? "Đang xử lý..." : "Đóng tài khoản"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
