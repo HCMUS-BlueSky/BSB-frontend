@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { authenticate } from "../apis/services/Auth";
+import { authenticate, refreshToken } from "../apis/services/Auth";
 import { useNavigate } from "react-router-dom";
 import { getUser } from "../apis/services/User";
 
@@ -17,6 +17,17 @@ export const AuthProvider = ({ children }) => {
     const checkTokenValidity = async () => {
       try {
         const res = await getUser();
+        if (res.statusCode === 401) {
+          const refreshRes = await refreshToken();
+
+          if (refreshRes.statusCode !== 200) {
+            setIsAuthenticated(false);
+            return;
+          }
+
+          localStorage.setItem("access_token", refreshRes.data.accessToken);
+        }
+
         if (res.statusCode !== 200) return;
         setUser(res.data);
         setIsAuthenticated(true);
