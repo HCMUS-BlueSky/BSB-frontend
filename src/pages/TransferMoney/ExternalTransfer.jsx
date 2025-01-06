@@ -59,6 +59,7 @@ const ExternalTransfer = () => {
       amount: "",
       description: "",
       feePayer: "SENDER",
+      saveAsReceiver: false,
     },
     validationSchema: Yup.object({
       accountNumber: Yup.string().required("Vui lòng nhập số tài khoản"),
@@ -77,7 +78,7 @@ const ExternalTransfer = () => {
         parseInt(values.amount),
         values.description,
         values.feePayer,
-        false
+        values.saveAsReceiver
       );
 
       setLoading(false);
@@ -231,6 +232,20 @@ const ExternalTransfer = () => {
                       className="mb-3"
                     />
                   </div>
+
+                  <Form.Check
+                    type={"checkbox"}
+                    id={`default-checkbox`}
+                    label={`Lưu vào Danh sách người nhận`}
+                    checked={formik.values.saveAsReceiver}
+                    onChange={() =>
+                      formik.setFieldValue(
+                        "saveAsReceiver",
+                        !formik.values.saveAsReceiver
+                      )
+                    }
+                    className="mb-3"
+                  />
 
                   <Button
                     type="submit"

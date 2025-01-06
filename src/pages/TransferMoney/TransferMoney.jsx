@@ -292,7 +292,9 @@ const TransferMoney = () => {
                         </p>
                         <p className="mb-0">
                           <strong>Ngân hàng:</strong>{" "}
-                          {account.bank || "Chưa xác định"}
+                          {account.type === "INTERNAL"
+                            ? "BSB"
+                            : account.bank.name}
                         </p>
                       </div>
                       <button
