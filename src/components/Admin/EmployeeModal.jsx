@@ -169,7 +169,11 @@ const AccountCreationModal = ({
         <Button variant="secondary" onClick={handleClose}>
           Hủy
         </Button>
-        <Button variant="primary" onClick={formik.handleSubmit}>
+        <Button
+          variant="primary"
+          onClick={formik.handleSubmit}
+          className="text-light"
+        >
           Lưu
         </Button>
       </Modal.Footer>

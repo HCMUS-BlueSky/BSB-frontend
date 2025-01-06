@@ -5,9 +5,9 @@ import PersonalInformationCard from "../../components/Profile/PersonalInformatio
 import AccountDetailCard from "../../components/Profile/AccountDetailCard";
 import AccountInformationCard from "../../components/Profile/AccountInformationCard";
 import { getUser, updateUser } from "../../apis/services/User";
-//import {closeAccount } from "../../apis/services/Account"; // Import closeAccount API
-import { getAccount} from "../../apis/services/Account"; 
+import { disableAccount, getAccount } from "../../apis/services/Account";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const [editing, setEditing] = useState({
@@ -33,8 +33,9 @@ function Profile() {
     phone: "",
   });
 
-  const [showModal, setShowModal] = useState(false); // State for modal visibility
-  const [loading, setLoading] = useState(false); // State for loading
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -104,20 +105,21 @@ function Profile() {
     }));
   };
 
-  // const handleCloseAccount = async () => {
-  //   setLoading(true);
-  //   try {
-  //     await closeAccount(accountData.accountNumber);
-  //     alert("Tài khoản đã được đóng thành công.");
-  //     setShowModal(false);
-  //     // Redirect to home or perform other actions after closing account
-  //   } catch (error) {
-  //     console.error("Error closing account:", error);
-  //     alert("Đã xảy ra lỗi khi đóng tài khoản.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const handleCloseAccount = async () => {
+    setLoading(true);
+    try {
+      const response = await disableAccount();
+
+      if (response.statusCode === 200) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error closing account:", error);
+    } finally {
+      setShowModal(false);
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -149,13 +151,11 @@ function Profile() {
             handleCancelClick={handleCancelClick}
           />
 
-          {/* Add "ĐÓNG TÀI KHOẢN" Button */}
           <Row className="mt-5">
             <Col className="d-flex justify-content-center">
               <Button
-                variant="danger"
                 onClick={() => setShowModal(true)}
-                className="px-5 py-2"
+                className="px-5 py-2 text-light"
               >
                 ĐÓNG TÀI KHOẢN
               </Button>
@@ -164,21 +164,18 @@ function Profile() {
         </Container>
       </main>
 
-      {/* Confirmation Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận đóng tài khoản</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          Bạn có chắc chắn muốn đóng tài khoản không? 
-        </Modal.Body>
+        <Modal.Body>Bạn có chắc chắn muốn đóng tài khoản không?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowModal(false)}>
             Hủy
           </Button>
           <Button
             variant="danger"
-            //onClick={handleCloseAccount}
+            onClick={handleCloseAccount}
             disabled={loading}
           >
             {loading ? "Đang xử lý..." : "Đóng tài khoản"}

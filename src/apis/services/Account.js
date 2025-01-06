@@ -24,3 +24,8 @@ export const getExternalUserByAccountNumber = async (accountNumber, bankId) => {
   });
   return response.data;
 };
+
+export const disableAccount = async () => {
+  const response = await api.post("/account/disable");
+  return response.data;
+};

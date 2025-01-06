@@ -35,9 +35,7 @@ const PopUpNewDebtReminder = ({ show, setReload, handleClose }) => {
   };
 
   const handleFindAccount = async (accountNumber) => {
-    console.log(accountNumber);
     if (!accountNumber || accountNumber.trim() === "") return;
-    console.log(accountNumber);
     try {
       const response = await getUserInfo(accountNumber);
       setAccount({ name: response.data.fullName, status: "success" });

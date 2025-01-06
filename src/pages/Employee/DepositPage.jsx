@@ -14,7 +14,6 @@ const DepositPage = () => {
 
   const handleAccountChange = (e) => setAccountIdentifier(e.target.value);
 
-
   const handleAmountChange = (e) => setAmount(e.target.value);
 
   const fetchAccountDetails = async (identifier) => {
@@ -99,7 +98,11 @@ const DepositPage = () => {
                   onChange={handleAmountChange}
                 />
               </Form.Group>
-              <Button variant="primary" onClick={() => setShowModal(true)}>
+              <Button
+                variant="primary"
+                onClick={() => setShowModal(true)}
+                className="text-light"
+              >
                 Nạp tiền
               </Button>
             </Form>

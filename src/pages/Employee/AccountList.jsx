@@ -45,7 +45,7 @@ const AccountList = () => {
   return (
     <>
       <Navbar />
-      <div className="container my-4">
+      <div className="container py-4">
         <div className="w-100 d-flex justify-content-center mb-3 gap-4">
           <Button variant="outline-primary" size="md" onClick={handleOpenModal}>
             Tạo tài khoản
@@ -60,7 +60,7 @@ const AccountList = () => {
           </Button>
         </div>
 
-        <Card>
+        <Card className="mb-5">
           <Card.Body>
             <ListGroup variant="flush">
               {accountList.map((account) => (

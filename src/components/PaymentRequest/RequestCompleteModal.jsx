@@ -10,7 +10,6 @@ const RequestCompleteModal = ({ show, onHide, data }) => {
       <Modal.Body>
         <div className="d-flex flex-column align-items-center text-center justify-content-center w-100">
           <h5 className="mb-3 fw-bold">Nhắc nợ tới</h5>
-          <h6 className="mb-3 text-secondary">Nhắc nợ tới</h6>
           <h4 className="mb-4 fw-bold">{data?.name}</h4>
 
           <div className="d-flex align-items-center justify-content-center mb-3">
@@ -35,14 +34,14 @@ const RequestCompleteModal = ({ show, onHide, data }) => {
             </div>
           </div>
 
-          <p className="text-muted mb-4">{formatDate(data?.date)}</p>
+          <p className="text-muted mb-4">{formatDate(data?.updatedAt)}</p>
 
           <h2 className="mb-4 fw-bold">{formatCurrency(data?.amount)}</h2>
 
           <div className="border border-danger rounded p-3 text-success mb-4 w-100">
             Nhắc nợ này đã được thanh toán bởi{" "}
             <span className="fw-bold">{data?.name}</span> vào ngày{" "}
-            <span className="fw-bold">{formatDate(data?.date)}</span>
+            <span className="fw-bold">{formatDate(data?.updatedAt)}</span>
           </div>
         </div>
       </Modal.Body>

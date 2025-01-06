@@ -16,6 +16,7 @@ const CompletedList = ({
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
+    console.log(item);
     setShowModal(true);
   };
 

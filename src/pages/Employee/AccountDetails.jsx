@@ -35,7 +35,7 @@ const AccountDetails = () => {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchAccountDetails();
     fetchTransferHistory();
@@ -66,7 +66,7 @@ const AccountDetails = () => {
   return (
     <>
       <Navbar />
-      <div className="container my-4">
+      <div className="container py-4">
         <Card>
           <Card.Header>
             <h3>Thông tin tài khoản</h3>
@@ -92,9 +92,12 @@ const AccountDetails = () => {
               {accountDetails.balance?.toFixed(2) || "0.00"} VND
             </p>
           </Card.Body>
-        <TransactionHistoryDetail history={history} account={accountDetails} loading={loading} />
+          <TransactionHistoryDetail
+            history={history}
+            account={accountDetails}
+            loading={loading}
+          />
         </Card>
-
       </div>
     </>
   );

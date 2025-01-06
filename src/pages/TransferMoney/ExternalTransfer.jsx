@@ -39,37 +39,21 @@ const ExternalTransfer = () => {
       const response = await getRegisteredBanks();
       setBanks(response.data);
       setSelectedBank(response.data[0]);
+      if (passedAccountNumber) {
+        fetchAccountDetails(passedAccountNumber, response.data[0]._id);
+      }
     }
 
     fetchBanks();
-
-    if (passedAccountNumber) {
-      fetchAccountDetails(passedAccountNumber);
-    }
   }, [passedAccountNumber]);
 
-  const fetchAccountDetails = async (accountNumber) => {
-    try {
-      const response = await getExternalUserByAccountNumber(
-        accountNumber,
-        selectedBank?._id
-      );
-      if (response.statusCode === 200) {
-        setAccountDetails({
-          fullName: response.data.full_name,
-          status: "success",
-        });
-      } else {
-        setAccountDetails({
-          fullName: "Không tìm thấy tài khoản",
-          status: "error",
-        });
-      }
-    } catch (error) {
-      setAccountDetails({
-        fullName: "Lỗi khi tìm thông tin tài khoản",
-        status: "error",
-      });
+  const fetchAccountDetails = async (accountNumber, bankId) => {
+    const response = await getExternalUserByAccountNumber(
+      accountNumber,
+      bankId
+    );
+    if (response.statusCode === 200) {
+      setSelectedAccount(response.data.full_name);
     }
   };
 
